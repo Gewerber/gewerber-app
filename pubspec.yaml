@@ -1,0 +1,28 @@
+name: gewerber_app
+description: Gewerber client application (web, mobile, desktop).
+version: 1.0.0+1
+publish_to: none
+homepage: https://app.gewerber.de
+repository: https://github.com/Gewerber/gewerber-app
+issue_tracker: https://github.com/Gewerber/gewerber-app/issues
+topics:
+  - flutter
+  - web
+  - invoicing
+  - time-tracking
+
+environment:
+  sdk: ^3.12.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
