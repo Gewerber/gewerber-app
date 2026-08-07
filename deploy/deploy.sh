@@ -37,7 +37,9 @@ TRAEFIK_NETWORK="${TRAEFIK_NETWORK:-web}"
 WEB_ENTRYPOINT="${WEB_ENTRYPOINT:-web}"
 WEBSECURE_ENTRYPOINT="${WEBSECURE_ENTRYPOINT:-websecure}"
 CERT_RESOLVER="${CERT_RESOLVER:-letsencrypt}"
-DEPLOY_DIR="${DEPLOY_DIR:-$HOME/gewerber/$ENV}"
+DEPLOY_DIR="${DEPLOY_DIR:-$HOME/gewerber/app/$ENV}"
+COMPOSE_PROJECT_NAME="${COMPOSE_PROJECT_NAME:-gewerber-app-$ENV}"
+export COMPOSE_PROJECT_NAME
 
 # Log in to GHCR if credentials were provided (private image).
 if [ -n "${GHCR_TOKEN:-}" ]; then

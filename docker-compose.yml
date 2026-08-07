@@ -18,6 +18,12 @@ services:
       context: .
     container_name: ${CONTAINER_NAME:-gewerber-app}
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://localhost/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
     networks:
       - proxy
     labels:
@@ -42,6 +48,11 @@ services:
 
       # Backend service -> container port.
       - "traefik.http.services.${ROUTER_PREFIX:-gw-app}-app.loadbalancer.server.port=80"
+
+      # Backend HTTP health check (only routes to healthy servers).
+      - "traefik.http.services.${ROUTER_PREFIX:-gw-app}-app.loadbalancer.healthcheck.path=/"
+      - "traefik.http.services.${ROUTER_PREFIX:-gw-app}-app.loadbalancer.healthcheck.interval=30s"
+      - "traefik.http.services.${ROUTER_PREFIX:-gw-app}-app.loadbalancer.healthcheck.timeout=5s"
 
 networks:
   # External network the existing Traefik container is attached to.

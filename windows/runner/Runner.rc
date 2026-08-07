@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "de.gewerber.app" "\0"
-            VALUE "FileDescription", "gewerber_app" "\0"
+            VALUE "CompanyName", "DIP Dev" "\0"
+            VALUE "FileDescription", "Gewerber" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "gewerber_app" "\0"
+            VALUE "InternalName", "Gewerber" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2026 de.gewerber.app. All rights reserved." "\0"
-            VALUE "OriginalFilename", "gewerber_app.exe" "\0"
-            VALUE "ProductName", "gewerber_app" "\0"
+            VALUE "OriginalFilename", "gewerber.exe" "\0"
+            VALUE "ProductName", "Gewerber" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
