@@ -85,7 +85,7 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           source: "docker-compose.yml,deploy/deploy.sh"
-          target: "gewerber/${{ env.DEPLOY_ENV }}/_in"
+          target: "gewerber/app/${{ env.DEPLOY_ENV }}/_in"
 
       - name: Deploy on VPS
         uses: appleboy/ssh-action@v1.0.3
@@ -97,7 +97,7 @@ jobs:
           envs: DEPLOY_ENV,IMAGE_REF,GHCR_USER,GHCR_TOKEN,TRAEFIK_NETWORK,WEB_ENTRYPOINT,WEBSECURE_ENTRYPOINT,CERT_RESOLVER
           script: |
             set -eu
-            WORK="$HOME/gewerber/$DEPLOY_ENV/_in"
+            WORK="$HOME/gewerber/app/$DEPLOY_ENV/_in"
             cp -f "$WORK/docker-compose.yml" "$WORK/deploy/docker-compose.yml"
             bash "$WORK/deploy/deploy.sh" "$DEPLOY_ENV" "$IMAGE_REF"
         env:
