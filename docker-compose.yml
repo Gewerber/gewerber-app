@@ -1,0 +1,50 @@
+# Deploys the Gewerber client application (Flutter Web) behind an existing
+# Traefik reverse proxy. The same file serves both environments:
+#
+#   production : DOMAIN=app.gewerber.de      ROUTER_PREFIX=gw-app      CONTAINER_NAME=gewerber-app
+#   staging    : DOMAIN=test.app.gewerber.de ROUTER_PREFIX=gw-app-test CONTAINER_NAME=gewerber-app-test
+#
+# Locally you can `docker compose build && docker compose up -d`. In CI the
+# image is built once, pushed to GHCR, and the VPS only pulls it (see
+# .github/workflows/deploy.yml and deploy/deploy.sh).
+#
+# Copy `.env.example` to `.env` (or let the deploy script generate it) and
+# adjust the values to match your Traefik setup.
+
+services:
+  app:
+    image: ${IMAGE:-gewerber/app:latest}
+    build:
+      context: .
+    container_name: ${CONTAINER_NAME:-gewerber-app}
+    restart: unless-stopped
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      # Network Traefik uses to reach this container.
+      - "traefik.docker.network=${TRAEFIK_NETWORK:-web}"
+
+      # HTTP router -> redirect to HTTPS.
+      - "traefik.http.routers.${ROUTER_PREFIX:-gw-app}-web.rule=${HOST_RULE:-Host(`app.gewerber.de`)}"
+      - "traefik.http.routers.${ROUTER_PREFIX:-gw-app}-web.entrypoints=${WEB_ENTRYPOINT:-web}"
+      - "traefik.http.routers.${ROUTER_PREFIX:-gw-app}-web.middlewares=${ROUTER_PREFIX:-gw-app}-https-redirect"
+
+      # HTTPS router (TLS terminated by Traefik).
+      - "traefik.http.routers.${ROUTER_PREFIX:-gw-app}-secure.rule=${HOST_RULE:-Host(`app.gewerber.de`)}"
+      - "traefik.http.routers.${ROUTER_PREFIX:-gw-app}-secure.entrypoints=${WEBSECURE_ENTRYPOINT:-websecure}"
+      - "traefik.http.routers.${ROUTER_PREFIX:-gw-app}-secure.tls=true"
+      - "traefik.http.routers.${ROUTER_PREFIX:-gw-app}-secure.tls.certresolver=${CERT_RESOLVER:-letsencrypt}"
+
+      # Redirect middleware.
+      - "traefik.http.middlewares.${ROUTER_PREFIX:-gw-app}-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.${ROUTER_PREFIX:-gw-app}-https-redirect.redirectscheme.permanent=true"
+
+      # Backend service -> container port.
+      - "traefik.http.services.${ROUTER_PREFIX:-gw-app}-app.loadbalancer.server.port=80"
+
+networks:
+  # External network the existing Traefik container is attached to.
+  proxy:
+    external: true
+    name: ${TRAEFIK_NETWORK:-web}
