@@ -1,0 +1,147 @@
+{
+  "@@locale": "en",
+  "appTitle": "Gewerber",
+  "tagline": "Business. Simplified.",
+
+  "@@splash": {
+    "description": "Splash / auth landing screen"
+  },
+  "splashTitle": "Your business, finally simple.",
+  "splashSubtitle": "Bills, time tracking and bookkeeping — friendly software made for solo entrepreneurs in Germany.",
+  "splashGetStarted": "Get started",
+  "splashLogIn": "I already have an account",
+  "splashPrivacy": "Open source · GDPR friendly · Built for solos",
+
+  "@@authPanel": {
+    "description": "Shared brand panel on auth screens"
+  },
+  "panelTrustCreate": "Create an account in under two minutes",
+  "panelTrustInvoices": "Send your first invoice today",
+  "panelTrustTax": "Understand the taxes that apply to you",
+  "panelTrustOpenSource": "Your data, your business — open source",
+
+  "@@login": {
+    "description": "Login screen"
+  },
+  "loginTitle": "Welcome back",
+  "loginSubtitle": "Sign in to keep running your business.",
+  "emailLabel": "Email address",
+  "passwordLabel": "Password",
+  "passwordShow": "Show password",
+  "passwordHide": "Hide password",
+  "loginCta": "Log in",
+  "loginForgotPassword": "Forgot password?",
+  "loginNoAccount": "New to Gewerber?",
+  "loginCreateAccount": "Create your account",
+  "loginInvalidCredentials": "The email address or password is incorrect. Please try again.",
+  "loginTooManyAttempts": "Too many failed attempts. Please try again in a few minutes.",
+
+  "@register": {
+    "description": "Registration flow (email → code → password)"
+  },
+  "registerTitle": "Create your account",
+  "registerSubtitle": "A couple of quick steps and you're set.",
+  "registerEmailStepTitle": "Start with your email",
+  "registerEmailStepSubtitle": "We'll send you a code to verify it's really you.",
+  "registerCodeStepTitle": "Enter the code",
+  "registerCodeStepSubtitle": "We emailed a 6-digit code to {email}.",
+  "registerCodeHint": "Check your inbox (and spam, just in case).",
+  "registerPasswordStepTitle": "Set your password",
+  "registerPasswordStepSubtitle": "At least 8 characters. You can change this later.",
+  "registerEmailExists": "That email already has an account. Log in instead.",
+  "registerCodeInvalid": "That code didn't work. Please try again.",
+  "registerCodeExpired": "That code has expired. Request a new one.",
+  "registerSuccessTitle": "You're in! 🎉",
+  "registerSuccessSubtitle": "Your account was created. Let's set up your business.",
+  "registerContinue": "Continue",
+  "resendCode": "Resend code",
+  "confirmPasswordLabel": "Confirm password",
+  "passwordMismatch": "Passwords do not match.",
+  "registerHaveAccount": "Already have an account?",
+  "reRegisterCta": "Log in",
+
+  "@forgot": {
+    "description": "Forgot password flow"
+  },
+  "forgotTitle": "Reset your password",
+  "forgotSubtitle": "We'll email you a code so you can pick a new password.",
+  "forgotCodeStepTitle": "Enter the code",
+  "forgotCodeStepSubtitle": "We emailed a 6-digit code to {email}.",
+  "forgotPasswordStepTitle": "Choose a new password",
+  "forgotPasswordStepSubtitle": "At least 8 characters. Avoid reusing old passwords.",
+  "forgotSendCode": "Send reset code",
+  "forgotSubmit": "Update password",
+  "forgotBackToLogin": "Back to log in",
+
+  "@common": {
+    "description": "Shared UI strings"
+  },
+  "commonContinue": "Continue",
+  "commonBack": "Back",
+  "commonOrContinueWith": "or continue with",
+  "commonComingSoon": "Coming soon",
+  "commonAdd": "Add",
+  "commonGoogle": "Google",
+  "commonApple": "Apple",
+  "commonFacebook": "Facebook",
+  "commonSocialUnavailable": "One-tap sign-in is coming soon.",
+
+  "@home": {
+    "description": "Authenticated app shell"
+  },
+  "homeDashboard": "Dashboard",
+  "homeInvoicing": "Invoicing",
+  "homeTimeTracking": "Time",
+  "homeAccounting": "Accounting",
+  "moduleComingSoonTitle": "On it!",
+  "moduleComingSoonSubtitle": "This module is next on our roadmap and lands here soon.",
+
+  "@invoices": {
+    "description": "Invoicing module stubs"
+  },
+  "invoicesCreateTitle": "New invoice",
+  "invoicesCreateSubtitle": "Invoice data and line items will be edited here.",
+  "invoicesDetailTitle": "Invoice",
+  "invoicesDetailSubtitle": "A ready invoice document will open here.",
+
+  "@time": {
+    "description": "Time tracking module stubs"
+  },
+  "timeProjectsTitle": "Projects",
+  "timeProjectsSubtitle": "Projects and tasks will appear here.",
+  "timeTimerTitle": "Timer",
+  "timeTimerSubtitle": "A stopwatch-based time recorder will live here.",
+  "timeEntryCreateTitle": "Manual entry",
+  "timeEntryCreateSubtitle": "Tracked time will be added here in seconds.",
+
+  "@accounting": {
+    "description": "Basic accounting module stubs"
+  },
+  "accountingReportTitle": "Report",
+  "accountingReportSubtitle": "A simple profit and loss view will appear here.",
+  "accountingEntryCreateTitle": "Add entry",
+  "accountingEntryCreateSubtitle": "Income and expenses will be recorded here.",
+
+  "@guides": {
+    "description": "Guidance system stubs"
+  },
+  "guidesTitle": "Guides",
+  "guidesSubtitle": "Checklists and tips for running your business appear here.",
+  "checklistTitle": "Checklist",
+  "checklistSubtitle": "A step-by-step checklist will appear here.",
+
+  "@settings": {
+    "description": "Settings stub"
+  },
+  "settingsTitle": "Settings",
+  "settingsBusinessProfile": "Business profile",
+  "settingsLanguage": "Language",
+  "settingsGuides": "Guides",
+  "settingsAbout": "About",
+  "settingsSignOut": "Sign out",
+  "businessProfileTitle": "Business profile",
+  "businessProfileSubtitle": "Company name, address and tax rules will be edited here.",
+  "languageTitle": "Language",
+  "aboutTitle": "About Gewerber",
+  "aboutSubtitle": "Version, licenses and privacy information arrive here."
+}

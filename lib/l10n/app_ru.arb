@@ -1,0 +1,126 @@
+{
+  "@@locale": "ru",
+  "appTitle": "Gewerber",
+  "tagline": "Бизнес. Просто.",
+
+  "splashTitle": "Твой бизнес, наконец, просто.",
+  "splashSubtitle": "Счета, учёт времени и бухгалтерия — дружелюбное ПО для индивидуальных предпринимателей в Германии.",
+  "splashGetStarted": "Начать",
+  "splashLogIn": "У меня уже есть аккаунт",
+  "splashPrivacy": "Open Source · GDPR · Сделано для солопредпринимателей",
+
+  "panelTrustCreate": "Создай аккаунт меньше чем за две минуты",
+  "panelTrustInvoices": "Выставь первый счёт уже сегодня",
+  "panelTrustTax": "Разберись, какие налоги тебя касаются",
+  "panelTrustOpenSource": "Твои данные, твой бизнес — open source",
+
+  "loginTitle": "С возвращением",
+  "loginSubtitle": "Войди, чтобы управлять своим бизнесом дальше.",
+  "emailLabel": "Адрес эл. почты",
+  "passwordLabel": "Пароль",
+  "passwordShow": "Показать пароль",
+  "passwordHide": "Скрыть пароль",
+  "loginCta": "Войти",
+  "loginForgotPassword": "Забыли пароль?",
+  "loginNoAccount": "Впервые в Gewerber?",
+  "loginCreateAccount": "Создать аккаунт",
+  "loginInvalidCredentials": "Адрес или пароль неверны. Попробуй ещё раз.",
+  "loginTooManyAttempts": "Слишком много неудачных попыток. Попробуй через несколько минут.",
+
+  "registerTitle": "Создать аккаунт",
+  "registerSubtitle": "Пара быстрых шагов — и всё готово.",
+  "registerEmailStepTitle": "Начни с адреса почты",
+  "registerEmailStepSubtitle": "Мы отправим тебе код, чтобы убедиться, что это ты.",
+  "registerCodeStepTitle": "Введи код",
+  "registerCodeStepSubtitle": "Мы отправили 6-значный код на {email}.",
+  "registerCodeHint": "Проверь входящие (и спам, на всякий случай).",
+  "registerPasswordStepTitle": "Придумай пароль",
+  "registerPasswordStepSubtitle": "Минимум 8 символов. Его можно изменить позже.",
+  "registerEmailExists": "На эту почту уже зарегистрирован аккаунт. Войди вместо этого.",
+  "registerCodeInvalid": "Код не подошёл. Попробуй ещё раз.",
+  "registerCodeExpired": "Код истёк. Запроси новый.",
+  "registerSuccessTitle": "Ты внутри! 🎉",
+  "registerSuccessSubtitle": "Аккаунт создан. Давай настроим твой бизнес.",
+  "registerContinue": "Продолжить",
+  "resendCode": "Отправить код ещё раз",
+  "confirmPasswordLabel": "Подтверди пароль",
+  "passwordMismatch": "Пароли не совпадают.",
+  "registerHaveAccount": "Уже есть аккаунт?",
+  "reRegisterCta": "Войти",
+
+  "forgotTitle": "Сброс пароля",
+  "forgotSubtitle": "Мы отправим тебе код, чтобы ты мог выбрать новый пароль.",
+  "forgotCodeStepTitle": "Введи код",
+  "forgotCodeStepSubtitle": "Мы отправили 6-значный код на {email}.",
+  "forgotPasswordStepTitle": "Выбери новый пароль",
+  "forgotPasswordStepSubtitle": "Минимум 8 символов. Не используй повторно старые пароли.",
+  "forgotSendCode": "Отправить код сброса",
+  "forgotSubmit": "Обновить пароль",
+  "forgotBackToLogin": "Вернуться ко входу",
+
+  "commonContinue": "Продолжить",
+  "commonBack": "Назад",
+  "commonOrContinueWith": "или войти через",
+  "commonComingSoon": "Скоро",
+  "commonAdd": "Добавить",
+  "commonGoogle": "Google",
+  "commonApple": "Apple",
+  "commonFacebook": "Facebook",
+  "commonSocialUnavailable": "Вход в один клик скоро появится.",
+
+  "homeDashboard": "Обзор",
+  "homeInvoicing": "Счета",
+  "homeTimeTracking": "Время",
+  "homeAccounting": "Учёт",
+  "moduleComingSoonTitle": "Уже в работе!",
+  "moduleComingSoonSubtitle": "Этот модуль следующий в нашем плане и появится здесь совсем скоро.",
+
+  "@invoices": {
+    "description": "Invoices module stubs"
+  },
+  "invoicesCreateTitle": "Новый счёт",
+  "invoicesCreateSubtitle": "Здесь будут редактироваться реквизиты и позиции счёта.",
+  "invoicesDetailTitle": "Счёт",
+  "invoicesDetailSubtitle": "Здесь откроется готовый документ счёта.",
+
+  "@time": {
+    "description": "Time tracking module stubs"
+  },
+  "timeProjectsTitle": "Проекты",
+  "timeProjectsSubtitle": "Здесь появятся проекты и задачи.",
+  "timeTimerTitle": "Таймер",
+  "timeTimerSubtitle": "Здесь будет встроен таймер учёта времени.",
+  "timeEntryCreateTitle": "Ручная запись",
+  "timeEntryCreateSubtitle": "Здесь будут добавляться записи времени.",
+
+  "@accounting": {
+    "description": "Basic accounting module stubs"
+  },
+  "accountingReportTitle": "Отчёт",
+  "accountingReportSubtitle": "Здесь появится простой отчёт о прибылях и убытках.",
+  "accountingEntryCreateTitle": "Добавить запись",
+  "accountingEntryCreateSubtitle": "Здесь будут учитываться доходы и расходы.",
+
+  "@guides": {
+    "description": "Guidance system stubs"
+  },
+  "guidesTitle": "Гиды",
+  "guidesSubtitle": "Здесь появятся чек-листы и советы для вашего дела.",
+  "checklistTitle": "Чек-лист",
+  "checklistSubtitle": "Здесь появится пошаговый чек-лист.",
+
+  "@settings": {
+    "description": "Settings stub"
+  },
+  "settingsTitle": "Настройки",
+  "settingsBusinessProfile": "Профиль бизнеса",
+  "settingsLanguage": "Язык",
+  "settingsGuides": "Гиды",
+  "settingsAbout": "О приложении",
+  "settingsSignOut": "Выйти",
+  "businessProfileTitle": "Профиль бизнеса",
+  "businessProfileSubtitle": "Название компании, адрес и налоговые правила будут редактироваться здесь.",
+  "languageTitle": "Язык",
+  "aboutTitle": "О Gewerber",
+  "aboutSubtitle": "Здесь появятся версия, лицензии и данные о конфиденциальности."
+}
