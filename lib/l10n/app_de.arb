@@ -1,0 +1,126 @@
+{
+  "@@locale": "de",
+  "appTitle": "Gewerber",
+  "tagline": "Business. Einfach geregelt.",
+
+  "splashTitle": "Dein Business, endlich einfach.",
+  "splashSubtitle": "Rechnungen, Zeiterfassung und Buchhaltung — freundliche Software für Solo-Selbstständige in Deutschland.",
+  "splashGetStarted": "Loslegen",
+  "splashLogIn": "Ich habe bereits ein Konto",
+  "splashPrivacy": "Open Source · DSGVO-freundlich · Für Solos gemacht",
+
+  "panelTrustCreate": "Guthaben in unter zwei Minuten erstellen",
+  "panelTrustInvoices": "Heute deine erste Rechnung schreiben",
+  "panelTrustTax": "Verstehe, welche Steuern für dich gelten",
+  "panelTrustOpenSource": "Deine Daten, dein Business — Open Source",
+
+  "loginTitle": "Willkommen zurück",
+  "loginSubtitle": "Melde dich an, um dein Business weiterzuführen.",
+  "emailLabel": "E-Mail-Adresse",
+  "passwordLabel": "Passwort",
+  "passwordShow": "Passwort anzeigen",
+  "passwordHide": "Passwort ausblenden",
+  "loginCta": "Anmelden",
+  "loginForgotPassword": "Passwort vergessen?",
+  "loginNoAccount": "Neu bei Gewerber?",
+  "loginCreateAccount": "Konto erstellen",
+  "loginInvalidCredentials": "Die E-Mail-Adresse oder das Passwort ist falsch. Bitte versuche es erneut.",
+  "loginTooManyAttempts": "Zu viele fehlgeschlagene Versuche. Bitte versuche es in ein paar Minuten erneut.",
+
+  "registerTitle": "Konto erstellen",
+  "registerSubtitle": "Ein paar schnelle Schritte und du bist startklar.",
+  "registerEmailStepTitle": "Starte mit deiner E-Mail",
+  "registerEmailStepSubtitle": "Wir senden dir einen Code, um zu prüfen, dass du es wirklich bist.",
+  "registerCodeStepTitle": "Gib den Code ein",
+  "registerCodeStepSubtitle": "Wir haben einen 6-stelligen Code an {email} geschickt.",
+  "registerCodeHint": "Schau in dein Postfach (und in den Spam, falls nötig).",
+  "registerPasswordStepTitle": "Lege dein Passwort fest",
+  "registerPasswordStepSubtitle": "Mindestens 8 Zeichen. Du kannst es später ändern.",
+  "registerEmailExists": "Für diese E-Mail gibt es bereits ein Konto. Melde dich stattdessen an.",
+  "registerCodeInvalid": "Der Code war nicht richtig. Bitte versuche es erneut.",
+  "registerCodeExpired": "Der Code ist abgelaufen. Fordere einen neuen an.",
+  "registerSuccessTitle": "Du bist drin! 🎉",
+  "registerSuccessSubtitle": "Dein Konto wurde erstellt. Lass uns dein Business einrichten.",
+  "registerContinue": "Weiter",
+  "resendCode": "Code erneut senden",
+  "confirmPasswordLabel": "Passwort bestätigen",
+  "passwordMismatch": "Die Passwörter stimmen nicht überein.",
+  "registerHaveAccount": "Schon ein Konto?",
+  "reRegisterCta": "Anmelden",
+
+  "forgotTitle": "Passwort zurücksetzen",
+  "forgotSubtitle": "Wir senden dir einen Code, mit dem du ein neues Passwort wählen kannst.",
+  "forgotCodeStepTitle": "Gib den Code ein",
+  "forgotCodeStepSubtitle": "Wir haben dir einen 6-stelligen Code an {email} geschickt.",
+  "forgotPasswordStepTitle": "Wähle ein neues Passwort",
+  "forgotPasswordStepSubtitle": "Mindestens 8 Zeichen. Verwende am besten kein altes Passwort erneut.",
+  "forgotSendCode": "Reset-Code senden",
+  "forgotSubmit": "Passwort aktualisieren",
+  "forgotBackToLogin": "Zurück zur Anmeldung",
+
+  "commonContinue": "Weiter",
+  "commonBack": "Zurück",
+  "commonOrContinueWith": "oder weiter mit",
+  "commonComingSoon": "Bald verfügbar",
+  "commonAdd": "Hinzufügen",
+  "commonGoogle": "Google",
+  "commonApple": "Apple",
+  "commonFacebook": "Facebook",
+  "commonSocialUnavailable": "Anmeldung mit einem Klick ist bald verfügbar.",
+
+  "homeDashboard": "Start",
+  "homeInvoicing": "Rechnungen",
+  "homeTimeTracking": "Zeit",
+  "homeAccounting": "Buchhaltung",
+  "moduleComingSoonTitle": "In Arbeit!",
+  "moduleComingSoonSubtitle": "Dieses Modul steht als Nächstes auf unserer Roadmap und kommt schon bald.",
+
+  "@invoices": {
+    "description": "Invoicing module stubs"
+  },
+  "invoicesCreateTitle": "Neue Rechnung",
+  "invoicesCreateSubtitle": "Rechnungsdaten und Positionen werden hier bearbeitet.",
+  "invoicesDetailTitle": "Rechnung",
+  "invoicesDetailSubtitle": "Ein fertiges Rechnungsdokument wird hier geöffnet.",
+
+  "@time": {
+    "description": "Time tracking module stubs"
+  },
+  "timeProjectsTitle": "Projekte",
+  "timeProjectsSubtitle": "Projekte und Aufgaben erscheinen hier.",
+  "timeTimerTitle": "Zeiterfassung",
+  "timeTimerSubtitle": "Eine Stoppuhr-basierte Erfassung wohnt hier.",
+  "timeEntryCreateTitle": "Manuelle Zeiterfassung",
+  "timeEntryCreateSubtitle": "Erfasste Zeiten werden hier sekundenschnell hinzugefügt.",
+
+  "@accounting": {
+    "description": "Basic accounting module stubs"
+  },
+  "accountingReportTitle": "Bericht",
+  "accountingReportSubtitle": "Eine einfache Gewinn- und Verlustübersicht erscheint hier.",
+  "accountingEntryCreateTitle": "Buchung hinzufügen",
+  "accountingEntryCreateSubtitle": "Einnahmen und Ausgaben werden hier erfasst.",
+
+  "@guides": {
+    "description": "Guidance system stubs"
+  },
+  "guidesTitle": "Ratgeber",
+  "guidesSubtitle": "Checklisten und Tipps für Ihr Gewerbe erscheinen hier.",
+  "checklistTitle": "Checkliste",
+  "checklistSubtitle": "Eine Schritt-für-Schritt-Checkliste erscheint hier.",
+
+  "@settings": {
+    "description": "Settings stub"
+  },
+  "settingsTitle": "Einstellungen",
+  "settingsBusinessProfile": "Firmendaten",
+  "settingsLanguage": "Sprache",
+  "settingsGuides": "Ratgeber",
+  "settingsAbout": "Über die App",
+  "settingsSignOut": "Abmelden",
+  "businessProfileTitle": "Firmendaten",
+  "businessProfileSubtitle": "Name, Anschrift und Steuerregeln werden hier bearbeitet.",
+  "languageTitle": "Sprache",
+  "aboutTitle": "Über Gewerber",
+  "aboutSubtitle": "Version, Lizenzen und Hinweise zum Datenschutz folgen hier."
+}
