@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:gewerber_app/application/auth/auth_cubit.dart';
+import 'package:gewerber_app/application/settings/app_settings_cubit.dart';
+import 'package:gewerber_app/application/settings/app_settings_state.dart';
 import 'package:gewerber_app/core/theme/app_theme.dart';
 import 'package:gewerber_app/di/injection.dart';
 import 'package:gewerber_app/domain/repositories/auth_repository.dart';
@@ -16,16 +18,34 @@ class GewerberApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<AuthCubit>(
       create: (_) => AuthCubit(getIt<AuthRepository>()),
-      child: MaterialApp.router(
-        title: 'Gewerber',
-        debugShowCheckedModeBanner: false,
-        routerConfig: appRouter,
-        theme: GewerberTheme.light(),
-        darkTheme: GewerberTheme.dark(),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
+      child: BlocProvider<AppSettingsCubit>(
+        create: (_) => AppSettingsCubit(),
+        child: const _AppView(),
       ),
+    );
+  }
+}
+
+class _AppView extends StatelessWidget {
+  const _AppView();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<AppSettingsCubit, AppSettingsState>(
+      builder: (context, state) {
+        return MaterialApp.router(
+          title: 'Gewerber',
+          debugShowCheckedModeBanner: false,
+          routerConfig: appRouter,
+          theme: GewerberTheme.light(),
+          darkTheme: GewerberTheme.dark(),
+          themeMode: state.themeMode,
+          locale: state.locale,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
+        );
+      },
     );
   }
 }

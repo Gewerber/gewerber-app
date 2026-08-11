@@ -35,6 +35,8 @@
   "loginCreateAccount": "Hesabınızı oluşturun",
   "loginInvalidCredentials": "E-posta adresi veya şifre hatalı. Lütfen tekrar deneyin.",
   "loginTooManyAttempts": "Çok fazla başarısız deneme. Lütfen birkaç dakika sonra tekrar deneyin.",
+  "loginDemoCta": "Demoyu keşfet",
+  "loginDemoHint": "Gerçek bir hesap olmadan giriş yapar, böylece uygulamayı gezebilirsin.",
 
   "@register": {
     "description": "Registration flow (email → code → password)"
@@ -136,12 +138,20 @@
   "settingsTitle": "Ayarlar",
   "settingsBusinessProfile": "İşletme profili",
   "settingsLanguage": "Dil",
+  "settingsTheme": "Tema",
   "settingsGuides": "Rehberler",
   "settingsAbout": "Hakkında",
   "settingsSignOut": "Çıkış yap",
   "businessProfileTitle": "İşletme profili",
   "businessProfileSubtitle": "Şirket adı, adres ve vergi kuralları burada düzenlenecek.",
   "languageTitle": "Dil",
+  "languageSystemDefault": "Sistem varsayılanı",
+  "languageSystemHint": "Cihazınızın dilini kullanır.",
+  "themeTitle": "Tema",
+  "themeSystem": "Sistem",
+  "themeSystemHint": "Cihaz ayarlarınızı takip eder.",
+  "themeLight": "Açık",
+  "themeDark": "Koyu",
   "aboutTitle": "Gewerber hakkında",
   "aboutSubtitle": "Sürüm, lisanslar ve gizlilik bilgileri buraya gelecek."
 }

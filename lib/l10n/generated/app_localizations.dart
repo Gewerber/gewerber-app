@@ -240,6 +240,18 @@ abstract class AppLocalizations {
   /// **'Too many failed attempts. Please try again in a few minutes.'**
   String get loginTooManyAttempts;
 
+  /// No description provided for @loginDemoCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore the demo'**
+  String get loginDemoCta;
+
+  /// No description provided for @loginDemoHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Signs you in without a real account so you can browse the app.'**
+  String get loginDemoHint;
+
   /// No description provided for @registerTitle.
   ///
   /// In en, this message translates to:
@@ -630,6 +642,12 @@ abstract class AppLocalizations {
   /// **'Language'**
   String get settingsLanguage;
 
+  /// No description provided for @settingsTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme'**
+  String get settingsTheme;
+
   /// No description provided for @settingsGuides.
   ///
   /// In en, this message translates to:
@@ -665,6 +683,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Language'**
   String get languageTitle;
+
+  /// No description provided for @languageSystemDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'System default'**
+  String get languageSystemDefault;
+
+  /// No description provided for @languageSystemHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Follows the language of your device.'**
+  String get languageSystemHint;
+
+  /// No description provided for @themeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme'**
+  String get themeTitle;
+
+  /// No description provided for @themeSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get themeSystem;
+
+  /// No description provided for @themeSystemHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Follows your device settings.'**
+  String get themeSystemHint;
+
+  /// No description provided for @themeLight.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get themeLight;
+
+  /// No description provided for @themeDark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get themeDark;
 
   /// No description provided for @aboutTitle.
   ///

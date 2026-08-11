@@ -137,6 +137,24 @@ class _LoginScreenState extends State<LoginScreen> {
                 );
               },
             ),
+            const SizedBox(height: GewerberTokens.space12),
+            TextButton(
+              onPressed: () {
+                context.read<AuthCubit>().login(
+                  email: 'demo@gewerber.de',
+                  password: 'demo-password',
+                );
+              },
+              child: Text(l10n.loginDemoCta),
+            ),
+            const SizedBox(height: GewerberTokens.space8),
+            Text(
+              l10n.loginDemoHint,
+              textAlign: TextAlign.center,
+              style: textTheme.bodySmall?.copyWith(
+                color: colors.onSurfaceVariant,
+              ),
+            ),
             const SizedBox(height: GewerberTokens.space24),
             const SocialSignInRow(),
             const SizedBox(height: GewerberTokens.space24),

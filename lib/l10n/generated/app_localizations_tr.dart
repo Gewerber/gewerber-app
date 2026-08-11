@@ -82,6 +82,13 @@ class AppLocalizationsTr extends AppLocalizations {
       'Çok fazla başarısız deneme. Lütfen birkaç dakika sonra tekrar deneyin.';
 
   @override
+  String get loginDemoCta => 'Demoyu keşfet';
+
+  @override
+  String get loginDemoHint =>
+      'Gerçek bir hesap olmadan giriş yapar, böylece uygulamayı gezebilirsin.';
+
+  @override
   String get registerTitle => 'Hesabınızı oluşturun';
 
   @override
@@ -299,6 +306,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get settingsLanguage => 'Dil';
 
   @override
+  String get settingsTheme => 'Tema';
+
+  @override
   String get settingsGuides => 'Rehberler';
 
   @override
@@ -316,6 +326,27 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get languageTitle => 'Dil';
+
+  @override
+  String get languageSystemDefault => 'Sistem varsayılanı';
+
+  @override
+  String get languageSystemHint => 'Cihazınızın dilini kullanır.';
+
+  @override
+  String get themeTitle => 'Tema';
+
+  @override
+  String get themeSystem => 'Sistem';
+
+  @override
+  String get themeSystemHint => 'Cihaz ayarlarınızı takip eder.';
+
+  @override
+  String get themeLight => 'Açık';
+
+  @override
+  String get themeDark => 'Koyu';
 
   @override
   String get aboutTitle => 'Gewerber hakkında';

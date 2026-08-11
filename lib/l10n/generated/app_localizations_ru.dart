@@ -82,6 +82,13 @@ class AppLocalizationsRu extends AppLocalizations {
       'Слишком много неудачных попыток. Попробуй через несколько минут.';
 
   @override
+  String get loginDemoCta => 'Открыть демо';
+
+  @override
+  String get loginDemoHint =>
+      'Вход без реального аккаунта, чтобы посмотреть все экраны приложения.';
+
+  @override
   String get registerTitle => 'Создать аккаунт';
 
   @override
@@ -294,6 +301,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get settingsLanguage => 'Язык';
 
   @override
+  String get settingsTheme => 'Тема';
+
+  @override
   String get settingsGuides => 'Гиды';
 
   @override
@@ -311,6 +321,27 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get languageTitle => 'Язык';
+
+  @override
+  String get languageSystemDefault => 'Как в системе';
+
+  @override
+  String get languageSystemHint => 'Следует языку устройства.';
+
+  @override
+  String get themeTitle => 'Тема';
+
+  @override
+  String get themeSystem => 'Системная';
+
+  @override
+  String get themeSystemHint => 'Следует настройкам устройства.';
+
+  @override
+  String get themeLight => 'Светлая';
+
+  @override
+  String get themeDark => 'Тёмная';
 
   @override
   String get aboutTitle => 'О Gewerber';

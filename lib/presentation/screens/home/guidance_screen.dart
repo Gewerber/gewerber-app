@@ -22,7 +22,7 @@ class GuidanceScreen extends StatelessWidget {
             icon: Icons.checklist_outlined,
             title: l10n.checklistTitle,
             subtitle: l10n.checklistSubtitle,
-            onTap: () => context.go(RouteNames.guideChecklist),
+            onTap: () => context.push(RouteNames.guideChecklist),
           ),
         ],
       ),

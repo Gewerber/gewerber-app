@@ -81,6 +81,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Too many failed attempts. Please try again in a few minutes.';
 
   @override
+  String get loginDemoCta => 'Explore the demo';
+
+  @override
+  String get loginDemoHint =>
+      'Signs you in without a real account so you can browse the app.';
+
+  @override
   String get registerTitle => 'Create your account';
 
   @override
@@ -294,6 +301,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsLanguage => 'Language';
 
   @override
+  String get settingsTheme => 'Theme';
+
+  @override
   String get settingsGuides => 'Guides';
 
   @override
@@ -311,6 +321,27 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get languageTitle => 'Language';
+
+  @override
+  String get languageSystemDefault => 'System default';
+
+  @override
+  String get languageSystemHint => 'Follows the language of your device.';
+
+  @override
+  String get themeTitle => 'Theme';
+
+  @override
+  String get themeSystem => 'System';
+
+  @override
+  String get themeSystemHint => 'Follows your device settings.';
+
+  @override
+  String get themeLight => 'Light';
+
+  @override
+  String get themeDark => 'Dark';
 
   @override
   String get aboutTitle => 'About Gewerber';

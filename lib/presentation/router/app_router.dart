@@ -20,6 +20,7 @@ import 'package:gewerber_app/presentation/screens/home/settings_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/time_entry_create_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/time_tracking_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/timer_screen.dart';
+import 'package:gewerber_app/presentation/screens/home/theme_screen.dart';
 import 'package:gewerber_app/presentation/screens/auth/login_screen.dart';
 import 'package:gewerber_app/presentation/screens/auth/register_screen.dart';
 import 'package:gewerber_app/presentation/screens/splash/splash_screen.dart';
@@ -35,6 +36,13 @@ final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 final GoRouter appRouter = GoRouter(
   navigatorKey: rootNavigatorKey,
   initialLocation: RouteNames.splash,
+  redirect: (context, state) {
+    // The shell has no path of its own; landing on it goes to the dashboard.
+    if (state.matchedLocation == RouteNames.app) {
+      return RouteNames.dashboard;
+    }
+    return null;
+  },
   routes: [
     GoRoute(
       path: RouteNames.splash,
@@ -129,6 +137,10 @@ final GoRouter appRouter = GoRouter(
             GoRoute(
               path: RouteNames.settingsLanguage,
               builder: (context, state) => const LanguageScreen(),
+            ),
+            GoRoute(
+              path: RouteNames.settingsTheme,
+              builder: (context, state) => const ThemeScreen(),
             ),
             GoRoute(
               path: RouteNames.settingsAbout,
