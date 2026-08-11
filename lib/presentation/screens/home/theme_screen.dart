@@ -4,49 +4,44 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gewerber_app/application/settings/app_settings_cubit.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 
-/// LanguageScreen — pick the app language.
-///
-/// Selections are applied through [AppSettingsCubit]; not persisted yet.
-class LanguageScreen extends StatelessWidget {
-  const LanguageScreen({super.key});
+/// ThemeScreen — pick between system, light and dark appearance.
+class ThemeScreen extends StatelessWidget {
+  const ThemeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final state = context.watch<AppSettingsCubit>().state;
-    final active = context.read<AppSettingsCubit>();
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.languageTitle)),
+      appBar: AppBar(title: Text(l10n.themeTitle)),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          _LanguageTile(
-            title: l10n.languageSystemDefault,
-            subtitle: l10n.languageSystemHint,
-            selected: state.isActiveLocale(null),
-            onTap: active.useSystemLocale,
+          _ThemeOptionTile(
+            icon: Icons.brightness_auto_outlined,
+            title: l10n.themeSystem,
+            subtitle: l10n.themeSystemHint,
+            selected: state.isSystemTheme,
+            onTap: () {
+              context.read<AppSettingsCubit>().setThemeMode(ThemeMode.system);
+            },
           ),
-          const Divider(height: 24),
-          _LanguageTile(
-            title: 'English',
-            selected: state.isActiveLocale(const Locale('en')),
-            onTap: () => active.setLocale(const Locale('en')),
+          _ThemeOptionTile(
+            icon: Icons.light_mode_outlined,
+            title: l10n.themeLight,
+            selected: state.isLightTheme,
+            onTap: () {
+              context.read<AppSettingsCubit>().setThemeMode(ThemeMode.light);
+            },
           ),
-          _LanguageTile(
-            title: 'Deutsch',
-            selected: state.isActiveLocale(const Locale('de')),
-            onTap: () => active.setLocale(const Locale('de')),
-          ),
-          _LanguageTile(
-            title: 'Русский',
-            selected: state.isActiveLocale(const Locale('ru')),
-            onTap: () => active.setLocale(const Locale('ru')),
-          ),
-          _LanguageTile(
-            title: 'Türkçe',
-            selected: state.isActiveLocale(const Locale('tr')),
-            onTap: () => active.setLocale(const Locale('tr')),
+          _ThemeOptionTile(
+            icon: Icons.dark_mode_outlined,
+            title: l10n.themeDark,
+            selected: state.isDarkTheme,
+            onTap: () {
+              context.read<AppSettingsCubit>().setThemeMode(ThemeMode.dark);
+            },
           ),
         ],
       ),
@@ -54,14 +49,16 @@ class LanguageScreen extends StatelessWidget {
   }
 }
 
-class _LanguageTile extends StatelessWidget {
-  const _LanguageTile({
+class _ThemeOptionTile extends StatelessWidget {
+  const _ThemeOptionTile({
+    required this.icon,
     required this.title,
     this.subtitle,
     required this.selected,
     required this.onTap,
   });
 
+  final IconData icon;
   final String title;
   final String? subtitle;
   final bool selected;
@@ -71,8 +68,9 @@ class _LanguageTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
     return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       leading: Icon(
-        Icons.translate_outlined,
+        icon,
         color: selected ? colors.primary : colors.onSurfaceVariant,
       ),
       title: Text(title),

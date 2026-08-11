@@ -35,6 +35,8 @@
   "loginCreateAccount": "Create your account",
   "loginInvalidCredentials": "The email address or password is incorrect. Please try again.",
   "loginTooManyAttempts": "Too many failed attempts. Please try again in a few minutes.",
+  "loginDemoCta": "Explore the demo",
+  "loginDemoHint": "Signs you in without a real account so you can browse the app.",
 
   "@register": {
     "description": "Registration flow (email → code → password)"
@@ -136,12 +138,20 @@
   "settingsTitle": "Settings",
   "settingsBusinessProfile": "Business profile",
   "settingsLanguage": "Language",
+  "settingsTheme": "Theme",
   "settingsGuides": "Guides",
   "settingsAbout": "About",
   "settingsSignOut": "Sign out",
   "businessProfileTitle": "Business profile",
   "businessProfileSubtitle": "Company name, address and tax rules will be edited here.",
   "languageTitle": "Language",
+  "languageSystemDefault": "System default",
+  "languageSystemHint": "Follows the language of your device.",
+  "themeTitle": "Theme",
+  "themeSystem": "System",
+  "themeSystemHint": "Follows your device settings.",
+  "themeLight": "Light",
+  "themeDark": "Dark",
   "aboutTitle": "About Gewerber",
   "aboutSubtitle": "Version, licenses and privacy information arrive here."
 }

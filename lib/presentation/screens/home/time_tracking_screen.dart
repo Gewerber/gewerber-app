@@ -16,7 +16,8 @@ class TimeTrackingScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text(l10n.homeTimeTracking)),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => context.go(RouteNames.timeEntryCreate),
+        heroTag: 'time-fab',
+        onPressed: () => context.push(RouteNames.timeEntryCreate),
         tooltip: l10n.commonAdd,
         child: const Icon(Icons.add),
       ),
@@ -27,19 +28,19 @@ class TimeTrackingScreen extends StatelessWidget {
             icon: Icons.folder_outlined,
             title: l10n.timeProjectsTitle,
             subtitle: l10n.timeProjectsSubtitle,
-            onTap: () => context.go(RouteNames.timeProjects),
+            onTap: () => context.push(RouteNames.timeProjects),
           ),
           StubMenuTile(
             icon: Icons.timer_outlined,
             title: l10n.timeTimerTitle,
             subtitle: l10n.timeTimerSubtitle,
-            onTap: () => context.go(RouteNames.timeTimer),
+            onTap: () => context.push(RouteNames.timeTimer),
           ),
           StubMenuTile(
             icon: Icons.edit_calendar_outlined,
             title: l10n.timeEntryCreateTitle,
             subtitle: l10n.timeEntryCreateSubtitle,
-            onTap: () => context.go(RouteNames.timeEntryCreate),
+            onTap: () => context.push(RouteNames.timeEntryCreate),
           ),
         ],
       ),

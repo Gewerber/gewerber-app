@@ -16,7 +16,8 @@ class InvoicingScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text(l10n.homeInvoicing)),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => context.go(RouteNames.invoiceCreate),
+        heroTag: 'invoicing-fab',
+        onPressed: () => context.push(RouteNames.invoiceCreate),
         tooltip: l10n.commonAdd,
         child: const Icon(Icons.add),
       ),
@@ -27,13 +28,13 @@ class InvoicingScreen extends StatelessWidget {
             icon: Icons.add_circle_outline,
             title: l10n.invoicesCreateTitle,
             subtitle: l10n.invoicesCreateSubtitle,
-            onTap: () => context.go(RouteNames.invoiceCreate),
+            onTap: () => context.push(RouteNames.invoiceCreate),
           ),
           StubMenuTile(
             icon: Icons.receipt_long_outlined,
             title: l10n.invoicesDetailTitle,
             subtitle: l10n.invoicesDetailSubtitle,
-            onTap: () => context.go(RouteNames.invoiceDetail),
+            onTap: () => context.push(RouteNames.invoiceDetail),
           ),
         ],
       ),

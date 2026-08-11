@@ -35,5 +35,6 @@ abstract final class RouteNames {
   /// Settings sub-screens.
   static const String settingsBusiness = '/app/settings/business';
   static const String settingsLanguage = '/app/settings/language';
+  static const String settingsTheme = '/app/settings/theme';
   static const String settingsAbout = '/app/settings/about';
 }

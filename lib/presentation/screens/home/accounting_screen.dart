@@ -16,7 +16,8 @@ class AccountingScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text(l10n.homeAccounting)),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => context.go(RouteNames.accountingEntryCreate),
+        heroTag: 'accounting-fab',
+        onPressed: () => context.push(RouteNames.accountingEntryCreate),
         tooltip: l10n.commonAdd,
         child: const Icon(Icons.add),
       ),
@@ -27,13 +28,13 @@ class AccountingScreen extends StatelessWidget {
             icon: Icons.account_balance_outlined,
             title: l10n.accountingReportTitle,
             subtitle: l10n.accountingReportSubtitle,
-            onTap: () => context.go(RouteNames.accountingReport),
+            onTap: () => context.push(RouteNames.accountingReport),
           ),
           StubMenuTile(
             icon: Icons.playlist_add_outlined,
             title: l10n.accountingEntryCreateTitle,
             subtitle: l10n.accountingEntryCreateSubtitle,
-            onTap: () => context.go(RouteNames.accountingEntryCreate),
+            onTap: () => context.push(RouteNames.accountingEntryCreate),
           ),
         ],
       ),
