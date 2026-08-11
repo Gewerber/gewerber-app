@@ -1,0 +1,147 @@
+{
+  "@@locale": "tr",
+  "appTitle": "Gewerber",
+  "tagline": "İşiniz. Artık çok kolay.",
+
+  "@@splash": {
+    "description": "Splash / auth landing screen"
+  },
+  "splashTitle": "İşiniz, nihayet basit.",
+  "splashSubtitle": "Faturalar, zaman takibi ve ön muhasebe — Almanya'daki bireysel girişimciler için samimi bir yazılım.",
+  "splashGetStarted": "Başla",
+  "splashLogIn": "Zaten hesabım var",
+  "splashPrivacy": "Açık kaynak · GDPR dostu · Bireysel girişimciler için",
+
+  "@@authPanel": {
+    "description": "Shared brand panel on auth screens"
+  },
+  "panelTrustCreate": "İki dakikadan kısa sürede hesap oluşturun",
+  "panelTrustInvoices": "İlk faturanızı bugün gönderin",
+  "panelTrustTax": "Sizi ilgilendiren vergileri anlayın",
+  "panelTrustOpenSource": "Verileriniz, işiniz — açık kaynak",
+
+  "@@login": {
+    "description": "Login screen"
+  },
+  "loginTitle": "Tekrar hoş geldiniz",
+  "loginSubtitle": "İşinizi yönetmeye devam etmek için giriş yapın.",
+  "emailLabel": "E-posta adresi",
+  "passwordLabel": "Şifre",
+  "passwordShow": "Şifreyi göster",
+  "passwordHide": "Şifreyi gizle",
+  "loginCta": "Giriş yap",
+  "loginForgotPassword": "Şifrenizi mi unuttunuz?",
+  "loginNoAccount": "Gewerber'de yeni misiniz?",
+  "loginCreateAccount": "Hesabınızı oluşturun",
+  "loginInvalidCredentials": "E-posta adresi veya şifre hatalı. Lütfen tekrar deneyin.",
+  "loginTooManyAttempts": "Çok fazla başarısız deneme. Lütfen birkaç dakika sonra tekrar deneyin.",
+
+  "@register": {
+    "description": "Registration flow (email → code → password)"
+  },
+  "registerTitle": "Hesabınızı oluşturun",
+  "registerSubtitle": "Birkaç hızlı adım ve hazırsınız.",
+  "registerEmailStepTitle": "E-posta adresinizle başlayın",
+  "registerEmailStepSubtitle": "Gerçekten siz olduğunuzu doğrulamak için size bir kod göndereceğiz.",
+  "registerCodeStepTitle": "Kodu girin",
+  "registerCodeStepSubtitle": "{email} adresine 6 haneli bir kod gönderdik.",
+  "registerCodeHint": "Gelen kutunuzu kontrol edin (ve ihtimal olarak spam klasörünü).",
+  "registerPasswordStepTitle": "Şifrenizi belirleyin",
+  "registerPasswordStepSubtitle": "En az 8 karakter. Bunu daha sonra değiştirebilirsiniz.",
+  "registerEmailExists": "Bu e-posta adresine ait bir hesap zaten var. Bunun yerine giriş yapın.",
+  "registerCodeInvalid": "Bu kod işe yaramadı. Lütfen tekrar deneyin.",
+  "registerCodeExpired": "Bu kodun süresi doldu. Yeni bir kod isteyin.",
+  "registerSuccessTitle": "Aramızdasınız! 🎉",
+  "registerSuccessSubtitle": "Hesabınız oluşturuldu. Şimdi işletmenizi kuralım.",
+  "registerContinue": "Devam",
+  "resendCode": "Kodu tekrar gönder",
+  "confirmPasswordLabel": "Şifreyi onayla",
+  "passwordMismatch": "Şifreler eşleşmiyor.",
+  "registerHaveAccount": "Zaten bir hesabınız var mı?",
+  "reRegisterCta": "Giriş yap",
+
+  "@forgot": {
+    "description": "Forgot password flow"
+  },
+  "forgotTitle": "Şifrenizi sıfırlayın",
+  "forgotSubtitle": "Yeni bir şifre seçebilmeniz için size e-posta ile bir kod göndereceğiz.",
+  "forgotCodeStepTitle": "Kodu girin",
+  "forgotCodeStepSubtitle": "{email} adresine 6 haneli bir kod gönderdik.",
+  "forgotPasswordStepTitle": "Yeni bir şifre seçin",
+  "forgotPasswordStepSubtitle": "En az 8 karakter. Eski şifreleri tekrar kullanmaktan kaçının.",
+  "forgotSendCode": "Sıfırlama kodu gönder",
+  "forgotSubmit": "Şifreyi güncelle",
+  "forgotBackToLogin": "Girişe dön",
+
+  "@common": {
+    "description": "Shared UI strings"
+  },
+  "commonContinue": "Devam",
+  "commonBack": "Geri",
+  "commonOrContinueWith": "veya şununla devam edin",
+  "commonComingSoon": "Yakında",
+  "commonAdd": "Ekle",
+  "commonGoogle": "Google",
+  "commonApple": "Apple",
+  "commonFacebook": "Facebook",
+  "commonSocialUnavailable": "Tek dokunuşla giriş yakında geliyor.",
+
+  "@home": {
+    "description": "Authenticated app shell"
+  },
+  "homeDashboard": "Genel Bakış",
+  "homeInvoicing": "Faturalama",
+  "homeTimeTracking": "Zaman",
+  "homeAccounting": "Muhasebe",
+  "moduleComingSoonTitle": "Üzerinde çalışıyoruz!",
+  "moduleComingSoonSubtitle": "Bu modül yol haritamızda sırada ve yakında burada olacak.",
+
+  "@invoices": {
+    "description": "Invoicing module stubs"
+  },
+  "invoicesCreateTitle": "Yeni fatura",
+  "invoicesCreateSubtitle": "Fatura verileri ve kalemleri burada düzenlenecek.",
+  "invoicesDetailTitle": "Fatura",
+  "invoicesDetailSubtitle": "Hazır bir fatura belgesi burada açılacak.",
+
+  "@time": {
+    "description": "Time tracking module stubs"
+  },
+  "timeProjectsTitle": "Projeler",
+  "timeProjectsSubtitle": "Projeler ve görevler burada görünecek.",
+  "timeTimerTitle": "Kronometre",
+  "timeTimerSubtitle": "Kronometre tabanlı bir zaman kaydedici burada olacak.",
+  "timeEntryCreateTitle": "Manuel giriş",
+  "timeEntryCreateSubtitle": "Takip edilen süre buraya saniyeler içinde eklenecek.",
+
+  "@accounting": {
+    "description": "Basic accounting module stubs"
+  },
+  "accountingReportTitle": "Rapor",
+  "accountingReportSubtitle": "Basit bir kâr-zarar görünümü burada görünecek.",
+  "accountingEntryCreateTitle": "Kayıt ekle",
+  "accountingEntryCreateSubtitle": "Gelir ve giderler buraya kaydedilecek.",
+
+  "@guides": {
+    "description": "Guidance system stubs"
+  },
+  "guidesTitle": "Rehberler",
+  "guidesSubtitle": "İşletmenizi yönetmek için kontrol listeleri ve ipuçları burada görünür.",
+  "checklistTitle": "Kontrol listesi",
+  "checklistSubtitle": "Adım adım bir kontrol listesi burada görünecek.",
+
+  "@settings": {
+    "description": "Settings stub"
+  },
+  "settingsTitle": "Ayarlar",
+  "settingsBusinessProfile": "İşletme profili",
+  "settingsLanguage": "Dil",
+  "settingsGuides": "Rehberler",
+  "settingsAbout": "Hakkında",
+  "settingsSignOut": "Çıkış yap",
+  "businessProfileTitle": "İşletme profili",
+  "businessProfileSubtitle": "Şirket adı, adres ve vergi kuralları burada düzenlenecek.",
+  "languageTitle": "Dil",
+  "aboutTitle": "Gewerber hakkında",
+  "aboutSubtitle": "Sürüm, lisanslar ve gizlilik bilgileri buraya gelecek."
+}
