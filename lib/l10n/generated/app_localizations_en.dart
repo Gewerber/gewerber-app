@@ -212,6 +212,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonSocialUnavailable => 'One-tap sign-in is coming soon.';
 
   @override
+  String get betaBannerTitle => 'Public beta';
+
+  @override
+  String get betaBannerText =>
+      'Gewerber is under construction – some areas are placeholders. Feedback: github.com/Gewerber/gewerber-app';
+
+  @override
   String get homeDashboard => 'Dashboard';
 
   @override

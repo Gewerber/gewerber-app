@@ -480,6 +480,18 @@ abstract class AppLocalizations {
   /// **'One-tap sign-in is coming soon.'**
   String get commonSocialUnavailable;
 
+  /// No description provided for @betaBannerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Public beta'**
+  String get betaBannerTitle;
+
+  /// No description provided for @betaBannerText.
+  ///
+  /// In en, this message translates to:
+  /// **'Gewerber is under construction – some areas are placeholders. Feedback: github.com/Gewerber/gewerber-app'**
+  String get betaBannerText;
+
   /// No description provided for @homeDashboard.
   ///
   /// In en, this message translates to:

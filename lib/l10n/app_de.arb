@@ -70,6 +70,9 @@
   "commonFacebook": "Facebook",
   "commonSocialUnavailable": "Anmeldung mit einem Klick ist bald verfügbar.",
 
+  "betaBannerTitle": "Öffentliche Beta",
+  "betaBannerText": "Gewerber ist im Aufbau – einige Bereiche sind noch Platzhalter. Feedback: github.com/Gewerber/gewerber-app",
+
   "homeDashboard": "Start",
   "homeInvoicing": "Rechnungen",
   "homeTimeTracking": "Zeit",

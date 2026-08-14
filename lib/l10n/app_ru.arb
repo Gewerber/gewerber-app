@@ -70,6 +70,9 @@
   "commonFacebook": "Facebook",
   "commonSocialUnavailable": "Вход в один клик скоро появится.",
 
+  "betaBannerTitle": "Открытая бета",
+  "betaBannerText": "Gewerber в разработке — некоторые разделы пока заглушки. Обратная связь: github.com/Gewerber/gewerber-app",
+
   "homeDashboard": "Обзор",
   "homeInvoicing": "Счета",
   "homeTimeTracking": "Время",

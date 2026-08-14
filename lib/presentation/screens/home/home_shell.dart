@@ -3,11 +3,13 @@ import 'package:go_router/go_router.dart';
 
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 import 'package:gewerber_app/presentation/router/route_names.dart';
+import 'package:gewerber_app/presentation/widgets/common/beta_banner.dart';
 
 /// Authenticated shell hosting the bottom navigation bar.
 ///
 /// The active branch is rendered through [StatefulShellRoute.indexedStack],
-/// keeping each module's state alive while switching tabs.
+/// keeping each module's state alive while switching tabs. A persistent
+/// [BetaBanner] sits above the branches while the product is in beta.
 class HomeShell extends StatelessWidget {
   const HomeShell({super.key, required this.navigationShell});
 
@@ -18,7 +20,12 @@ class HomeShell extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
-      body: navigationShell,
+      body: Column(
+        children: [
+          const BetaBanner(),
+          Expanded(child: navigationShell),
+        ],
+      ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: navigationShell.currentIndex,
         onDestinationSelected: (index) {
