@@ -216,6 +216,13 @@ class AppLocalizationsTr extends AppLocalizations {
   String get commonSocialUnavailable => 'Tek dokunuşla giriş yakında geliyor.';
 
   @override
+  String get betaBannerTitle => 'Açık beta';
+
+  @override
+  String get betaBannerText =>
+      'Gewerber geliştirme aşamasında – bazı bölümler henüz yer tutucu. Geri bildirim: github.com/Gewerber/gewerber-app';
+
+  @override
   String get homeDashboard => 'Genel Bakış';
 
   @override

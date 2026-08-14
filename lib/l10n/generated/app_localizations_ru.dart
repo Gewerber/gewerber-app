@@ -213,6 +213,13 @@ class AppLocalizationsRu extends AppLocalizations {
   String get commonSocialUnavailable => 'Вход в один клик скоро появится.';
 
   @override
+  String get betaBannerTitle => 'Открытая бета';
+
+  @override
+  String get betaBannerText =>
+      'Gewerber в разработке — некоторые разделы пока заглушки. Обратная связь: github.com/Gewerber/gewerber-app';
+
+  @override
   String get homeDashboard => 'Обзор';
 
   @override

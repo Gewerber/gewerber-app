@@ -91,6 +91,9 @@
   "@home": {
     "description": "Authenticated app shell"
   },
+  "betaBannerTitle": "Açık beta",
+  "betaBannerText": "Gewerber geliştirme aşamasında – bazı bölümler henüz yer tutucu. Geri bildirim: github.com/Gewerber/gewerber-app",
+
   "homeDashboard": "Genel Bakış",
   "homeInvoicing": "Faturalama",
   "homeTimeTracking": "Zaman",

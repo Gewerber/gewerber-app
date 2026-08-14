@@ -218,6 +218,13 @@ class AppLocalizationsDe extends AppLocalizations {
       'Anmeldung mit einem Klick ist bald verfügbar.';
 
   @override
+  String get betaBannerTitle => 'Öffentliche Beta';
+
+  @override
+  String get betaBannerText =>
+      'Gewerber ist im Aufbau – einige Bereiche sind noch Platzhalter. Feedback: github.com/Gewerber/gewerber-app';
+
+  @override
   String get homeDashboard => 'Start';
 
   @override

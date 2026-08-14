@@ -91,6 +91,9 @@
   "@home": {
     "description": "Authenticated app shell"
   },
+  "betaBannerTitle": "Public beta",
+  "betaBannerText": "Gewerber is under construction – some areas are placeholders. Feedback: github.com/Gewerber/gewerber-app",
+
   "homeDashboard": "Dashboard",
   "homeInvoicing": "Invoicing",
   "homeTimeTracking": "Time",
