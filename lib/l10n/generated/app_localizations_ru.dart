@@ -89,6 +89,20 @@ class AppLocalizationsRu extends AppLocalizations {
       'Вход без реального аккаунта, чтобы посмотреть все экраны приложения.';
 
   @override
+  String get authUserBlocked =>
+      'Этот аккаунт заблокирован. Обратись в поддержку, если это ошибка.';
+
+  @override
+  String get authValidationError => 'Пожалуйста, проверь введённые данные.';
+
+  @override
+  String get authNetworkError =>
+      'Не удалось связаться с сервером. Проверь подключение и попробуй ещё раз.';
+
+  @override
+  String get authPasswordPolicy => 'Этот пароль не соответствует требованиям.';
+
+  @override
   String get registerTitle => 'Создать аккаунт';
 
   @override
@@ -184,6 +198,12 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get forgotBackToLogin => 'Вернуться ко входу';
+
+  @override
+  String get forgotSuccessTitle => 'Пароль обновлён';
+
+  @override
+  String get forgotSuccessSubtitle => 'Теперь ты можешь войти с новым паролем.';
 
   @override
   String get commonContinue => 'Продолжить';

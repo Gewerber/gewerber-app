@@ -29,6 +29,11 @@
   "loginDemoCta": "Demo erkunden",
   "loginDemoHint": "Meldet dich ohne echtes Konto an, damit du die App durchstöbern kannst.",
 
+  "authUserBlocked": "Dieses Konto wurde gesperrt. Kontaktiere den Support, wenn das ein Fehler ist.",
+  "authValidationError": "Bitte überprüfe die eingegebenen Angaben.",
+  "authNetworkError": "Wir konnten den Server nicht erreichen. Prüfe deine Verbindung und versuche es erneut.",
+  "authPasswordPolicy": "Dieses Passwort erfüllt die Anforderungen nicht.",
+
   "registerTitle": "Konto erstellen",
   "registerSubtitle": "Ein paar schnelle Schritte und du bist startklar.",
   "registerEmailStepTitle": "Starte mit deiner E-Mail",
@@ -59,6 +64,8 @@
   "forgotSendCode": "Reset-Code senden",
   "forgotSubmit": "Passwort aktualisieren",
   "forgotBackToLogin": "Zurück zur Anmeldung",
+  "forgotSuccessTitle": "Passwort aktualisiert",
+  "forgotSuccessSubtitle": "Du kannst dich jetzt mit deinem neuen Passwort anmelden.",
 
   "commonContinue": "Weiter",
   "commonBack": "Zurück",

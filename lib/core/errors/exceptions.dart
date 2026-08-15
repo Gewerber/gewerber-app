@@ -17,3 +17,49 @@ abstract base class AppException implements Exception {
 final class InvalidCredentialsException extends AppException {
   const InvalidCredentialsException() : super('Invalid credentials');
 }
+
+/// Thrown when a user's account has been blocked.
+final class UserBlockedException extends AppException {
+  const UserBlockedException() : super('User account is blocked');
+}
+
+/// Thrown when login is blocked due to too many failed attempts.
+final class TooManyAttemptsException extends AppException {
+  const TooManyAttemptsException() : super('Too many failed attempts');
+}
+
+/// Thrown when the email address is already registered.
+final class EmailAlreadyRegisteredException extends AppException {
+  const EmailAlreadyRegisteredException() : super('Email already registered');
+}
+
+/// Thrown when a registration/reset verification code is invalid.
+final class InvalidVerificationCodeException extends AppException {
+  const InvalidVerificationCodeException() : super('Invalid verification code');
+}
+
+/// Thrown when a registration/reset request (or its code) has expired.
+final class ExpiredVerificationCodeException extends AppException {
+  const ExpiredVerificationCodeException() : super('Verification code expired');
+}
+
+/// Thrown when the password does not comply with the server policy.
+final class PasswordPolicyViolationException extends AppException {
+  const PasswordPolicyViolationException() : super('Password policy violation');
+}
+
+/// Thrown when the backend could not be reached.
+final class NetworkException extends AppException {
+  const NetworkException([super.message = 'Network error']);
+}
+
+/// Thrown when a social identity provider is not configured for the app.
+final class SocialAuthNotConfiguredException extends AppException {
+  const SocialAuthNotConfiguredException()
+    : super('Social sign-in is not configured');
+}
+
+/// Thrown when a social identity provider rejects the sign-in attempt.
+final class SocialAuthFailureException extends AppException {
+  const SocialAuthFailureException([super.message = 'Social sign-in failed']);
+}

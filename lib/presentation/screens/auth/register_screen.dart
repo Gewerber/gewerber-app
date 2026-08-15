@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:gewerber_app/application/register/register_cubit.dart';
+import 'package:gewerber_app/application/register/register_state.dart';
+import 'package:gewerber_app/core/errors/failures.dart';
 import 'package:gewerber_app/core/theme/app_theme.dart';
+import 'package:gewerber_app/di/injection.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 import 'package:gewerber_app/presentation/router/route_names.dart';
 import 'package:gewerber_app/presentation/screens/auth/widgets/social_sign_in_row.dart';
@@ -10,10 +15,8 @@ import 'package:gewerber_app/presentation/widgets/layout/auth_panel_layout.dart'
 
 /// Registration flow screen: email → verification code → set password.
 ///
-/// The stepper advances through pure UI state for now; each step's "Continue"
-/// is wired to the real endpoints together with the register bloc.
-enum _RegisterStep { email, code, password }
-
+/// Each step is backed by [RegisterCubit]; the stepper advances once the
+/// backend confirms the previous step.
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
@@ -22,9 +25,6 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  _RegisterStep _step = _RegisterStep.email;
-  bool _done = false;
-
   final _emailController = TextEditingController();
   final _codeController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -39,103 +39,139 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 
-  void _advance() {
-    setState(() {
-      switch (_step) {
-        case _RegisterStep.email:
-          _step = _RegisterStep.code;
-        case _RegisterStep.code:
-          _step = _RegisterStep.password;
-        case _RegisterStep.password:
-          _done = true;
-      }
-    });
-  }
+  void _submitEmail(RegisterCubit cubit) =>
+      cubit.submitEmail(_emailController.text.trim());
 
-  void _goBack() {
-    if (_step == _RegisterStep.email) return;
-    setState(() {
-      _step = _RegisterStep.values[_step.index - 1];
-    });
+  void _submitCode(RegisterCubit cubit) =>
+      cubit.submitCode(_codeController.text.trim());
+
+  void _submitPassword(RegisterCubit cubit, BuildContext context) {
+    if (_passwordController.text != _confirmController.text) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context).passwordMismatch)),
+      );
+      return;
+    }
+    cubit.submitPassword(_passwordController.text);
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    if (_done) {
-      return AuthPanelLayout(
-        showBackButton: false,
-        child: _SuccessView(
-          title: l10n.registerSuccessTitle,
-          subtitle: l10n.registerSuccessSubtitle,
-          onContinue: () => context.go(RouteNames.app),
+    return BlocProvider<RegisterCubit>(
+      create: (_) => getIt<RegisterCubit>(),
+      child: BlocListener<RegisterCubit, RegisterState>(
+        listenWhen: (previous, current) =>
+            previous.failure != current.failure && !current.isSubmitting,
+        listener: (context, state) {
+          final message = _failureMessage(state, context);
+          if (message != null) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(message)));
+          }
+        },
+        child: BlocBuilder<RegisterCubit, RegisterState>(
+          buildWhen: (previous, current) =>
+              previous.step != current.step ||
+              previous.isSubmitting != current.isSubmitting,
+          builder: (context, state) {
+            return switch (state.step) {
+              RegisterStep.email => AuthPanelLayout(
+                child: _buildEmailStep(context, l10n),
+              ),
+              RegisterStep.code => AuthPanelLayout(
+                child: _buildCodeStep(context, l10n),
+              ),
+              RegisterStep.password => AuthPanelLayout(
+                child: _buildPasswordStep(context, l10n),
+              ),
+              RegisterStep.completed => AuthPanelLayout(
+                showBackButton: false,
+                child: _SuccessView(
+                  title: l10n.registerSuccessTitle,
+                  subtitle: l10n.registerSuccessSubtitle,
+                  onContinue: () => context.go(RouteNames.app),
+                ),
+              ),
+            };
+          },
         ),
-      );
-    }
-
-    return AuthPanelLayout(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
-            child: switch (_step) {
-              _RegisterStep.email => _buildEmailStep(context, l10n),
-              _RegisterStep.code => _buildCodeStep(context, l10n),
-              _RegisterStep.password => _buildPasswordStep(context, l10n),
-            },
-          ),
-        ],
       ),
     );
+  }
+
+  String? _failureMessage(RegisterState state, BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return switch (state.failure) {
+      EmailAlreadyRegisteredFailure() => l10n.registerEmailExists,
+      InvalidVerificationCodeFailure() => l10n.registerCodeInvalid,
+      ExpiredVerificationCodeFailure() => l10n.registerCodeExpired,
+      PasswordPolicyViolationFailure() => l10n.authPasswordPolicy,
+      ValidationFailure() => l10n.authValidationError,
+      _ => state.failure?.toString(),
+    };
   }
 
   Widget _buildEmailStep(BuildContext context, AppLocalizations l10n) {
     final textTheme = Theme.of(context).textTheme;
     final colors = Theme.of(context).colorScheme;
 
-    return Column(
-      key: const ValueKey('email'),
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text(l10n.registerTitle, style: textTheme.headlineSmall),
-        const SizedBox(height: GewerberTokens.space8),
-        Text(
-          l10n.registerEmailStepSubtitle,
-          style: textTheme.bodyMedium?.copyWith(color: colors.onSurfaceVariant),
-        ),
-        const SizedBox(height: GewerberTokens.space32),
-        CustomTextField(
-          controller: _emailController,
-          label: l10n.emailLabel,
-          icon: Icons.mail_outline,
-          keyboardType: TextInputType.emailAddress,
-          textInputAction: TextInputAction.done,
-          autofillHints: const [AutofillHints.email],
-        ),
-        const SizedBox(height: GewerberTokens.space24),
-        FilledButton(onPressed: _advance, child: Text(l10n.registerContinue)),
-        const SizedBox(height: GewerberTokens.space16),
-        const SocialSignInRow(),
-        const SizedBox(height: GewerberTokens.space16),
-        Wrap(
-          alignment: WrapAlignment.center,
-          crossAxisAlignment: WrapCrossAlignment.center,
+    return BlocBuilder<RegisterCubit, RegisterState>(
+      buildWhen: (previous, current) =>
+          previous.isSubmitting != current.isSubmitting,
+      builder: (context, state) {
+        return Column(
+          key: const ValueKey('email'),
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            Text(l10n.registerTitle, style: textTheme.headlineSmall),
+            const SizedBox(height: GewerberTokens.space8),
             Text(
-              l10n.registerHaveAccount,
+              l10n.registerEmailStepSubtitle,
               style: textTheme.bodyMedium?.copyWith(
                 color: colors.onSurfaceVariant,
               ),
             ),
-            TextButton(
-              onPressed: () => context.go(RouteNames.login),
-              child: Text(l10n.reRegisterCta),
+            const SizedBox(height: GewerberTokens.space32),
+            CustomTextField(
+              controller: _emailController,
+              label: l10n.emailLabel,
+              icon: Icons.mail_outline,
+              keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.done,
+              autofillHints: const [AutofillHints.email],
+              onSubmitted: (_) => _submitEmail(context.read<RegisterCubit>()),
+            ),
+            const SizedBox(height: GewerberTokens.space24),
+            _PrimaryButton(
+              isSubmitting: state.isSubmitting,
+              label: l10n.registerContinue,
+              onPressed: () => _submitEmail(context.read<RegisterCubit>()),
+            ),
+            const SizedBox(height: GewerberTokens.space16),
+            const SocialSignInRow(),
+            const SizedBox(height: GewerberTokens.space16),
+            Wrap(
+              alignment: WrapAlignment.center,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                Text(
+                  l10n.registerHaveAccount,
+                  style: textTheme.bodyMedium?.copyWith(
+                    color: colors.onSurfaceVariant,
+                  ),
+                ),
+                TextButton(
+                  onPressed: () => context.go(RouteNames.login),
+                  child: Text(l10n.reRegisterCta),
+                ),
+              ],
             ),
           ],
-        ),
-      ],
+        );
+      },
     );
   }
 
@@ -143,49 +179,60 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final textTheme = Theme.of(context).textTheme;
     final colors = Theme.of(context).colorScheme;
 
-    return Column(
-      key: const ValueKey('code'),
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        TextButton.icon(
-          onPressed: _goBack,
-          icon: const Icon(Icons.arrow_back, size: 18),
-          label: Text(l10n.commonBack),
-        ),
-        const SizedBox(height: GewerberTokens.space16),
-        Text(l10n.registerCodeStepTitle, style: textTheme.headlineSmall),
-        const SizedBox(height: GewerberTokens.space8),
-        Text(
-          l10n.registerCodeStepSubtitle(_emailController.text),
-          style: textTheme.bodyMedium?.copyWith(color: colors.onSurfaceVariant),
-        ),
-        const SizedBox(height: GewerberTokens.space32),
-        CustomTextField(
-          controller: _codeController,
-          label: l10n.emailLabel,
-          icon: Icons.pin_outlined,
-          keyboardType: TextInputType.number,
-          textInputAction: TextInputAction.done,
-        ),
-        const SizedBox(height: GewerberTokens.space12),
-        Text(
-          l10n.registerCodeHint,
-          style: textTheme.bodySmall?.copyWith(color: colors.onSurfaceVariant),
-        ),
-        Align(
-          alignment: Alignment.centerRight,
-          child: TextButton(
-            onPressed: () {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text(l10n.commonComingSoon)));
-            },
-            child: Text(l10n.resendCode),
-          ),
-        ),
-        const SizedBox(height: GewerberTokens.space16),
-        FilledButton(onPressed: _advance, child: Text(l10n.registerContinue)),
-      ],
+    return BlocBuilder<RegisterCubit, RegisterState>(
+      buildWhen: (previous, current) =>
+          previous.isSubmitting != current.isSubmitting,
+      builder: (context, state) {
+        return Column(
+          key: const ValueKey('code'),
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            TextButton.icon(
+              onPressed: context.read<RegisterCubit>().goBack,
+              icon: const Icon(Icons.arrow_back, size: 18),
+              label: Text(l10n.commonBack),
+            ),
+            const SizedBox(height: GewerberTokens.space16),
+            Text(l10n.registerCodeStepTitle, style: textTheme.headlineSmall),
+            const SizedBox(height: GewerberTokens.space8),
+            Text(
+              l10n.registerCodeStepSubtitle(state.email ?? ''),
+              style: textTheme.bodyMedium?.copyWith(
+                color: colors.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: GewerberTokens.space32),
+            CustomTextField(
+              controller: _codeController,
+              label: l10n.registerCodeStepTitle,
+              icon: Icons.pin_outlined,
+              keyboardType: TextInputType.number,
+              textInputAction: TextInputAction.done,
+              onSubmitted: (_) => _submitCode(context.read<RegisterCubit>()),
+            ),
+            const SizedBox(height: GewerberTokens.space12),
+            Text(
+              l10n.registerCodeHint,
+              style: textTheme.bodySmall?.copyWith(
+                color: colors.onSurfaceVariant,
+              ),
+            ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton(
+                onPressed: () => _submitEmail(context.read<RegisterCubit>()),
+                child: Text(l10n.resendCode),
+              ),
+            ),
+            const SizedBox(height: GewerberTokens.space16),
+            _PrimaryButton(
+              isSubmitting: state.isSubmitting,
+              label: l10n.registerContinue,
+              onPressed: () => _submitCode(context.read<RegisterCubit>()),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -193,51 +240,91 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final textTheme = Theme.of(context).textTheme;
     final colors = Theme.of(context).colorScheme;
 
-    return Column(
-      key: const ValueKey('password'),
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        TextButton.icon(
-          onPressed: _goBack,
-          icon: const Icon(Icons.arrow_back, size: 18),
-          label: Text(l10n.commonBack),
-        ),
-        const SizedBox(height: GewerberTokens.space16),
-        Text(l10n.registerPasswordStepTitle, style: textTheme.headlineSmall),
-        const SizedBox(height: GewerberTokens.space8),
-        Text(
-          l10n.registerPasswordStepSubtitle,
-          style: textTheme.bodyMedium?.copyWith(color: colors.onSurfaceVariant),
-        ),
-        const SizedBox(height: GewerberTokens.space32),
-        CustomTextField(
-          controller: _passwordController,
-          label: l10n.passwordLabel,
-          icon: Icons.lock_outline,
-          obscure: true,
-          textInputAction: TextInputAction.next,
-          autofillHints: const [AutofillHints.newPassword],
-        ),
-        const SizedBox(height: GewerberTokens.space16),
-        CustomTextField(
-          controller: _confirmController,
-          label: l10n.confirmPasswordLabel,
-          icon: Icons.lock_outline,
-          obscure: true,
-          textInputAction: TextInputAction.done,
-          autofillHints: const [AutofillHints.newPassword],
-        ),
-        const SizedBox(height: GewerberTokens.space24),
-        FilledButton(
-          onPressed: _advance,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: GewerberTokens.space4,
+    return BlocBuilder<RegisterCubit, RegisterState>(
+      buildWhen: (previous, current) =>
+          previous.isSubmitting != current.isSubmitting,
+      builder: (context, state) {
+        return Column(
+          key: const ValueKey('password'),
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            TextButton.icon(
+              onPressed: context.read<RegisterCubit>().goBack,
+              icon: const Icon(Icons.arrow_back, size: 18),
+              label: Text(l10n.commonBack),
             ),
-            child: Text(l10n.loginCta),
-          ),
-        ),
-      ],
+            const SizedBox(height: GewerberTokens.space16),
+            Text(
+              l10n.registerPasswordStepTitle,
+              style: textTheme.headlineSmall,
+            ),
+            const SizedBox(height: GewerberTokens.space8),
+            Text(
+              l10n.registerPasswordStepSubtitle,
+              style: textTheme.bodyMedium?.copyWith(
+                color: colors.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: GewerberTokens.space32),
+            CustomTextField(
+              controller: _passwordController,
+              label: l10n.passwordLabel,
+              icon: Icons.lock_outline,
+              obscure: true,
+              textInputAction: TextInputAction.next,
+              autofillHints: const [AutofillHints.newPassword],
+            ),
+            const SizedBox(height: GewerberTokens.space16),
+            CustomTextField(
+              controller: _confirmController,
+              label: l10n.confirmPasswordLabel,
+              icon: Icons.lock_outline,
+              obscure: true,
+              textInputAction: TextInputAction.done,
+              autofillHints: const [AutofillHints.newPassword],
+              onSubmitted: (_) =>
+                  _submitPassword(context.read<RegisterCubit>(), context),
+            ),
+            const SizedBox(height: GewerberTokens.space24),
+            _PrimaryButton(
+              isSubmitting: state.isSubmitting,
+              label: l10n.loginCta,
+              onPressed: () =>
+                  _submitPassword(context.read<RegisterCubit>(), context),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+/// Primary flow button that shows a progress indicator while submitting.
+class _PrimaryButton extends StatelessWidget {
+  const _PrimaryButton({
+    required this.isSubmitting,
+    required this.label,
+    required this.onPressed,
+  });
+
+  final bool isSubmitting;
+  final String label;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return FilledButton(
+      onPressed: isSubmitting ? null : onPressed,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: GewerberTokens.space4),
+        child: isSubmitting
+            ? const SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              )
+            : Text(label),
+      ),
     );
   }
 }

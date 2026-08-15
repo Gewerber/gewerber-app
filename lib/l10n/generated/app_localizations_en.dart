@@ -88,6 +88,21 @@ class AppLocalizationsEn extends AppLocalizations {
       'Signs you in without a real account so you can browse the app.';
 
   @override
+  String get authUserBlocked =>
+      'This account has been blocked. Contact support if you think this is a mistake.';
+
+  @override
+  String get authValidationError => 'Please check the details you entered.';
+
+  @override
+  String get authNetworkError =>
+      'We couldn\'t reach the server. Check your connection and try again.';
+
+  @override
+  String get authPasswordPolicy =>
+      'This password doesn\'t meet the requirements.';
+
+  @override
   String get registerTitle => 'Create your account';
 
   @override
@@ -183,6 +198,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get forgotBackToLogin => 'Back to log in';
+
+  @override
+  String get forgotSuccessTitle => 'Password updated';
+
+  @override
+  String get forgotSuccessSubtitle =>
+      'You can now log in with your new password.';
 
   @override
   String get commonContinue => 'Continue';

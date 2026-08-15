@@ -6,7 +6,6 @@ import 'package:gewerber_app/application/settings/app_settings_cubit.dart';
 import 'package:gewerber_app/application/settings/app_settings_state.dart';
 import 'package:gewerber_app/core/theme/app_theme.dart';
 import 'package:gewerber_app/di/injection.dart';
-import 'package:gewerber_app/domain/repositories/auth_repository.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 import 'package:gewerber_app/presentation/router/app_router.dart';
 
@@ -16,8 +15,8 @@ class GewerberApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<AuthCubit>(
-      create: (_) => AuthCubit(getIt<AuthRepository>()),
+    return BlocProvider<AuthCubit>.value(
+      value: getIt<AuthCubit>(),
       child: BlocProvider<AppSettingsCubit>(
         create: (_) => AppSettingsCubit(),
         child: const _AppView(),

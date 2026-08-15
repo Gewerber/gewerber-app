@@ -89,6 +89,20 @@ class AppLocalizationsTr extends AppLocalizations {
       'Gerçek bir hesap olmadan giriş yapar, böylece uygulamayı gezebilirsin.';
 
   @override
+  String get authUserBlocked =>
+      'Bu hesap engellendi. Bunun bir hata olduğunu düşünüyorsanız destek ile iletişime geçin.';
+
+  @override
+  String get authValidationError => 'Lütfen girdiğiniz bilgileri kontrol edin.';
+
+  @override
+  String get authNetworkError =>
+      'Sunucuya ulaşamadık. Bağlantınızı kontrol edip tekrar deneyin.';
+
+  @override
+  String get authPasswordPolicy => 'Bu şifre gereksinimleri karşılamıyor.';
+
+  @override
   String get registerTitle => 'Hesabınızı oluşturun';
 
   @override
@@ -187,6 +201,13 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get forgotBackToLogin => 'Girişe dön';
+
+  @override
+  String get forgotSuccessTitle => 'Şifre güncellendi';
+
+  @override
+  String get forgotSuccessSubtitle =>
+      'Artık yeni şifrenizle giriş yapabilirsiniz.';
 
   @override
   String get commonContinue => 'Devam';

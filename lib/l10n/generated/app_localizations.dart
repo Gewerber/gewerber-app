@@ -252,6 +252,30 @@ abstract class AppLocalizations {
   /// **'Signs you in without a real account so you can browse the app.'**
   String get loginDemoHint;
 
+  /// No description provided for @authUserBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'This account has been blocked. Contact support if you think this is a mistake.'**
+  String get authUserBlocked;
+
+  /// No description provided for @authValidationError.
+  ///
+  /// In en, this message translates to:
+  /// **'Please check the details you entered.'**
+  String get authValidationError;
+
+  /// No description provided for @authNetworkError.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t reach the server. Check your connection and try again.'**
+  String get authNetworkError;
+
+  /// No description provided for @authPasswordPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'This password doesn\'t meet the requirements.'**
+  String get authPasswordPolicy;
+
   /// No description provided for @registerTitle.
   ///
   /// In en, this message translates to:
@@ -425,6 +449,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Back to log in'**
   String get forgotBackToLogin;
+
+  /// No description provided for @forgotSuccessTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Password updated'**
+  String get forgotSuccessTitle;
+
+  /// No description provided for @forgotSuccessSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You can now log in with your new password.'**
+  String get forgotSuccessSubtitle;
 
   /// No description provided for @commonContinue.
   ///

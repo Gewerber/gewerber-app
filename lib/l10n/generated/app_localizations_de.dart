@@ -89,6 +89,21 @@ class AppLocalizationsDe extends AppLocalizations {
       'Meldet dich ohne echtes Konto an, damit du die App durchstöbern kannst.';
 
   @override
+  String get authUserBlocked =>
+      'Dieses Konto wurde gesperrt. Kontaktiere den Support, wenn das ein Fehler ist.';
+
+  @override
+  String get authValidationError => 'Bitte überprüfe die eingegebenen Angaben.';
+
+  @override
+  String get authNetworkError =>
+      'Wir konnten den Server nicht erreichen. Prüfe deine Verbindung und versuche es erneut.';
+
+  @override
+  String get authPasswordPolicy =>
+      'Dieses Passwort erfüllt die Anforderungen nicht.';
+
+  @override
   String get registerTitle => 'Konto erstellen';
 
   @override
@@ -188,6 +203,13 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get forgotBackToLogin => 'Zurück zur Anmeldung';
+
+  @override
+  String get forgotSuccessTitle => 'Passwort aktualisiert';
+
+  @override
+  String get forgotSuccessSubtitle =>
+      'Du kannst dich jetzt mit deinem neuen Passwort anmelden.';
 
   @override
   String get commonContinue => 'Weiter';

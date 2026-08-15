@@ -38,6 +38,11 @@
   "loginDemoCta": "Demoyu keşfet",
   "loginDemoHint": "Gerçek bir hesap olmadan giriş yapar, böylece uygulamayı gezebilirsin.",
 
+  "authUserBlocked": "Bu hesap engellendi. Bunun bir hata olduğunu düşünüyorsanız destek ile iletişime geçin.",
+  "authValidationError": "Lütfen girdiğiniz bilgileri kontrol edin.",
+  "authNetworkError": "Sunucuya ulaşamadık. Bağlantınızı kontrol edip tekrar deneyin.",
+  "authPasswordPolicy": "Bu şifre gereksinimleri karşılamıyor.",
+
   "@register": {
     "description": "Registration flow (email → code → password)"
   },
@@ -74,6 +79,8 @@
   "forgotSendCode": "Sıfırlama kodu gönder",
   "forgotSubmit": "Şifreyi güncelle",
   "forgotBackToLogin": "Girişe dön",
+  "forgotSuccessTitle": "Şifre güncellendi",
+  "forgotSuccessSubtitle": "Artık yeni şifrenizle giriş yapabilirsiniz.",
 
   "@common": {
     "description": "Shared UI strings"
