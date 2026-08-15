@@ -1,6 +1,11 @@
 # syntax=docker/dockerfile:1
 
 # ---- Build stage ---------------------------------------------------------
+# BuildKit secret for the private commercial repo token.
+# Pass via: docker build --secret id=commercial_token,env=COMMERCIAL_REPO_TOKEN ...
+# BuildKit secret for GHCR token (optional, for other private GHCR packages).
+# Pass via: docker build --secret id=ghcr_token,env=GHCR_TOKEN ...
+
 FROM ghcr.io/cirruslabs/flutter:stable AS build
 
 WORKDIR /app
@@ -9,7 +14,20 @@ WORKDIR /app
 # gitignored (*.lock), so only the manifest is copied; `flutter pub get`
 # generates the lock (and will honor one if it happens to be present).
 COPY pubspec.yaml ./
-RUN flutter pub get
+
+# Configure git to use the commercial repo token for the private commercial repo
+# and GHCR token for other GitHub access. Secrets are mounted only for this step
+# and the git config is removed afterwards.
+RUN --mount=type=secret,id=commercial_token \
+    --mount=type=secret,id=ghcr_token \
+    if [ -f /run/secrets/commercial_token ]; then \
+      git config --global url."https://x-access-token:$(cat /run/secrets/commercial_token)@github.com/Gewerber/gewerber-backend-commercial.git".insteadOf "ssh://git@github.com/Gewerber/gewerber-backend-commercial.git"; \
+    fi \
+    && if [ -f /run/secrets/ghcr_token ]; then \
+      git config --global url."https://x-access-token:$(cat /run/secrets/ghcr_token)@github.com/".insteadOf "https://github.com/"; \
+    fi \
+    && flutter pub get \
+    && rm -f ~/.gitconfig
 
 # Copy the source and build the web app (releases into build/web/).
 COPY . .
