@@ -30,7 +30,7 @@ void main() {
       find.byType(CustomTextField).at(0),
       'demo@gewerber.de',
     );
-    await tester.enterText(find.byType(CustomTextField).at(1), 'demo-pass');
+    await tester.enterText(find.byType(CustomTextField).at(1), 'demo-password');
     await tester.tap(find.text('Log in'));
     await tester.pumpAndSettle();
 

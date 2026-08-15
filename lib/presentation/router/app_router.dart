@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:gewerber_app/application/auth/auth_state.dart';
+import 'package:gewerber_app/di/injection.dart';
 import 'package:gewerber_app/presentation/screens/forgot_password/forgot_password_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/accounting_entry_create_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/accounting_screen.dart';
@@ -24,24 +26,55 @@ import 'package:gewerber_app/presentation/screens/home/theme_screen.dart';
 import 'package:gewerber_app/presentation/screens/auth/login_screen.dart';
 import 'package:gewerber_app/presentation/screens/auth/register_screen.dart';
 import 'package:gewerber_app/presentation/screens/splash/splash_screen.dart';
+import 'package:gewerber_app/presentation/router/auth_redirect_controller.dart';
 
 import 'route_names.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
+/// Routes that make up the signed-out auth flow.
+const List<String> _authFlowRoutes = [
+  RouteNames.splash,
+  RouteNames.login,
+  RouteNames.register,
+  RouteNames.forgotPassword,
+];
+
 /// Application router.
 ///
-/// Navigation is plain for now; auth-aware redirects are added together with
-/// the authentication blocs (application/auth bloc).
+/// Routes inside the app shell are protected: signed-out users are sent to
+/// the login screen, and signed-in users are kept out of the auth flow. The
+/// guard re-evaluates through [AuthRedirectController] whenever the auth
+/// state changes. Top-level finals are initialized lazily, so the auth
+/// controller is only resolved once [configureDependencies] has run.
 final GoRouter appRouter = GoRouter(
   navigatorKey: rootNavigatorKey,
   initialLocation: RouteNames.splash,
+  refreshListenable: getIt<AuthRedirectController>(),
   redirect: (context, state) {
     // The shell has no path of its own; landing on it goes to the dashboard.
     if (state.matchedLocation == RouteNames.app) {
       return RouteNames.dashboard;
     }
-    return null;
+
+    final auth = getIt<AuthRedirectController>();
+    final isAuthFlow = _authFlowRoutes.contains(state.matchedLocation);
+
+    switch (auth.status) {
+      case AuthStatus.unknown:
+        // Session lookup still running: park on the splash screen.
+        return isAuthFlow ? null : RouteNames.splash;
+      case AuthStatus.authenticated:
+        // Signed-in users skip the auth flow (but may stay on splash briefly
+        // while the splash listener redirects them into the shell).
+        if (isAuthFlow && state.matchedLocation != RouteNames.splash) {
+          return RouteNames.app;
+        }
+        return null;
+      case AuthStatus.unauthenticated:
+        // Signed-out users may only visit the auth flow.
+        return isAuthFlow ? null : RouteNames.login;
+    }
   },
   routes: [
     GoRoute(

@@ -56,6 +56,9 @@ class _LoginScreenState extends State<LoginScreen> {
           final message = switch (state.failure) {
             InvalidCredentialsFailure() => l10n.loginInvalidCredentials,
             TooManyAttemptsFailure() => l10n.loginTooManyAttempts,
+            UserBlockedFailure() => l10n.authUserBlocked,
+            SocialAuthNotConfiguredFailure() => l10n.commonSocialUnavailable,
+            ValidationFailure() => l10n.authValidationError,
             _ => state.failure!.toString(),
           };
           ScaffoldMessenger.of(

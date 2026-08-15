@@ -1,7 +1,26 @@
 import 'exceptions.dart';
 import 'failures.dart';
 
-/// Central place that translates infrastructure [AppException]s into
-/// domain [Failure]s. Implementations are added together with the
-/// corresponding source exceptions.
-typedef ErrorHandler = Failure Function(AppException exception);
+/// Translates infrastructure [AppException]s into domain [Failure]s.
+///
+/// Unknown exceptions map to a generic [NetworkFailure] so that callers can
+/// treat every source error uniformly.
+Failure mapAppException(AppException exception) {
+  return switch (exception) {
+    InvalidCredentialsException() => const InvalidCredentialsFailure(),
+    TooManyAttemptsException() => const TooManyAttemptsFailure(),
+    UserBlockedException() => const UserBlockedFailure(),
+    EmailAlreadyRegisteredException() => const EmailAlreadyRegisteredFailure(),
+    InvalidVerificationCodeException() =>
+      const InvalidVerificationCodeFailure(),
+    ExpiredVerificationCodeException() =>
+      const ExpiredVerificationCodeFailure(),
+    PasswordPolicyViolationException() =>
+      const PasswordPolicyViolationFailure(),
+    SocialAuthNotConfiguredException() =>
+      const SocialAuthNotConfiguredFailure(),
+    SocialAuthFailureException(:final message) => SocialAuthFailure(message),
+    NetworkException() => const NetworkFailure(),
+    AppException() => const NetworkFailure(),
+  };
+}

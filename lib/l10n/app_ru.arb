@@ -29,6 +29,11 @@
   "loginDemoCta": "Открыть демо",
   "loginDemoHint": "Вход без реального аккаунта, чтобы посмотреть все экраны приложения.",
 
+  "authUserBlocked": "Этот аккаунт заблокирован. Обратись в поддержку, если это ошибка.",
+  "authValidationError": "Пожалуйста, проверь введённые данные.",
+  "authNetworkError": "Не удалось связаться с сервером. Проверь подключение и попробуй ещё раз.",
+  "authPasswordPolicy": "Этот пароль не соответствует требованиям.",
+
   "registerTitle": "Создать аккаунт",
   "registerSubtitle": "Пара быстрых шагов — и всё готово.",
   "registerEmailStepTitle": "Начни с адреса почты",
@@ -59,6 +64,8 @@
   "forgotSendCode": "Отправить код сброса",
   "forgotSubmit": "Обновить пароль",
   "forgotBackToLogin": "Вернуться ко входу",
+  "forgotSuccessTitle": "Пароль обновлён",
+  "forgotSuccessSubtitle": "Теперь ты можешь войти с новым паролем.",
 
   "commonContinue": "Продолжить",
   "commonBack": "Назад",
