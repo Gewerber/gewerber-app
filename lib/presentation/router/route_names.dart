@@ -15,9 +15,15 @@ abstract final class RouteNames {
   static const String accounting = '/app/accounting';
   static const String settings = '/app/settings';
 
+  /// Onboarding shown to signed-in users without a business.
+  static const String onboarding = '/onboarding';
+
   /// Invoicing sub-screens.
   static const String invoiceCreate = '/app/invoicing/new';
   static const String invoiceDetail = '/app/invoicing/detail';
+  static const String customers = '/app/invoicing/customers';
+  static const String customerNew = '/app/invoicing/customers/new';
+  static const String customerEdit = '/app/invoicing/customers/edit';
 
   /// Time tracking sub-screens.
   static const String timeProjects = '/app/time/projects';
@@ -34,6 +40,8 @@ abstract final class RouteNames {
 
   /// Settings sub-screens.
   static const String settingsBusiness = '/app/settings/business';
+  static const String settingsBusinessSettings =
+      '/app/settings/business-settings';
   static const String settingsLanguage = '/app/settings/language';
   static const String settingsTheme = '/app/settings/theme';
   static const String settingsAbout = '/app/settings/about';

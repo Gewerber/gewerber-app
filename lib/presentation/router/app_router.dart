@@ -3,12 +3,17 @@ import 'package:go_router/go_router.dart';
 
 import 'package:gewerber_app/application/auth/auth_state.dart';
 import 'package:gewerber_app/di/injection.dart';
+import 'package:gewerber_app/domain/entities/customer.dart';
+import 'package:gewerber_app/domain/entities/invoice.dart';
 import 'package:gewerber_app/presentation/screens/forgot_password/forgot_password_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/accounting_entry_create_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/accounting_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/about_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/business_profile_screen.dart';
+import 'package:gewerber_app/presentation/screens/home/business_settings_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/checklist_screen.dart';
+import 'package:gewerber_app/presentation/screens/home/customer_edit_screen.dart';
+import 'package:gewerber_app/presentation/screens/home/customers_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/dashboard_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/guidance_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/home_shell.dart';
@@ -18,15 +23,17 @@ import 'package:gewerber_app/presentation/screens/home/invoicing_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/language_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/projects_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/report_screen.dart';
-import 'package:gewerber_app/presentation/screens/home/settings_screen.dart';
+import 'package:gewerber_app/presentation/screens/home/settings_master_detail.dart';
 import 'package:gewerber_app/presentation/screens/home/time_entry_create_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/time_tracking_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/timer_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/theme_screen.dart';
 import 'package:gewerber_app/presentation/screens/auth/login_screen.dart';
 import 'package:gewerber_app/presentation/screens/auth/register_screen.dart';
+import 'package:gewerber_app/presentation/screens/onboarding/onboarding_screen.dart';
 import 'package:gewerber_app/presentation/screens/splash/splash_screen.dart';
 import 'package:gewerber_app/presentation/router/auth_redirect_controller.dart';
+import 'package:gewerber_app/presentation/router/business_redirect_controller.dart';
 
 import 'route_names.dart';
 
@@ -50,7 +57,10 @@ const List<String> _authFlowRoutes = [
 final GoRouter appRouter = GoRouter(
   navigatorKey: rootNavigatorKey,
   initialLocation: RouteNames.splash,
-  refreshListenable: getIt<AuthRedirectController>(),
+  refreshListenable: Listenable.merge([
+    getIt<AuthRedirectController>(),
+    getIt<BusinessRedirectController>(),
+  ]),
   redirect: (context, state) {
     // The shell has no path of its own; landing on it goes to the dashboard.
     if (state.matchedLocation == RouteNames.app) {
@@ -69,6 +79,13 @@ final GoRouter appRouter = GoRouter(
         // while the splash listener redirects them into the shell).
         if (isAuthFlow && state.matchedLocation != RouteNames.splash) {
           return RouteNames.app;
+        }
+        // Signed-in users without a business are sent to onboarding.
+        final business = getIt<BusinessRedirectController>();
+        if (state.matchedLocation != RouteNames.onboarding &&
+            business.isReady &&
+            !business.hasBusiness) {
+          return RouteNames.onboarding;
         }
         return null;
       case AuthStatus.unauthenticated:
@@ -93,6 +110,10 @@ final GoRouter appRouter = GoRouter(
       path: RouteNames.forgotPassword,
       builder: (context, state) => const ForgotPasswordScreen(),
     ),
+    GoRoute(
+      path: RouteNames.onboarding,
+      builder: (context, state) => const OnboardingScreen(),
+    ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) =>
           HomeShell(navigationShell: navigationShell),
@@ -112,12 +133,32 @@ final GoRouter appRouter = GoRouter(
               builder: (context, state) => const InvoicingScreen(),
             ),
             GoRoute(
+              path: RouteNames.customers,
+              builder: (context, state) => const CustomersScreen(),
+            ),
+            GoRoute(
+              path: RouteNames.customerNew,
+              builder: (context, state) => const CustomerEditScreen(),
+            ),
+            GoRoute(
+              path: RouteNames.customerEdit,
+              builder: (context, state) => CustomerEditScreen(
+                customer: state.extra is Customer
+                    ? state.extra as Customer
+                    : null,
+              ),
+            ),
+            GoRoute(
               path: RouteNames.invoiceCreate,
-              builder: (context, state) => const InvoiceCreateScreen(),
+              builder: (context, state) => InvoiceCreateScreen(
+                invoice: state.extra is Invoice ? state.extra as Invoice : null,
+              ),
             ),
             GoRoute(
               path: RouteNames.invoiceDetail,
-              builder: (context, state) => const InvoiceDetailScreen(),
+              builder: (context, state) => InvoiceDetailScreen(
+                invoice: state.extra is Invoice ? state.extra as Invoice : null,
+              ),
             ),
           ],
         ),
@@ -161,11 +202,15 @@ final GoRouter appRouter = GoRouter(
           routes: [
             GoRoute(
               path: RouteNames.settings,
-              builder: (context, state) => const SettingsScreen(),
+              builder: (context, state) => const SettingsMasterDetail(),
             ),
             GoRoute(
               path: RouteNames.settingsBusiness,
               builder: (context, state) => const BusinessProfileScreen(),
+            ),
+            GoRoute(
+              path: RouteNames.settingsBusinessSettings,
+              builder: (context, state) => const BusinessSettingsScreen(),
             ),
             GoRoute(
               path: RouteNames.settingsLanguage,

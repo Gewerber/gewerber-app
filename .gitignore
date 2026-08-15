@@ -43,4 +43,5 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 .env
+pubspec_overrides.yaml
 android/.kotlin/sessions/kotlin-compiler-3122669433423210435.salive

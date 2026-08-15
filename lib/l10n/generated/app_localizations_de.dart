@@ -334,6 +334,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settingsBusinessProfile => 'Firmendaten';
 
   @override
+  String get settingsBusinessSettings => 'Firmeneinstellungen';
+
+  @override
   String get settingsLanguage => 'Sprache';
 
   @override
@@ -385,4 +388,342 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get aboutSubtitle =>
       'Version, Lizenzen und Hinweise zum Datenschutz folgen hier.';
+
+  @override
+  String get onboardingTitle => 'Dein Business einrichten';
+
+  @override
+  String get onboardingSubtitle =>
+      'Ein paar Angaben und du kannst deine erste Rechnung schreiben.';
+
+  @override
+  String get onboardingBusinessName => 'Firmenname';
+
+  @override
+  String get onboardingBusinessNameHint =>
+      'Der Name, der auf deinen Rechnungen erscheint.';
+
+  @override
+  String get onboardingLegalForm => 'Rechtsform';
+
+  @override
+  String get onboardingLegalFormEinzelunternehmen => 'Einzelunternehmen';
+
+  @override
+  String get onboardingLegalFormKleingewerbe => 'Kleingewerbe';
+
+  @override
+  String get onboardingLegalFormFreiberufler => 'Freiberufler';
+
+  @override
+  String get onboardingLegalFormGbr => 'GbR';
+
+  @override
+  String get onboardingLegalFormOther => 'Sonstige';
+
+  @override
+  String get onboardingKleinunternehmer => 'Kleinunternehmer (§ 19 UStG)';
+
+  @override
+  String get onboardingKleinunternehmerHint =>
+      'Umsatz unter der Grenze — auf deinen Rechnungen wird keine USt. ausgewiesen.';
+
+  @override
+  String get onboardingVatId => 'USt-IdNr.';
+
+  @override
+  String get onboardingVatIdHint =>
+      'Optional, sofern du keine Umsatzsteuer ausweist.';
+
+  @override
+  String get onboardingAddressSection => 'Anschrift';
+
+  @override
+  String get onboardingStreet => 'Straße';
+
+  @override
+  String get onboardingZip => 'PLZ';
+
+  @override
+  String get onboardingCity => 'Ort';
+
+  @override
+  String get onboardingEmail => 'Geschäftliche E-Mail';
+
+  @override
+  String get onboardingPhone => 'Telefon';
+
+  @override
+  String get onboardingOptional => 'optional';
+
+  @override
+  String get onboardingCreate => 'Business erstellen';
+
+  @override
+  String get onboardingCreating => 'Wird erstellt…';
+
+  @override
+  String get onboardingError =>
+      'Wir konnten dein Business nicht erstellen. Bitte versuche es erneut.';
+
+  @override
+  String get businessFormName => 'Firmenname';
+
+  @override
+  String get businessFormLegalForm => 'Rechtsform';
+
+  @override
+  String get businessFormKleinunternehmer => 'Kleinunternehmer (§ 19 UStG)';
+
+  @override
+  String get businessFormVatId => 'USt-IdNr.';
+
+  @override
+  String get businessFormEmail => 'Geschäftliche E-Mail';
+
+  @override
+  String get businessFormPhone => 'Telefon';
+
+  @override
+  String get businessFormStreet => 'Straße';
+
+  @override
+  String get businessFormZip => 'PLZ';
+
+  @override
+  String get businessFormCity => 'Ort';
+
+  @override
+  String get businessFormSave => 'Speichern';
+
+  @override
+  String get businessFormSaving => 'Wird gespeichert…';
+
+  @override
+  String get businessFormSaved => 'Firmendaten aktualisiert.';
+
+  @override
+  String get businessFormError =>
+      'Wir konnten dein Business nicht speichern. Bitte versuche es erneut.';
+
+  @override
+  String get businessSettingsTitle => 'Firmeneinstellungen';
+
+  @override
+  String get businessSettingsSubtitle =>
+      'Rechnungsnummerierung und Zahlungsbedingungen.';
+
+  @override
+  String get businessSettingsPaymentTerms => 'Zahlungsbedingungen';
+
+  @override
+  String get businessSettingsDueDays => 'Fälligkeit in Tagen';
+
+  @override
+  String get businessSettingsInvoiceNumber => 'Rechnungsnummerierung';
+
+  @override
+  String get businessSettingsNumberPrefix => 'Nummernpräfix';
+
+  @override
+  String get businessSettingsNumberPrefixHint => 'Optional, z. B. \"RE-\".';
+
+  @override
+  String get businessSettingsIncludeYear => 'Jahr einbeziehen';
+
+  @override
+  String get businessSettingsMinDigits => 'Mindeststellen';
+
+  @override
+  String get businessSettingsSave => 'Speichern';
+
+  @override
+  String get businessSettingsSaved => 'Einstellungen aktualisiert.';
+
+  @override
+  String get businessSettingsError =>
+      'Wir konnten die Einstellungen nicht speichern. Bitte versuche es erneut.';
+
+  @override
+  String get customersTitle => 'Kunden';
+
+  @override
+  String get customersEmpty =>
+      'Noch keine Kunden. Lege deinen ersten Kunden an, um Rechnungen zu erstellen.';
+
+  @override
+  String get customersAdd => 'Kunde hinzufügen';
+
+  @override
+  String get customerNewTitle => 'Neuer Kunde';
+
+  @override
+  String get customerEditTitle => 'Kunde bearbeiten';
+
+  @override
+  String get customerName => 'Kundenname';
+
+  @override
+  String get customerCompany => 'Firma (optional)';
+
+  @override
+  String get customerEmail => 'E-Mail';
+
+  @override
+  String get customerPhone => 'Telefon';
+
+  @override
+  String get customerStreet => 'Straße';
+
+  @override
+  String get customerZip => 'PLZ';
+
+  @override
+  String get customerCity => 'Ort';
+
+  @override
+  String get customerVatId => 'USt-IdNr.';
+
+  @override
+  String get customerSave => 'Speichern';
+
+  @override
+  String get customerSaved => 'Kunde gespeichert.';
+
+  @override
+  String get customerError =>
+      'Wir konnten den Kunden nicht speichern. Bitte versuche es erneut.';
+
+  @override
+  String get customersArchive => 'Archivieren';
+
+  @override
+  String get customersArchived => 'Kunde archiviert.';
+
+  @override
+  String get invoicesTitle => 'Rechnungen';
+
+  @override
+  String get invoicesEmpty =>
+      'Noch keine Rechnungen. Erstelle deine erste Rechnung.';
+
+  @override
+  String get invoicesNew => 'Neue Rechnung';
+
+  @override
+  String get invoiceStatusDraft => 'Entwurf';
+
+  @override
+  String get invoiceStatusSent => 'Gesendet';
+
+  @override
+  String get invoiceStatusPaid => 'Bezahlt';
+
+  @override
+  String get invoiceStatusOverdue => 'Überfällig';
+
+  @override
+  String get invoiceStatusCancelled => 'Storniert';
+
+  @override
+  String get invoiceNewTitle => 'Neue Rechnung';
+
+  @override
+  String get invoiceEditTitle => 'Rechnung bearbeiten';
+
+  @override
+  String get invoiceCustomer => 'Kunde';
+
+  @override
+  String get invoiceNoCustomer => 'Kein Kunde';
+
+  @override
+  String get invoiceIssueDate => 'Rechnungsdatum';
+
+  @override
+  String get invoiceDueDate => 'Fälligkeitsdatum';
+
+  @override
+  String get invoiceServicePeriod => 'Leistungszeitraum';
+
+  @override
+  String get invoiceServiceFrom => 'Von';
+
+  @override
+  String get invoiceServiceTo => 'Bis';
+
+  @override
+  String get invoiceItems => 'Positionen';
+
+  @override
+  String get invoiceItemDescription => 'Beschreibung';
+
+  @override
+  String get invoiceItemQuantity => 'Menge';
+
+  @override
+  String get invoiceItemUnitPrice => 'Einzelpreis';
+
+  @override
+  String get invoiceItemAmount => 'Betrag';
+
+  @override
+  String get invoiceAddItem => 'Position hinzufügen';
+
+  @override
+  String get invoiceSubtotal => 'Zwischensumme';
+
+  @override
+  String get invoiceVat => 'USt.';
+
+  @override
+  String get invoiceTotal => 'Gesamt';
+
+  @override
+  String get invoiceNotes => 'Anmerkungen';
+
+  @override
+  String get invoiceNotesHint => 'Erscheint am Ende der Rechnung.';
+
+  @override
+  String get invoiceSave => 'Speichern';
+
+  @override
+  String get invoiceSaving => 'Wird gespeichert…';
+
+  @override
+  String get invoiceSaved => 'Rechnung gespeichert.';
+
+  @override
+  String get invoiceError =>
+      'Wir konnten die Rechnung nicht speichern. Bitte versuche es erneut.';
+
+  @override
+  String get invoiceDelete => 'Rechnung löschen';
+
+  @override
+  String get invoiceDeleteConfirm =>
+      'Diese Rechnung löschen? Das kann nicht rückgängig gemacht werden.';
+
+  @override
+  String get invoiceDeleted => 'Rechnung gelöscht.';
+
+  @override
+  String get invoiceDeleteDraftOnly => 'Nur Entwürfe können gelöscht werden.';
+
+  @override
+  String get invoiceMissingCustomer => 'Bitte wähle einen Kunden.';
+
+  @override
+  String get invoiceMissingItems =>
+      'Bitte füge mindestens eine Position mit Beschreibung hinzu.';
+
+  @override
+  String get invoiceNumber => 'Rechnung';
+
+  @override
+  String get invoiceNumberLabel => 'Nummer';
+
+  @override
+  String get invoiceNotFound => 'Rechnung nicht gefunden.';
 }

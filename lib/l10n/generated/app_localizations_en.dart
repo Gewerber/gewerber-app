@@ -327,6 +327,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsBusinessProfile => 'Business profile';
 
   @override
+  String get settingsBusinessSettings => 'Business settings';
+
+  @override
   String get settingsLanguage => 'Language';
 
   @override
@@ -378,4 +381,338 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get aboutSubtitle =>
       'Version, licenses and privacy information arrive here.';
+
+  @override
+  String get onboardingTitle => 'Set up your business';
+
+  @override
+  String get onboardingSubtitle =>
+      'A few details and you can send your first invoice.';
+
+  @override
+  String get onboardingBusinessName => 'Business name';
+
+  @override
+  String get onboardingBusinessNameHint => 'The name shown on your invoices.';
+
+  @override
+  String get onboardingLegalForm => 'Legal form';
+
+  @override
+  String get onboardingLegalFormEinzelunternehmen =>
+      'Sole trader (Einzelunternehmen)';
+
+  @override
+  String get onboardingLegalFormKleingewerbe => 'Small business (Kleingewerbe)';
+
+  @override
+  String get onboardingLegalFormFreiberufler => 'Freelancer (Freiberufler)';
+
+  @override
+  String get onboardingLegalFormGbr => 'GbR (civil law partnership)';
+
+  @override
+  String get onboardingLegalFormOther => 'Other';
+
+  @override
+  String get onboardingKleinunternehmer => 'Kleinunternehmer (§ 19 UStG)';
+
+  @override
+  String get onboardingKleinunternehmerHint =>
+      'Revenue below the limit — no VAT is charged on your invoices.';
+
+  @override
+  String get onboardingVatId => 'VAT ID (USt-IdNr.)';
+
+  @override
+  String get onboardingVatIdHint => 'Optional unless you charge VAT.';
+
+  @override
+  String get onboardingAddressSection => 'Address';
+
+  @override
+  String get onboardingStreet => 'Street';
+
+  @override
+  String get onboardingZip => 'Postal code';
+
+  @override
+  String get onboardingCity => 'City';
+
+  @override
+  String get onboardingEmail => 'Business email';
+
+  @override
+  String get onboardingPhone => 'Phone';
+
+  @override
+  String get onboardingOptional => 'optional';
+
+  @override
+  String get onboardingCreate => 'Create business';
+
+  @override
+  String get onboardingCreating => 'Creating…';
+
+  @override
+  String get onboardingError =>
+      'We couldn\'t create your business. Please try again.';
+
+  @override
+  String get businessFormName => 'Business name';
+
+  @override
+  String get businessFormLegalForm => 'Legal form';
+
+  @override
+  String get businessFormKleinunternehmer => 'Kleinunternehmer (§ 19 UStG)';
+
+  @override
+  String get businessFormVatId => 'VAT ID';
+
+  @override
+  String get businessFormEmail => 'Business email';
+
+  @override
+  String get businessFormPhone => 'Phone';
+
+  @override
+  String get businessFormStreet => 'Street';
+
+  @override
+  String get businessFormZip => 'Postal code';
+
+  @override
+  String get businessFormCity => 'City';
+
+  @override
+  String get businessFormSave => 'Save';
+
+  @override
+  String get businessFormSaving => 'Saving…';
+
+  @override
+  String get businessFormSaved => 'Business profile updated.';
+
+  @override
+  String get businessFormError =>
+      'We couldn\'t save your business. Please try again.';
+
+  @override
+  String get businessSettingsTitle => 'Business settings';
+
+  @override
+  String get businessSettingsSubtitle => 'Invoice numbering and payment terms.';
+
+  @override
+  String get businessSettingsPaymentTerms => 'Payment terms';
+
+  @override
+  String get businessSettingsDueDays => 'Due days';
+
+  @override
+  String get businessSettingsInvoiceNumber => 'Invoice numbering';
+
+  @override
+  String get businessSettingsNumberPrefix => 'Number prefix';
+
+  @override
+  String get businessSettingsNumberPrefixHint => 'Optional, e.g. \"RE-\".';
+
+  @override
+  String get businessSettingsIncludeYear => 'Include year';
+
+  @override
+  String get businessSettingsMinDigits => 'Minimum digits';
+
+  @override
+  String get businessSettingsSave => 'Save';
+
+  @override
+  String get businessSettingsSaved => 'Settings updated.';
+
+  @override
+  String get businessSettingsError =>
+      'We couldn\'t save the settings. Please try again.';
+
+  @override
+  String get customersTitle => 'Customers';
+
+  @override
+  String get customersEmpty =>
+      'No customers yet. Add your first customer to create invoices.';
+
+  @override
+  String get customersAdd => 'Add customer';
+
+  @override
+  String get customerNewTitle => 'New customer';
+
+  @override
+  String get customerEditTitle => 'Edit customer';
+
+  @override
+  String get customerName => 'Customer name';
+
+  @override
+  String get customerCompany => 'Company (optional)';
+
+  @override
+  String get customerEmail => 'Email';
+
+  @override
+  String get customerPhone => 'Phone';
+
+  @override
+  String get customerStreet => 'Street';
+
+  @override
+  String get customerZip => 'Postal code';
+
+  @override
+  String get customerCity => 'City';
+
+  @override
+  String get customerVatId => 'VAT ID';
+
+  @override
+  String get customerSave => 'Save';
+
+  @override
+  String get customerSaved => 'Customer saved.';
+
+  @override
+  String get customerError =>
+      'We couldn\'t save the customer. Please try again.';
+
+  @override
+  String get customersArchive => 'Archive';
+
+  @override
+  String get customersArchived => 'Customer archived.';
+
+  @override
+  String get invoicesTitle => 'Invoices';
+
+  @override
+  String get invoicesEmpty => 'No invoices yet. Create your first invoice.';
+
+  @override
+  String get invoicesNew => 'New invoice';
+
+  @override
+  String get invoiceStatusDraft => 'Draft';
+
+  @override
+  String get invoiceStatusSent => 'Sent';
+
+  @override
+  String get invoiceStatusPaid => 'Paid';
+
+  @override
+  String get invoiceStatusOverdue => 'Overdue';
+
+  @override
+  String get invoiceStatusCancelled => 'Cancelled';
+
+  @override
+  String get invoiceNewTitle => 'New invoice';
+
+  @override
+  String get invoiceEditTitle => 'Edit invoice';
+
+  @override
+  String get invoiceCustomer => 'Customer';
+
+  @override
+  String get invoiceNoCustomer => 'No customer';
+
+  @override
+  String get invoiceIssueDate => 'Invoice date';
+
+  @override
+  String get invoiceDueDate => 'Due date';
+
+  @override
+  String get invoiceServicePeriod => 'Service period';
+
+  @override
+  String get invoiceServiceFrom => 'From';
+
+  @override
+  String get invoiceServiceTo => 'To';
+
+  @override
+  String get invoiceItems => 'Items';
+
+  @override
+  String get invoiceItemDescription => 'Description';
+
+  @override
+  String get invoiceItemQuantity => 'Qty';
+
+  @override
+  String get invoiceItemUnitPrice => 'Unit price';
+
+  @override
+  String get invoiceItemAmount => 'Amount';
+
+  @override
+  String get invoiceAddItem => 'Add item';
+
+  @override
+  String get invoiceSubtotal => 'Subtotal';
+
+  @override
+  String get invoiceVat => 'VAT';
+
+  @override
+  String get invoiceTotal => 'Total';
+
+  @override
+  String get invoiceNotes => 'Notes';
+
+  @override
+  String get invoiceNotesHint => 'Shown at the bottom of the invoice.';
+
+  @override
+  String get invoiceSave => 'Save';
+
+  @override
+  String get invoiceSaving => 'Saving…';
+
+  @override
+  String get invoiceSaved => 'Invoice saved.';
+
+  @override
+  String get invoiceError => 'We couldn\'t save the invoice. Please try again.';
+
+  @override
+  String get invoiceDelete => 'Delete invoice';
+
+  @override
+  String get invoiceDeleteConfirm =>
+      'Delete this invoice? This cannot be undone.';
+
+  @override
+  String get invoiceDeleted => 'Invoice deleted.';
+
+  @override
+  String get invoiceDeleteDraftOnly => 'Only draft invoices can be deleted.';
+
+  @override
+  String get invoiceMissingCustomer => 'Please pick a customer.';
+
+  @override
+  String get invoiceMissingItems =>
+      'Please add at least one item with a description.';
+
+  @override
+  String get invoiceNumber => 'Invoice';
+
+  @override
+  String get invoiceNumberLabel => 'Number';
+
+  @override
+  String get invoiceNotFound => 'Invoice not found.';
 }
