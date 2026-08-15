@@ -684,6 +684,12 @@ abstract class AppLocalizations {
   /// **'Business profile'**
   String get settingsBusinessProfile;
 
+  /// No description provided for @settingsBusinessSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Business settings'**
+  String get settingsBusinessSettings;
+
   /// No description provided for @settingsLanguage.
   ///
   /// In en, this message translates to:
@@ -785,6 +791,654 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Version, licenses and privacy information arrive here.'**
   String get aboutSubtitle;
+
+  /// No description provided for @onboardingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up your business'**
+  String get onboardingTitle;
+
+  /// No description provided for @onboardingSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A few details and you can send your first invoice.'**
+  String get onboardingSubtitle;
+
+  /// No description provided for @onboardingBusinessName.
+  ///
+  /// In en, this message translates to:
+  /// **'Business name'**
+  String get onboardingBusinessName;
+
+  /// No description provided for @onboardingBusinessNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The name shown on your invoices.'**
+  String get onboardingBusinessNameHint;
+
+  /// No description provided for @onboardingLegalForm.
+  ///
+  /// In en, this message translates to:
+  /// **'Legal form'**
+  String get onboardingLegalForm;
+
+  /// No description provided for @onboardingLegalFormEinzelunternehmen.
+  ///
+  /// In en, this message translates to:
+  /// **'Sole trader (Einzelunternehmen)'**
+  String get onboardingLegalFormEinzelunternehmen;
+
+  /// No description provided for @onboardingLegalFormKleingewerbe.
+  ///
+  /// In en, this message translates to:
+  /// **'Small business (Kleingewerbe)'**
+  String get onboardingLegalFormKleingewerbe;
+
+  /// No description provided for @onboardingLegalFormFreiberufler.
+  ///
+  /// In en, this message translates to:
+  /// **'Freelancer (Freiberufler)'**
+  String get onboardingLegalFormFreiberufler;
+
+  /// No description provided for @onboardingLegalFormGbr.
+  ///
+  /// In en, this message translates to:
+  /// **'GbR (civil law partnership)'**
+  String get onboardingLegalFormGbr;
+
+  /// No description provided for @onboardingLegalFormOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get onboardingLegalFormOther;
+
+  /// No description provided for @onboardingKleinunternehmer.
+  ///
+  /// In en, this message translates to:
+  /// **'Kleinunternehmer (§ 19 UStG)'**
+  String get onboardingKleinunternehmer;
+
+  /// No description provided for @onboardingKleinunternehmerHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Revenue below the limit — no VAT is charged on your invoices.'**
+  String get onboardingKleinunternehmerHint;
+
+  /// No description provided for @onboardingVatId.
+  ///
+  /// In en, this message translates to:
+  /// **'VAT ID (USt-IdNr.)'**
+  String get onboardingVatId;
+
+  /// No description provided for @onboardingVatIdHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional unless you charge VAT.'**
+  String get onboardingVatIdHint;
+
+  /// No description provided for @onboardingAddressSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get onboardingAddressSection;
+
+  /// No description provided for @onboardingStreet.
+  ///
+  /// In en, this message translates to:
+  /// **'Street'**
+  String get onboardingStreet;
+
+  /// No description provided for @onboardingZip.
+  ///
+  /// In en, this message translates to:
+  /// **'Postal code'**
+  String get onboardingZip;
+
+  /// No description provided for @onboardingCity.
+  ///
+  /// In en, this message translates to:
+  /// **'City'**
+  String get onboardingCity;
+
+  /// No description provided for @onboardingEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Business email'**
+  String get onboardingEmail;
+
+  /// No description provided for @onboardingPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get onboardingPhone;
+
+  /// No description provided for @onboardingOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'optional'**
+  String get onboardingOptional;
+
+  /// No description provided for @onboardingCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create business'**
+  String get onboardingCreate;
+
+  /// No description provided for @onboardingCreating.
+  ///
+  /// In en, this message translates to:
+  /// **'Creating…'**
+  String get onboardingCreating;
+
+  /// No description provided for @onboardingError.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t create your business. Please try again.'**
+  String get onboardingError;
+
+  /// No description provided for @businessFormName.
+  ///
+  /// In en, this message translates to:
+  /// **'Business name'**
+  String get businessFormName;
+
+  /// No description provided for @businessFormLegalForm.
+  ///
+  /// In en, this message translates to:
+  /// **'Legal form'**
+  String get businessFormLegalForm;
+
+  /// No description provided for @businessFormKleinunternehmer.
+  ///
+  /// In en, this message translates to:
+  /// **'Kleinunternehmer (§ 19 UStG)'**
+  String get businessFormKleinunternehmer;
+
+  /// No description provided for @businessFormVatId.
+  ///
+  /// In en, this message translates to:
+  /// **'VAT ID'**
+  String get businessFormVatId;
+
+  /// No description provided for @businessFormEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Business email'**
+  String get businessFormEmail;
+
+  /// No description provided for @businessFormPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get businessFormPhone;
+
+  /// No description provided for @businessFormStreet.
+  ///
+  /// In en, this message translates to:
+  /// **'Street'**
+  String get businessFormStreet;
+
+  /// No description provided for @businessFormZip.
+  ///
+  /// In en, this message translates to:
+  /// **'Postal code'**
+  String get businessFormZip;
+
+  /// No description provided for @businessFormCity.
+  ///
+  /// In en, this message translates to:
+  /// **'City'**
+  String get businessFormCity;
+
+  /// No description provided for @businessFormSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get businessFormSave;
+
+  /// No description provided for @businessFormSaving.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving…'**
+  String get businessFormSaving;
+
+  /// No description provided for @businessFormSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Business profile updated.'**
+  String get businessFormSaved;
+
+  /// No description provided for @businessFormError.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t save your business. Please try again.'**
+  String get businessFormError;
+
+  /// No description provided for @businessSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Business settings'**
+  String get businessSettingsTitle;
+
+  /// No description provided for @businessSettingsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoice numbering and payment terms.'**
+  String get businessSettingsSubtitle;
+
+  /// No description provided for @businessSettingsPaymentTerms.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment terms'**
+  String get businessSettingsPaymentTerms;
+
+  /// No description provided for @businessSettingsDueDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Due days'**
+  String get businessSettingsDueDays;
+
+  /// No description provided for @businessSettingsInvoiceNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoice numbering'**
+  String get businessSettingsInvoiceNumber;
+
+  /// No description provided for @businessSettingsNumberPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Number prefix'**
+  String get businessSettingsNumberPrefix;
+
+  /// No description provided for @businessSettingsNumberPrefixHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional, e.g. \"RE-\".'**
+  String get businessSettingsNumberPrefixHint;
+
+  /// No description provided for @businessSettingsIncludeYear.
+  ///
+  /// In en, this message translates to:
+  /// **'Include year'**
+  String get businessSettingsIncludeYear;
+
+  /// No description provided for @businessSettingsMinDigits.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum digits'**
+  String get businessSettingsMinDigits;
+
+  /// No description provided for @businessSettingsSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get businessSettingsSave;
+
+  /// No description provided for @businessSettingsSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings updated.'**
+  String get businessSettingsSaved;
+
+  /// No description provided for @businessSettingsError.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t save the settings. Please try again.'**
+  String get businessSettingsError;
+
+  /// No description provided for @customersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Customers'**
+  String get customersTitle;
+
+  /// No description provided for @customersEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No customers yet. Add your first customer to create invoices.'**
+  String get customersEmpty;
+
+  /// No description provided for @customersAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add customer'**
+  String get customersAdd;
+
+  /// No description provided for @customerNewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New customer'**
+  String get customerNewTitle;
+
+  /// No description provided for @customerEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit customer'**
+  String get customerEditTitle;
+
+  /// No description provided for @customerName.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer name'**
+  String get customerName;
+
+  /// No description provided for @customerCompany.
+  ///
+  /// In en, this message translates to:
+  /// **'Company (optional)'**
+  String get customerCompany;
+
+  /// No description provided for @customerEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get customerEmail;
+
+  /// No description provided for @customerPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get customerPhone;
+
+  /// No description provided for @customerStreet.
+  ///
+  /// In en, this message translates to:
+  /// **'Street'**
+  String get customerStreet;
+
+  /// No description provided for @customerZip.
+  ///
+  /// In en, this message translates to:
+  /// **'Postal code'**
+  String get customerZip;
+
+  /// No description provided for @customerCity.
+  ///
+  /// In en, this message translates to:
+  /// **'City'**
+  String get customerCity;
+
+  /// No description provided for @customerVatId.
+  ///
+  /// In en, this message translates to:
+  /// **'VAT ID'**
+  String get customerVatId;
+
+  /// No description provided for @customerSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get customerSave;
+
+  /// No description provided for @customerSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer saved.'**
+  String get customerSaved;
+
+  /// No description provided for @customerError.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t save the customer. Please try again.'**
+  String get customerError;
+
+  /// No description provided for @customersArchive.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive'**
+  String get customersArchive;
+
+  /// No description provided for @customersArchived.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer archived.'**
+  String get customersArchived;
+
+  /// No description provided for @invoicesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoices'**
+  String get invoicesTitle;
+
+  /// No description provided for @invoicesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No invoices yet. Create your first invoice.'**
+  String get invoicesEmpty;
+
+  /// No description provided for @invoicesNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New invoice'**
+  String get invoicesNew;
+
+  /// No description provided for @invoiceStatusDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft'**
+  String get invoiceStatusDraft;
+
+  /// No description provided for @invoiceStatusSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent'**
+  String get invoiceStatusSent;
+
+  /// No description provided for @invoiceStatusPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid'**
+  String get invoiceStatusPaid;
+
+  /// No description provided for @invoiceStatusOverdue.
+  ///
+  /// In en, this message translates to:
+  /// **'Overdue'**
+  String get invoiceStatusOverdue;
+
+  /// No description provided for @invoiceStatusCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get invoiceStatusCancelled;
+
+  /// No description provided for @invoiceNewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New invoice'**
+  String get invoiceNewTitle;
+
+  /// No description provided for @invoiceEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit invoice'**
+  String get invoiceEditTitle;
+
+  /// No description provided for @invoiceCustomer.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer'**
+  String get invoiceCustomer;
+
+  /// No description provided for @invoiceNoCustomer.
+  ///
+  /// In en, this message translates to:
+  /// **'No customer'**
+  String get invoiceNoCustomer;
+
+  /// No description provided for @invoiceIssueDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoice date'**
+  String get invoiceIssueDate;
+
+  /// No description provided for @invoiceDueDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Due date'**
+  String get invoiceDueDate;
+
+  /// No description provided for @invoiceServicePeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'Service period'**
+  String get invoiceServicePeriod;
+
+  /// No description provided for @invoiceServiceFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'From'**
+  String get invoiceServiceFrom;
+
+  /// No description provided for @invoiceServiceTo.
+  ///
+  /// In en, this message translates to:
+  /// **'To'**
+  String get invoiceServiceTo;
+
+  /// No description provided for @invoiceItems.
+  ///
+  /// In en, this message translates to:
+  /// **'Items'**
+  String get invoiceItems;
+
+  /// No description provided for @invoiceItemDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get invoiceItemDescription;
+
+  /// No description provided for @invoiceItemQuantity.
+  ///
+  /// In en, this message translates to:
+  /// **'Qty'**
+  String get invoiceItemQuantity;
+
+  /// No description provided for @invoiceItemUnitPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit price'**
+  String get invoiceItemUnitPrice;
+
+  /// No description provided for @invoiceItemAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get invoiceItemAmount;
+
+  /// No description provided for @invoiceAddItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Add item'**
+  String get invoiceAddItem;
+
+  /// No description provided for @invoiceSubtotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Subtotal'**
+  String get invoiceSubtotal;
+
+  /// No description provided for @invoiceVat.
+  ///
+  /// In en, this message translates to:
+  /// **'VAT'**
+  String get invoiceVat;
+
+  /// No description provided for @invoiceTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get invoiceTotal;
+
+  /// No description provided for @invoiceNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get invoiceNotes;
+
+  /// No description provided for @invoiceNotesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Shown at the bottom of the invoice.'**
+  String get invoiceNotesHint;
+
+  /// No description provided for @invoiceSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get invoiceSave;
+
+  /// No description provided for @invoiceSaving.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving…'**
+  String get invoiceSaving;
+
+  /// No description provided for @invoiceSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoice saved.'**
+  String get invoiceSaved;
+
+  /// No description provided for @invoiceError.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t save the invoice. Please try again.'**
+  String get invoiceError;
+
+  /// No description provided for @invoiceDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete invoice'**
+  String get invoiceDelete;
+
+  /// No description provided for @invoiceDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this invoice? This cannot be undone.'**
+  String get invoiceDeleteConfirm;
+
+  /// No description provided for @invoiceDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoice deleted.'**
+  String get invoiceDeleted;
+
+  /// No description provided for @invoiceDeleteDraftOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Only draft invoices can be deleted.'**
+  String get invoiceDeleteDraftOnly;
+
+  /// No description provided for @invoiceMissingCustomer.
+  ///
+  /// In en, this message translates to:
+  /// **'Please pick a customer.'**
+  String get invoiceMissingCustomer;
+
+  /// No description provided for @invoiceMissingItems.
+  ///
+  /// In en, this message translates to:
+  /// **'Please add at least one item with a description.'**
+  String get invoiceMissingItems;
+
+  /// No description provided for @invoiceNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoice'**
+  String get invoiceNumber;
+
+  /// No description provided for @invoiceNumberLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Number'**
+  String get invoiceNumberLabel;
+
+  /// No description provided for @invoiceNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoice not found.'**
+  String get invoiceNotFound;
 }
 
 class _AppLocalizationsDelegate

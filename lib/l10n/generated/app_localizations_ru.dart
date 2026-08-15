@@ -325,6 +325,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get settingsBusinessProfile => 'Профиль бизнеса';
 
   @override
+  String get settingsBusinessSettings => 'Настройки бизнеса';
+
+  @override
   String get settingsLanguage => 'Язык';
 
   @override
@@ -376,4 +379,340 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get aboutSubtitle =>
       'Здесь появятся версия, лицензии и данные о конфиденциальности.';
+
+  @override
+  String get onboardingTitle => 'Настройте свой бизнес';
+
+  @override
+  String get onboardingSubtitle =>
+      'Несколько данных — и можно выставить первый счёт.';
+
+  @override
+  String get onboardingBusinessName => 'Название компании';
+
+  @override
+  String get onboardingBusinessNameHint =>
+      'Название, которое будет на ваших счетах.';
+
+  @override
+  String get onboardingLegalForm => 'Организационно-правовая форма';
+
+  @override
+  String get onboardingLegalFormEinzelunternehmen =>
+      'Индивидуальный предприниматель (Einzelunternehmen)';
+
+  @override
+  String get onboardingLegalFormKleingewerbe => 'Малый бизнес (Kleingewerbe)';
+
+  @override
+  String get onboardingLegalFormFreiberufler => 'Фрилансер (Freiberufler)';
+
+  @override
+  String get onboardingLegalFormGbr => 'GbR (товарищество)';
+
+  @override
+  String get onboardingLegalFormOther => 'Другое';
+
+  @override
+  String get onboardingKleinunternehmer => 'Kleinunternehmer (§ 19 UStG)';
+
+  @override
+  String get onboardingKleinunternehmerHint =>
+      'Оборот ниже лимита — НДС в счетах не указывается.';
+
+  @override
+  String get onboardingVatId => 'НДС-номер (USt-IdNr.)';
+
+  @override
+  String get onboardingVatIdHint => 'Необязательно, если вы не платите НДС.';
+
+  @override
+  String get onboardingAddressSection => 'Адрес';
+
+  @override
+  String get onboardingStreet => 'Улица';
+
+  @override
+  String get onboardingZip => 'Почтовый индекс';
+
+  @override
+  String get onboardingCity => 'Город';
+
+  @override
+  String get onboardingEmail => 'Рабочая почта';
+
+  @override
+  String get onboardingPhone => 'Телефон';
+
+  @override
+  String get onboardingOptional => 'необязательно';
+
+  @override
+  String get onboardingCreate => 'Создать бизнес';
+
+  @override
+  String get onboardingCreating => 'Создание…';
+
+  @override
+  String get onboardingError =>
+      'Не удалось создать бизнес. Попробуйте ещё раз.';
+
+  @override
+  String get businessFormName => 'Название компании';
+
+  @override
+  String get businessFormLegalForm => 'Организационно-правовая форма';
+
+  @override
+  String get businessFormKleinunternehmer => 'Kleinunternehmer (§ 19 UStG)';
+
+  @override
+  String get businessFormVatId => 'НДС-номер';
+
+  @override
+  String get businessFormEmail => 'Рабочая почта';
+
+  @override
+  String get businessFormPhone => 'Телефон';
+
+  @override
+  String get businessFormStreet => 'Улица';
+
+  @override
+  String get businessFormZip => 'Почтовый индекс';
+
+  @override
+  String get businessFormCity => 'Город';
+
+  @override
+  String get businessFormSave => 'Сохранить';
+
+  @override
+  String get businessFormSaving => 'Сохранение…';
+
+  @override
+  String get businessFormSaved => 'Профиль бизнеса обновлён.';
+
+  @override
+  String get businessFormError =>
+      'Не удалось сохранить бизнес. Попробуйте ещё раз.';
+
+  @override
+  String get businessSettingsTitle => 'Настройки бизнеса';
+
+  @override
+  String get businessSettingsSubtitle => 'Нумерация счетов и условия оплаты.';
+
+  @override
+  String get businessSettingsPaymentTerms => 'Условия оплаты';
+
+  @override
+  String get businessSettingsDueDays => 'Срок оплаты, дней';
+
+  @override
+  String get businessSettingsInvoiceNumber => 'Нумерация счетов';
+
+  @override
+  String get businessSettingsNumberPrefix => 'Префикс номера';
+
+  @override
+  String get businessSettingsNumberPrefixHint =>
+      'Необязательно, например «RE-».';
+
+  @override
+  String get businessSettingsIncludeYear => 'Включать год';
+
+  @override
+  String get businessSettingsMinDigits => 'Мин. число цифр';
+
+  @override
+  String get businessSettingsSave => 'Сохранить';
+
+  @override
+  String get businessSettingsSaved => 'Настройки обновлены.';
+
+  @override
+  String get businessSettingsError =>
+      'Не удалось сохранить настройки. Попробуйте ещё раз.';
+
+  @override
+  String get customersTitle => 'Клиенты';
+
+  @override
+  String get customersEmpty =>
+      'Пока нет клиентов. Добавьте первого клиента, чтобы выставлять счета.';
+
+  @override
+  String get customersAdd => 'Добавить клиента';
+
+  @override
+  String get customerNewTitle => 'Новый клиент';
+
+  @override
+  String get customerEditTitle => 'Изменить клиента';
+
+  @override
+  String get customerName => 'Имя клиента';
+
+  @override
+  String get customerCompany => 'Компания (необязательно)';
+
+  @override
+  String get customerEmail => 'Эл. почта';
+
+  @override
+  String get customerPhone => 'Телефон';
+
+  @override
+  String get customerStreet => 'Улица';
+
+  @override
+  String get customerZip => 'Почтовый индекс';
+
+  @override
+  String get customerCity => 'Город';
+
+  @override
+  String get customerVatId => 'НДС-номер';
+
+  @override
+  String get customerSave => 'Сохранить';
+
+  @override
+  String get customerSaved => 'Клиент сохранён.';
+
+  @override
+  String get customerError =>
+      'Не удалось сохранить клиента. Попробуйте ещё раз.';
+
+  @override
+  String get customersArchive => 'В архив';
+
+  @override
+  String get customersArchived => 'Клиент перемещён в архив.';
+
+  @override
+  String get invoicesTitle => 'Счета';
+
+  @override
+  String get invoicesEmpty => 'Счетов пока нет. Создайте первый счёт.';
+
+  @override
+  String get invoicesNew => 'Новый счёт';
+
+  @override
+  String get invoiceStatusDraft => 'Черновик';
+
+  @override
+  String get invoiceStatusSent => 'Отправлен';
+
+  @override
+  String get invoiceStatusPaid => 'Оплачен';
+
+  @override
+  String get invoiceStatusOverdue => 'Просрочен';
+
+  @override
+  String get invoiceStatusCancelled => 'Отменён';
+
+  @override
+  String get invoiceNewTitle => 'Новый счёт';
+
+  @override
+  String get invoiceEditTitle => 'Изменить счёт';
+
+  @override
+  String get invoiceCustomer => 'Клиент';
+
+  @override
+  String get invoiceNoCustomer => 'Нет клиента';
+
+  @override
+  String get invoiceIssueDate => 'Дата счёта';
+
+  @override
+  String get invoiceDueDate => 'Срок оплаты';
+
+  @override
+  String get invoiceServicePeriod => 'Период оказания услуг';
+
+  @override
+  String get invoiceServiceFrom => 'С';
+
+  @override
+  String get invoiceServiceTo => 'По';
+
+  @override
+  String get invoiceItems => 'Позиции';
+
+  @override
+  String get invoiceItemDescription => 'Описание';
+
+  @override
+  String get invoiceItemQuantity => 'Кол-во';
+
+  @override
+  String get invoiceItemUnitPrice => 'Цена за ед.';
+
+  @override
+  String get invoiceItemAmount => 'Сумма';
+
+  @override
+  String get invoiceAddItem => 'Добавить позицию';
+
+  @override
+  String get invoiceSubtotal => 'Промежуточный итог';
+
+  @override
+  String get invoiceVat => 'НДС';
+
+  @override
+  String get invoiceTotal => 'Итого';
+
+  @override
+  String get invoiceNotes => 'Примечания';
+
+  @override
+  String get invoiceNotesHint => 'Появляются внизу счёта.';
+
+  @override
+  String get invoiceSave => 'Сохранить';
+
+  @override
+  String get invoiceSaving => 'Сохранение…';
+
+  @override
+  String get invoiceSaved => 'Счёт сохранён.';
+
+  @override
+  String get invoiceError => 'Не удалось сохранить счёт. Попробуйте ещё раз.';
+
+  @override
+  String get invoiceDelete => 'Удалить счёт';
+
+  @override
+  String get invoiceDeleteConfirm =>
+      'Удалить этот счёт? Это действие необратимо.';
+
+  @override
+  String get invoiceDeleted => 'Счёт удалён.';
+
+  @override
+  String get invoiceDeleteDraftOnly => 'Удалять можно только черновики.';
+
+  @override
+  String get invoiceMissingCustomer => 'Выберите клиента.';
+
+  @override
+  String get invoiceMissingItems =>
+      'Добавьте хотя бы одну позицию с описанием.';
+
+  @override
+  String get invoiceNumber => 'Счёт';
+
+  @override
+  String get invoiceNumberLabel => 'Номер';
+
+  @override
+  String get invoiceNotFound => 'Счёт не найден.';
 }

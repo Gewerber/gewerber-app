@@ -26,6 +26,11 @@ class SettingsScreen extends StatelessWidget {
             onTap: () => context.push(RouteNames.settingsBusiness),
           ),
           StubMenuTile(
+            icon: Icons.receipt_long_outlined,
+            title: l10n.settingsBusinessSettings,
+            onTap: () => context.push(RouteNames.settingsBusinessSettings),
+          ),
+          StubMenuTile(
             icon: Icons.language_outlined,
             title: l10n.settingsLanguage,
             onTap: () => context.push(RouteNames.settingsLanguage),

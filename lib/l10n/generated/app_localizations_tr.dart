@@ -331,6 +331,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get settingsBusinessProfile => 'İşletme profili';
 
   @override
+  String get settingsBusinessSettings => 'İşletme ayarları';
+
+  @override
   String get settingsLanguage => 'Dil';
 
   @override
@@ -382,4 +385,339 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get aboutSubtitle =>
       'Sürüm, lisanslar ve gizlilik bilgileri buraya gelecek.';
+
+  @override
+  String get onboardingTitle => 'İşletmenizi kurun';
+
+  @override
+  String get onboardingSubtitle =>
+      'Birkaç bilgi yeterli, ilk faturanızı gönderebilirsiniz.';
+
+  @override
+  String get onboardingBusinessName => 'İşletme adı';
+
+  @override
+  String get onboardingBusinessNameHint => 'Faturalarınızda görünecek ad.';
+
+  @override
+  String get onboardingLegalForm => 'Hukuki yapı';
+
+  @override
+  String get onboardingLegalFormEinzelunternehmen =>
+      'Şahıs şirketi (Einzelunternehmen)';
+
+  @override
+  String get onboardingLegalFormKleingewerbe => 'Küçük işletme (Kleingewerbe)';
+
+  @override
+  String get onboardingLegalFormFreiberufler =>
+      'Serbest çalışan (Freiberufler)';
+
+  @override
+  String get onboardingLegalFormGbr => 'GbR (adi ortaklık)';
+
+  @override
+  String get onboardingLegalFormOther => 'Diğer';
+
+  @override
+  String get onboardingKleinunternehmer => 'Kleinunternehmer (§ 19 UStG)';
+
+  @override
+  String get onboardingKleinunternehmerHint =>
+      'Ciro limitin altında — faturalarda KDV gösterilmez.';
+
+  @override
+  String get onboardingVatId => 'KDV numarası (USt-IdNr.)';
+
+  @override
+  String get onboardingVatIdHint => 'KDV uygulamıyorsanız isteğe bağlı.';
+
+  @override
+  String get onboardingAddressSection => 'Adres';
+
+  @override
+  String get onboardingStreet => 'Cadde/Sokak';
+
+  @override
+  String get onboardingZip => 'Posta kodu';
+
+  @override
+  String get onboardingCity => 'Şehir';
+
+  @override
+  String get onboardingEmail => 'İş e-postası';
+
+  @override
+  String get onboardingPhone => 'Telefon';
+
+  @override
+  String get onboardingOptional => 'isteğe bağlı';
+
+  @override
+  String get onboardingCreate => 'İşletme oluştur';
+
+  @override
+  String get onboardingCreating => 'Oluşturuluyor…';
+
+  @override
+  String get onboardingError =>
+      'İşletmeniz oluşturulamadı. Lütfen tekrar deneyin.';
+
+  @override
+  String get businessFormName => 'İşletme adı';
+
+  @override
+  String get businessFormLegalForm => 'Hukuki yapı';
+
+  @override
+  String get businessFormKleinunternehmer => 'Kleinunternehmer (§ 19 UStG)';
+
+  @override
+  String get businessFormVatId => 'KDV numarası';
+
+  @override
+  String get businessFormEmail => 'İş e-postası';
+
+  @override
+  String get businessFormPhone => 'Telefon';
+
+  @override
+  String get businessFormStreet => 'Cadde/Sokak';
+
+  @override
+  String get businessFormZip => 'Posta kodu';
+
+  @override
+  String get businessFormCity => 'Şehir';
+
+  @override
+  String get businessFormSave => 'Kaydet';
+
+  @override
+  String get businessFormSaving => 'Kaydediliyor…';
+
+  @override
+  String get businessFormSaved => 'İşletme profili güncellendi.';
+
+  @override
+  String get businessFormError =>
+      'İşletme kaydedilemedi. Lütfen tekrar deneyin.';
+
+  @override
+  String get businessSettingsTitle => 'İşletme ayarları';
+
+  @override
+  String get businessSettingsSubtitle =>
+      'Fatura numaralandırma ve ödeme koşulları.';
+
+  @override
+  String get businessSettingsPaymentTerms => 'Ödeme koşulları';
+
+  @override
+  String get businessSettingsDueDays => 'Vade günü';
+
+  @override
+  String get businessSettingsInvoiceNumber => 'Fatura numaralandırma';
+
+  @override
+  String get businessSettingsNumberPrefix => 'Numara öneki';
+
+  @override
+  String get businessSettingsNumberPrefixHint => 'İsteğe bağlı, örn. \"RE-\".';
+
+  @override
+  String get businessSettingsIncludeYear => 'Yılı dahil et';
+
+  @override
+  String get businessSettingsMinDigits => 'Minimum hane';
+
+  @override
+  String get businessSettingsSave => 'Kaydet';
+
+  @override
+  String get businessSettingsSaved => 'Ayarlar güncellendi.';
+
+  @override
+  String get businessSettingsError =>
+      'Ayarlar kaydedilemedi. Lütfen tekrar deneyin.';
+
+  @override
+  String get customersTitle => 'Müşteriler';
+
+  @override
+  String get customersEmpty =>
+      'Henüz müşteri yok. Fatura oluşturmak için ilk müşterinizi ekleyin.';
+
+  @override
+  String get customersAdd => 'Müşteri ekle';
+
+  @override
+  String get customerNewTitle => 'Yeni müşteri';
+
+  @override
+  String get customerEditTitle => 'Müşteriyi düzenle';
+
+  @override
+  String get customerName => 'Müşteri adı';
+
+  @override
+  String get customerCompany => 'Şirket (isteğe bağlı)';
+
+  @override
+  String get customerEmail => 'E-posta';
+
+  @override
+  String get customerPhone => 'Telefon';
+
+  @override
+  String get customerStreet => 'Cadde/Sokak';
+
+  @override
+  String get customerZip => 'Posta kodu';
+
+  @override
+  String get customerCity => 'Şehir';
+
+  @override
+  String get customerVatId => 'KDV numarası';
+
+  @override
+  String get customerSave => 'Kaydet';
+
+  @override
+  String get customerSaved => 'Müşteri kaydedildi.';
+
+  @override
+  String get customerError => 'Müşteri kaydedilemedi. Lütfen tekrar deneyin.';
+
+  @override
+  String get customersArchive => 'Arşivle';
+
+  @override
+  String get customersArchived => 'Müşteri arşivlendi.';
+
+  @override
+  String get invoicesTitle => 'Faturalar';
+
+  @override
+  String get invoicesEmpty => 'Henüz fatura yok. İlk faturanızı oluşturun.';
+
+  @override
+  String get invoicesNew => 'Yeni fatura';
+
+  @override
+  String get invoiceStatusDraft => 'Taslak';
+
+  @override
+  String get invoiceStatusSent => 'Gönderildi';
+
+  @override
+  String get invoiceStatusPaid => 'Ödendi';
+
+  @override
+  String get invoiceStatusOverdue => 'Vadesi geçti';
+
+  @override
+  String get invoiceStatusCancelled => 'İptal edildi';
+
+  @override
+  String get invoiceNewTitle => 'Yeni fatura';
+
+  @override
+  String get invoiceEditTitle => 'Faturayı düzenle';
+
+  @override
+  String get invoiceCustomer => 'Müşteri';
+
+  @override
+  String get invoiceNoCustomer => 'Müşteri yok';
+
+  @override
+  String get invoiceIssueDate => 'Fatura tarihi';
+
+  @override
+  String get invoiceDueDate => 'Son ödeme tarihi';
+
+  @override
+  String get invoiceServicePeriod => 'Hizmet dönemi';
+
+  @override
+  String get invoiceServiceFrom => 'Başlangıç';
+
+  @override
+  String get invoiceServiceTo => 'Bitiş';
+
+  @override
+  String get invoiceItems => 'Kalemler';
+
+  @override
+  String get invoiceItemDescription => 'Açıklama';
+
+  @override
+  String get invoiceItemQuantity => 'Adet';
+
+  @override
+  String get invoiceItemUnitPrice => 'Birim fiyat';
+
+  @override
+  String get invoiceItemAmount => 'Tutar';
+
+  @override
+  String get invoiceAddItem => 'Kalem ekle';
+
+  @override
+  String get invoiceSubtotal => 'Ara toplam';
+
+  @override
+  String get invoiceVat => 'KDV';
+
+  @override
+  String get invoiceTotal => 'Toplam';
+
+  @override
+  String get invoiceNotes => 'Notlar';
+
+  @override
+  String get invoiceNotesHint => 'Faturanın altında görünür.';
+
+  @override
+  String get invoiceSave => 'Kaydet';
+
+  @override
+  String get invoiceSaving => 'Kaydediliyor…';
+
+  @override
+  String get invoiceSaved => 'Fatura kaydedildi.';
+
+  @override
+  String get invoiceError => 'Fatura kaydedilemedi. Lütfen tekrar deneyin.';
+
+  @override
+  String get invoiceDelete => 'Faturayı sil';
+
+  @override
+  String get invoiceDeleteConfirm =>
+      'Bu fatura silinsin mi? Bu işlem geri alınamaz.';
+
+  @override
+  String get invoiceDeleted => 'Fatura silindi.';
+
+  @override
+  String get invoiceDeleteDraftOnly => 'Yalnızca taslak faturalar silinebilir.';
+
+  @override
+  String get invoiceMissingCustomer => 'Lütfen bir müşteri seçin.';
+
+  @override
+  String get invoiceMissingItems =>
+      'Lütfen açıklamalı en az bir kalem ekleyin.';
+
+  @override
+  String get invoiceNumber => 'Fatura';
+
+  @override
+  String get invoiceNumberLabel => 'Numara';
+
+  @override
+  String get invoiceNotFound => 'Fatura bulunamadı.';
 }

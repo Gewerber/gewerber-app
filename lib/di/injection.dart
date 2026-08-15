@@ -1,7 +1,9 @@
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 
+import 'package:gewerber_app/application/settings/app_settings_cubit.dart';
 import 'package:gewerber_app/core/config/app_environment.dart';
+import 'package:gewerber_app/domain/repositories/user_preferences_repository.dart';
 
 import 'injection.config.dart';
 
@@ -20,4 +22,10 @@ final GetIt getIt = GetIt.instance;
 )
 void configureDependencies({String? environment}) {
   getIt.init(environment: environment ?? AppEnvironment.authEnvironment);
+  getIt.registerLazySingleton<AppSettingsCubit>(() {
+    final repository = getIt.isRegistered<UserPreferencesRepository>()
+        ? getIt<UserPreferencesRepository>()
+        : null;
+    return AppSettingsCubit(repository: repository);
+  });
 }
