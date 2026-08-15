@@ -7,14 +7,14 @@ import 'package:gewerber_app/presentation/router/app_router.dart';
 import 'package:gewerber_app/presentation/router/route_names.dart';
 import 'package:gewerber_app/presentation/screens/home/business_settings_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/dashboard_screen.dart';
-import 'package:gewerber_app/presentation/screens/home/settings_screen.dart';
+import 'package:gewerber_app/presentation/screens/home/settings_master_detail.dart';
 import 'package:gewerber_app/presentation/screens/onboarding/onboarding_screen.dart';
 
 void main() {
   setUpAll(configureDependencies);
 
   testWidgets('business settings load and save', (tester) async {
-    tester.view.physicalSize = const Size(800, 1600);
+    tester.view.physicalSize = const Size(400, 1200);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.reset);
 
@@ -34,7 +34,7 @@ void main() {
 
     await tester.tap(find.text('Settings'));
     await tester.pumpAndSettle();
-    expect(find.byType(SettingsScreen), findsOneWidget);
+    expect(find.byType(SettingsMasterDetail), findsOneWidget);
 
     await tester.tap(find.text('Business settings'));
     await tester.pumpAndSettle();
@@ -54,6 +54,6 @@ void main() {
 
     await tester.pageBack();
     await tester.pumpAndSettle();
-    expect(find.byType(SettingsScreen), findsOneWidget);
+    expect(find.byType(SettingsMasterDetail), findsOneWidget);
   });
 }

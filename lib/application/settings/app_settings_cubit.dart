@@ -15,9 +15,7 @@ import 'package:gewerber_app/domain/repositories/user_preferences_repository.dar
 /// changes are persisted on the user's server profile and restored across
 /// devices via [syncFromServer].
 class AppSettingsCubit extends Cubit<AppSettingsState> {
-  AppSettingsCubit({UserPreferencesRepository? repository})
-    : _repository = repository,
-      super(const AppSettingsState());
+  AppSettingsCubit({this._repository}) : super(const AppSettingsState());
 
   final UserPreferencesRepository? _repository;
 

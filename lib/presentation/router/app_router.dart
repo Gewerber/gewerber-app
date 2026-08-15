@@ -23,7 +23,7 @@ import 'package:gewerber_app/presentation/screens/home/invoicing_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/language_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/projects_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/report_screen.dart';
-import 'package:gewerber_app/presentation/screens/home/settings_screen.dart';
+import 'package:gewerber_app/presentation/screens/home/settings_master_detail.dart';
 import 'package:gewerber_app/presentation/screens/home/time_entry_create_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/time_tracking_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/timer_screen.dart';
@@ -202,7 +202,7 @@ final GoRouter appRouter = GoRouter(
           routes: [
             GoRoute(
               path: RouteNames.settings,
-              builder: (context, state) => const SettingsScreen(),
+              builder: (context, state) => const SettingsMasterDetail(),
             ),
             GoRoute(
               path: RouteNames.settingsBusiness,

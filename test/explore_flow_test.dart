@@ -9,7 +9,7 @@ import 'package:gewerber_app/presentation/screens/auth/login_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/accounting_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/dashboard_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/invoicing_screen.dart';
-import 'package:gewerber_app/presentation/screens/home/settings_screen.dart';
+import 'package:gewerber_app/presentation/screens/home/settings_master_detail.dart';
 import 'package:gewerber_app/presentation/screens/home/time_tracking_screen.dart';
 import 'package:gewerber_app/presentation/screens/onboarding/onboarding_screen.dart';
 import 'package:gewerber_app/presentation/widgets/forms/custom_text_field.dart';
@@ -19,7 +19,7 @@ void main() {
 
   Future<void> pumpAtLogin(WidgetTester tester) async {
     // Tall surface so the whole onboarding form fits without scrolling.
-    tester.view.physicalSize = const Size(800, 1600);
+    tester.view.physicalSize = const Size(400, 1200);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.reset);
     // The app router is a shared singleton; reset it to a clean location so
@@ -88,7 +88,7 @@ void main() {
 
     await tester.tap(find.text('Settings'));
     await tester.pumpAndSettle();
-    expect(find.byType(SettingsScreen), findsOneWidget);
+    expect(find.byType(SettingsMasterDetail), findsOneWidget);
 
     await tester.tap(find.text('Business profile'));
     await tester.pumpAndSettle();
@@ -96,7 +96,7 @@ void main() {
 
     await tester.pageBack();
     await tester.pumpAndSettle();
-    expect(find.byType(SettingsScreen), findsOneWidget);
+    expect(find.byType(SettingsMasterDetail), findsOneWidget);
 
     await tester.tap(find.text('Sign out'));
     await tester.pumpAndSettle();
