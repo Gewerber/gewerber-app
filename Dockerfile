@@ -21,7 +21,7 @@ COPY pubspec.yaml ./
 RUN --mount=type=secret,id=commercial_token \
     --mount=type=secret,id=ghcr_token \
     mkdir -p ~/.ssh \
-    && echo -e "Host github.com\n  StrictHostKeyChecking no\n  UserKnownHostsFile=/dev/null" > ~/.ssh/config \
+    && printf "Host github.com\n  StrictHostKeyChecking no\n  UserKnownHostsFile=/dev/null\n" > ~/.ssh/config \
     && if [ -f /run/secrets/commercial_token ]; then \
       git config --global url."https://x-access-token:$(cat /run/secrets/commercial_token)@github.com/Gewerber/gewerber-backend-commercial.git".insteadOf "ssh://git@github.com/Gewerber/gewerber-backend-commercial.git"; \
     fi \
