@@ -23,7 +23,7 @@ RUN --mount=type=secret,id=commercial_token \
     mkdir -p ~/.ssh \
     && printf "Host github.com\n  StrictHostKeyChecking no\n  UserKnownHostsFile=/dev/null\n" > ~/.ssh/config \
     && if [ -f /run/secrets/commercial_token ]; then \
-      git config --global url."https://x-access-token:$(cat /run/secrets/commercial_token)@github.com/Gewerber/gewerber-backend-commercial.git".insteadOf "ssh://git@github.com/Gewerber/gewerber-backend-commercial.git"; \
+      git config --global url."https://x-access-token:$(cat /run/secrets/commercial_token)@github.com/".insteadOf "ssh://git@github.com/"; \
     fi \
     && if [ -f /run/secrets/ghcr_token ]; then \
       git config --global url."https://x-access-token:$(cat /run/secrets/ghcr_token)@github.com/".insteadOf "https://github.com/"; \
