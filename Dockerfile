@@ -20,14 +20,16 @@ COPY pubspec.yaml ./
 # and the git config is removed afterwards.
 RUN --mount=type=secret,id=commercial_token \
     --mount=type=secret,id=ghcr_token \
-    if [ -f /run/secrets/commercial_token ]; then \
+    mkdir -p ~/.ssh \
+    && echo -e "Host github.com\n  StrictHostKeyChecking no\n  UserKnownHostsFile=/dev/null" > ~/.ssh/config \
+    && if [ -f /run/secrets/commercial_token ]; then \
       git config --global url."https://x-access-token:$(cat /run/secrets/commercial_token)@github.com/Gewerber/gewerber-backend-commercial.git".insteadOf "ssh://git@github.com/Gewerber/gewerber-backend-commercial.git"; \
     fi \
     && if [ -f /run/secrets/ghcr_token ]; then \
       git config --global url."https://x-access-token:$(cat /run/secrets/ghcr_token)@github.com/".insteadOf "https://github.com/"; \
     fi \
     && flutter pub get \
-    && rm -f ~/.gitconfig
+    && rm -f ~/.gitconfig ~/.ssh/config
 
 # Copy the source and build the web app (releases into build/web/).
 COPY . .
