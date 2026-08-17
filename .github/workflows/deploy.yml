@@ -9,6 +9,8 @@
 #   VPS_SSH_KEY – SSH private key (deploy key) for the VPS
 #   GHCR_TOKEN  – PAT with read:packages, used by the VPS to pull the image
 #                 (omit only if the GHCR package is public)
+#   COMMERCIAL_REPO_TOKEN – PAT with read access to the private
+#                 gewerber-backend-commercial repository (git dependency)
 #
 # Create two GitHub environments: "production" (protect it as desired) and
 # "staging". Secrets can be set per environment or at repository level.
@@ -67,6 +69,15 @@ jobs:
             org.opencontainers.image.title=Gewerber App
             org.opencontainers.image.description=Gewerber client application (app.gewerber.de)
 
+      - name: Verify private dependency token
+        env:
+          COMMERCIAL_REPO_TOKEN: ${{ secrets.COMMERCIAL_REPO_TOKEN }}
+        run: |
+          if [ -z "$COMMERCIAL_REPO_TOKEN" ]; then
+            echo "::error::Secret COMMERCIAL_REPO_TOKEN is not set. Create a token with read access to the private gewerber-backend-commercial repository (Settings → Secrets and variables → Actions)."
+            exit 1
+          fi
+
       - name: Build and push image
         uses: docker/build-push-action@v6
         with:
@@ -76,6 +87,10 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          # Grants `flutter pub get` access to the private
+          # gewerber-backend-commercial git dependency.
+          secrets: |
+            commercial_token=${{ secrets.COMMERCIAL_REPO_TOKEN }}
 
       - name: Copy compose + deploy script to VPS
         uses: appleboy/scp-action@v0.1.7
