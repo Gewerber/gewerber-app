@@ -3,8 +3,6 @@
 # ---- Build stage ---------------------------------------------------------
 # BuildKit secret for the private commercial repo token.
 # Pass via: docker build --secret id=commercial_token,env=COMMERCIAL_REPO_TOKEN ...
-# BuildKit secret for GHCR token (optional, for other private GHCR packages).
-# Pass via: docker build --secret id=ghcr_token,env=GHCR_TOKEN ...
 
 FROM ghcr.io/cirruslabs/flutter:stable AS build
 
@@ -15,22 +13,15 @@ WORKDIR /app
 # generates the lock (and will honor one if it happens to be present).
 COPY pubspec.yaml ./
 
-# Configure git and rewrite pubspec to use HTTPS with token for private repo.
-# Secrets are mounted only for this step and git config is removed afterwards.
+# Rewrite github.com git URLs to use the token, so the private
+# gewerber-backend-commercial repository can be cloned. The secret is mounted
+# only for this step and the git config is removed afterwards.
 RUN --mount=type=secret,id=commercial_token \
-    --mount=type=secret,id=ghcr_token \
-    mkdir -p ~/.ssh \
-    && printf "Host github.com\n  StrictHostKeyChecking no\n  UserKnownHostsFile=/dev/null\n" > ~/.ssh/config \
-    && if [ -f /run/secrets/commercial_token ]; then \
-      TOKEN=$(cat /run/secrets/commercial_token); \
-      # Rewrite the SSH URL to HTTPS with token in pubspec.yaml \
-      sed -i "s|ssh://git@github.com/Gewerber/gewerber-backend-commercial.git|https://x-access-token:${TOKEN}@github.com/Gewerber/gewerber-backend-commercial.git|g" pubspec.yaml; \
-    fi \
-    && if [ -f /run/secrets/ghcr_token ]; then \
-      git config --global url."https://x-access-token:$(cat /run/secrets/ghcr_token)@github.com/".insteadOf "https://github.com/"; \
+    if [ -f /run/secrets/commercial_token ]; then \
+      git config --global url."https://x-access-token:$(cat /run/secrets/commercial_token)@github.com/".insteadOf "https://github.com/"; \
     fi \
     && flutter pub get \
-    && rm -f ~/.gitconfig ~/.ssh/config
+    && rm -f ~/.gitconfig
 
 # Copy the source and build the web app (releases into build/web/).
 COPY . .

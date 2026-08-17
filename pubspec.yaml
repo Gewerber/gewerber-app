@@ -54,7 +54,7 @@ dependency_overrides:
   # is not declared in its pubspec; resolve it from the commercial repo.
   gewerber_commercial_client:
     git:
-      url: ssh://git@github.com/Gewerber/gewerber-backend-commercial.git
+      url: https://github.com/Gewerber/gewerber-backend-commercial.git
       path: gewerber_commercial_client
       ref: main
 
