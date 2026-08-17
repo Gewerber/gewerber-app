@@ -15,17 +15,16 @@ WORKDIR /app
 # generates the lock (and will honor one if it happens to be present).
 COPY pubspec.yaml ./
 
-# Configure git to use the commercial repo token for the private commercial repo
-# and GHCR token for other GitHub access. Secrets are mounted only for this step
-# and the git config is removed afterwards.
+# Configure git and rewrite pubspec to use HTTPS with token for private repo.
+# Secrets are mounted only for this step and git config is removed afterwards.
 RUN --mount=type=secret,id=commercial_token \
     --mount=type=secret,id=ghcr_token \
     mkdir -p ~/.ssh \
     && printf "Host github.com\n  StrictHostKeyChecking no\n  UserKnownHostsFile=/dev/null\n" > ~/.ssh/config \
     && if [ -f /run/secrets/commercial_token ]; then \
       TOKEN=$(cat /run/secrets/commercial_token); \
-      git config --global url."https://x-access-token:${TOKEN}@github.com/".insteadOf "ssh://git@github.com/"; \
-      git config --global url."https://x-access-token:${TOKEN}@github.com/".insteadOf "git@github.com:"; \
+      # Rewrite the SSH URL to HTTPS with token in pubspec.yaml \
+      sed -i "s|ssh://git@github.com/Gewerber/gewerber-backend-commercial.git|https://x-access-token:${TOKEN}@github.com/Gewerber/gewerber-backend-commercial.git|g" pubspec.yaml; \
     fi \
     && if [ -f /run/secrets/ghcr_token ]; then \
       git config --global url."https://x-access-token:$(cat /run/secrets/ghcr_token)@github.com/".insteadOf "https://github.com/"; \
