@@ -38,6 +38,8 @@ jobs:
       packages: write
     env:
       DEPLOY_ENV: ${{ github.ref_name == 'main' && 'prod' || 'test' }}
+      # API endpoint baked into the web build (see Dockerfile ARG SERVER_HOST).
+      SERVER_HOST: ${{ github.ref_name == 'main' && 'https://api.gewerber.de' || 'https://api.test.gewerber.de' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -85,6 +87,8 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            SERVER_HOST=${{ env.SERVER_HOST }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           # Grants `flutter pub get` access to the private

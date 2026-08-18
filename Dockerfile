@@ -24,9 +24,14 @@ RUN --mount=type=secret,id=commercial_token \
     && rm -f ~/.gitconfig
 
 # Copy the source and build the web app (releases into build/web/).
+# SERVER_HOST is baked in at build time (the app resolves the API endpoint
+# from `--dart-define=SERVER_HOST`, see lib/core/config/app_config.dart).
+# CI passes the environment-specific backend URL; the default targets
+# production (https://api.gewerber.de).
 COPY . .
 RUN flutter pub get
-RUN flutter build web --release --base-href /
+ARG SERVER_HOST=https://api.gewerber.de
+RUN flutter build web --release --base-href / --dart-define=SERVER_HOST=$SERVER_HOST
 
 # ---- Runtime stage -------------------------------------------------------
 # A slim nginx serving the static Flutter Web build. Flutter uses client-side
