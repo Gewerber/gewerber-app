@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:gewerber_app/application/auth/auth_cubit.dart';
@@ -32,6 +33,23 @@ class _SplashScreenState extends State<SplashScreen> {
     final l10n = AppLocalizations.of(context);
     final colors = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
+    final reduceMotion = MediaQuery.disableAnimationsOf(context);
+
+    Widget entrance(Widget child, {Duration delay = Duration.zero}) {
+      if (reduceMotion) return child;
+      return child.animate().fadeIn(delay: delay, duration: 300.ms);
+    }
+
+    final logo = reduceMotion
+        ? const Center(child: BrandLogo(size: 56))
+        : const Center(child: BrandLogo(size: 56))
+              .animate()
+              .scale(
+                begin: const Offset(0.6, 0.6),
+                duration: 400.ms,
+                curve: Curves.easeOutBack,
+              )
+              .fadeIn(duration: 300.ms);
 
     return BlocListener<AuthCubit, AuthState>(
       listenWhen: (previous, current) => previous.status != current.status,
@@ -56,52 +74,73 @@ class _SplashScreenState extends State<SplashScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const SizedBox(
-                      width: 32,
-                      height: 32,
-                      child: CircularProgressIndicator(strokeWidth: 3),
+                    Semantics(
+                      label: l10n.commonLoading,
+                      child: const Align(
+                        alignment: Alignment.center,
+                        child: SizedBox(
+                          width: 32,
+                          height: 32,
+                          child: CircularProgressIndicator(strokeWidth: 3),
+                        ),
+                      ),
                     ),
                     const SizedBox(height: GewerberTokens.space24),
-                    const BrandLogo(size: 56),
+                    logo,
                     const SizedBox(height: GewerberTokens.space16),
-                    Text(
-                      l10n.appTitle,
-                      textAlign: TextAlign.center,
-                      style: textTheme.headlineMedium?.copyWith(
-                        color: colors.onSurface,
-                        fontWeight: FontWeight.w700,
+                    entrance(
+                      Text(
+                        l10n.appTitle,
+                        textAlign: TextAlign.center,
+                        style: textTheme.headlineMedium?.copyWith(
+                          color: colors.onSurface,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
+                      delay: 150.ms,
                     ),
                     const SizedBox(height: GewerberTokens.space8),
-                    Text(
-                      l10n.splashSubtitle,
-                      textAlign: TextAlign.center,
-                      style: textTheme.bodyMedium?.copyWith(
-                        color: colors.onSurfaceVariant,
+                    entrance(
+                      Text(
+                        l10n.splashSubtitle,
+                        textAlign: TextAlign.center,
+                        style: textTheme.bodyMedium?.copyWith(
+                          color: colors.onSurfaceVariant,
+                        ),
                       ),
+                      delay: 250.ms,
                     ),
                     const SizedBox(height: GewerberTokens.space40),
-                    FilledButton(
-                      onPressed: () => context.go(RouteNames.register),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: GewerberTokens.space4,
+                    entrance(
+                      FilledButton(
+                        onPressed: () => context.go(RouteNames.register),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: GewerberTokens.space4,
+                          ),
+                          child: Text(l10n.splashGetStarted),
                         ),
-                        child: Text(l10n.splashGetStarted),
                       ),
+                      delay: 350.ms,
                     ),
                     const SizedBox(height: GewerberTokens.space12),
-                    OutlinedButton(
-                      onPressed: () => context.go(RouteNames.login),
-                      child: Text(l10n.splashLogIn),
+                    entrance(
+                      OutlinedButton(
+                        onPressed: () => context.go(RouteNames.login),
+                        child: Text(l10n.splashLogIn),
+                      ),
+                      delay: 400.ms,
                     ),
                     const SizedBox(height: GewerberTokens.space24),
-                    Text(
-                      l10n.splashPrivacy,
-                      textAlign: TextAlign.center,
-                      style: textTheme.bodySmall?.copyWith(
-                        color: colors.onSurfaceVariant,
+                    entrance(
+                      Text(
+                        l10n.splashPrivacy,
+                        textAlign: TextAlign.center,
+                        style: textTheme.bodySmall?.copyWith(
+                          color: colors.onSurfaceVariant,
+                        ),
                       ),
+                      delay: 450.ms,
                     ),
                   ],
                 ),

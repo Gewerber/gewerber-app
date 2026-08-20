@@ -7,6 +7,7 @@ import 'package:gewerber_app/core/theme/app_theme.dart';
 import 'package:gewerber_app/domain/entities/business.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 import 'package:gewerber_app/presentation/router/route_names.dart';
+import 'package:gewerber_app/presentation/widgets/auth/auth_primary_button.dart';
 import 'package:gewerber_app/presentation/widgets/forms/custom_text_field.dart';
 
 /// Onboarding — create the user's first business.
@@ -113,13 +114,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      TextFormField(
+                      CustomTextField(
                         controller: _nameController,
-                        decoration: InputDecoration(
-                          labelText: l10n.onboardingBusinessName,
-                          prefixIcon: const Icon(Icons.storefront_outlined),
-                          helperText: l10n.onboardingBusinessNameHint,
-                        ),
+                        label: l10n.onboardingBusinessName,
+                        icon: Icons.storefront_outlined,
+                        helperText: l10n.onboardingBusinessNameHint,
                         textInputAction: TextInputAction.next,
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
@@ -164,6 +163,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         controller: _vatIdController,
                         label: l10n.onboardingVatId,
                         icon: Icons.badge_outlined,
+                        helperText: l10n.onboardingVatIdHint,
                         textInputAction: TextInputAction.next,
                       ),
                       const SizedBox(height: GewerberTokens.space16),
@@ -221,22 +221,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         ],
                       ),
                       const SizedBox(height: GewerberTokens.space32),
-                      FilledButton(
-                        onPressed: _isSubmitting ? null : _submit,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: GewerberTokens.space4,
-                          ),
-                          child: _isSubmitting
-                              ? const SizedBox(
-                                  width: 20,
-                                  height: 20,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                  ),
-                                )
-                              : Text(l10n.onboardingCreate),
-                        ),
+                      AuthPrimaryButton(
+                        label: l10n.onboardingCreate,
+                        isSubmitting: _isSubmitting,
+                        onPressed: _submit,
                       ),
                     ],
                   ),

@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 
 import 'package:gewerber_app/core/errors/failures.dart';
 import 'package:gewerber_app/domain/entities/user.dart';
+import 'package:gewerber_app/domain/value_objects/social_auth_provider.dart';
 
 /// Whether the current session is known, signed out, or active.
 enum AuthStatus { unknown, unauthenticated, authenticated }
@@ -13,6 +14,7 @@ class AuthState extends Equatable {
     this.user,
     this.isSubmitting = false,
     this.failure,
+    this.submittingProvider,
   });
 
   /// Initial state before any session lookup has run.
@@ -23,6 +25,9 @@ class AuthState extends Equatable {
   final bool isSubmitting;
   final Failure? failure;
 
+  /// Social identity provider currently being signed in with, if any.
+  final SocialAuthProvider? submittingProvider;
+
   bool get isAuthenticated => status == AuthStatus.authenticated;
 
   AuthState copyWith({
@@ -32,15 +37,26 @@ class AuthState extends Equatable {
     bool? isSubmitting,
     Failure? failure,
     bool clearFailure = false,
+    SocialAuthProvider? submittingProvider,
+    bool clearSubmittingProvider = false,
   }) {
     return AuthState(
       status: status ?? this.status,
       user: clearUser ? null : (user ?? this.user),
       isSubmitting: isSubmitting ?? this.isSubmitting,
       failure: clearFailure ? null : (failure ?? this.failure),
+      submittingProvider: clearSubmittingProvider
+          ? null
+          : (submittingProvider ?? this.submittingProvider),
     );
   }
 
   @override
-  List<Object?> get props => [status, user, isSubmitting, failure];
+  List<Object?> get props => [
+    status,
+    user,
+    isSubmitting,
+    failure,
+    submittingProvider,
+  ];
 }

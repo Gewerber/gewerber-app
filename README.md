@@ -28,8 +28,16 @@ Part of the [Gewerber GitHub organization](https://github.com/Gewerber).
 ### Run the web app
 
 ```bash
-flutter run -d chrome
+flutter run -d chrome                       # production entry (lib/main.dart)
+flutter run -t lib/main_dev.dart -d chrome      # dev flavor (mock auth, red banner)
+flutter run -t lib/main_staging.dart -d chrome  # staging flavor (test backend, orange banner)
 ```
+
+Flavors are configured with [`flutter_flavor`](https://pub.dev/packages/flutter_flavor).
+Each entry point (`lib/main.dart`, `lib/main_dev.dart`, `lib/main_staging.dart`)
+initializes a `FlavorConfig` with its backend URL, auth mode and banner; the
+banner is hidden in production. `--dart-define=SERVER_HOST=...` and
+`--dart-define=AUTH_MODE=live|mock` still override the flavor defaults.
 
 ### Run on a device
 

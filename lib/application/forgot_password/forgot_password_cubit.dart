@@ -125,6 +125,11 @@ class ForgotPasswordCubit extends Cubit<ForgotPasswordState> {
     );
   }
 
+  /// Clears the current failure so inline error UI can be dismissed.
+  void clearFailure() {
+    emit(state.copyWith(clearFailure: true));
+  }
+
   /// Resets the flow so the screen can be re-entered cleanly.
   void reset() {
     _passwordResetRequestId = null;

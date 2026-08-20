@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'gewerber_colors.dart';
@@ -82,6 +83,17 @@ abstract final class GewerberTheme {
       canvasColor: colorScheme.surface,
       dividerColor: colorScheme.outline.withValues(alpha: 0.6),
       splashFactory: InkSparkle.splashFactory,
+      // Screen transitions: keep the platform feel on mobile, but no
+      // animated page transitions on desktop/web.
+      pageTransitionsTheme: const PageTransitionsTheme(
+        builders: {
+          TargetPlatform.android: FadeForwardsPageTransitionsBuilder(),
+          TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.windows: _NoTransitionsPageTransitionsBuilder(),
+          TargetPlatform.macOS: _NoTransitionsPageTransitionsBuilder(),
+          TargetPlatform.linux: _NoTransitionsPageTransitionsBuilder(),
+        },
+      ),
       // Buttons — 8px radius (Brand Book §8)
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
@@ -240,5 +252,22 @@ abstract final class GewerberTheme {
         ),
       ),
     );
+  }
+}
+
+/// Page transition that swaps screens instantly — used on desktop platforms
+/// where animated route transitions feel out of place.
+class _NoTransitionsPageTransitionsBuilder extends PageTransitionsBuilder {
+  const _NoTransitionsPageTransitionsBuilder();
+
+  @override
+  Widget buildTransitions<T>(
+    PageRoute<T> route,
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    return child;
   }
 }

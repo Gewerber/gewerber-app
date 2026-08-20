@@ -26,13 +26,20 @@
   "loginCreateAccount": "Создать аккаунт",
   "loginInvalidCredentials": "Адрес или пароль неверны. Попробуй ещё раз.",
   "loginTooManyAttempts": "Слишком много неудачных попыток. Попробуй через несколько минут.",
-  "loginDemoCta": "Открыть демо",
-  "loginDemoHint": "Вход без реального аккаунта, чтобы посмотреть все экраны приложения.",
+  "loginEmailInvalid": "Введи корректный адрес эл. почты.",
+  "loginPasswordRequired": "Введи свой пароль.",
 
   "authUserBlocked": "Этот аккаунт заблокирован. Обратись в поддержку, если это ошибка.",
   "authValidationError": "Пожалуйста, проверь введённые данные.",
   "authNetworkError": "Не удалось связаться с сервером. Проверь подключение и попробуй ещё раз.",
   "authPasswordPolicy": "Этот пароль не соответствует требованиям.",
+  "passwordStrengthWeak": "Слабый",
+  "passwordStrengthMedium": "Средний",
+  "passwordStrengthStrong": "Надёжный",
+  "passwordRuleLength": "Минимум 8 символов",
+  "passwordRuleCase": "Верхний и нижний регистр",
+  "passwordRuleDigit": "Хотя бы одна цифра",
+  "passwordRuleSymbol": "Хотя бы один спецсимвол",
 
   "registerTitle": "Создать аккаунт",
   "registerSubtitle": "Пара быстрых шагов — и всё готово.",
@@ -54,6 +61,10 @@
   "passwordMismatch": "Пароли не совпадают.",
   "registerHaveAccount": "Уже есть аккаунт?",
   "reRegisterCta": "Войти",
+  "registerStepEmail": "Почта",
+  "registerStepCode": "Код",
+  "registerStepPassword": "Пароль",
+  "registerEditEmail": "Изменить почту",
 
   "forgotTitle": "Сброс пароля",
   "forgotSubtitle": "Мы отправим тебе код, чтобы ты мог выбрать новый пароль.",
@@ -66,9 +77,13 @@
   "forgotBackToLogin": "Вернуться ко входу",
   "forgotSuccessTitle": "Пароль обновлён",
   "forgotSuccessSubtitle": "Теперь ты можешь войти с новым паролем.",
+  "forgotStepEmail": "Почта",
+  "forgotStepCode": "Код",
+  "forgotStepPassword": "Новый пароль",
 
   "commonContinue": "Продолжить",
   "commonBack": "Назад",
+  "commonLoading": "Загрузка",
   "commonOrContinueWith": "или войти через",
   "commonComingSoon": "Скоро",
   "commonAdd": "Добавить",
@@ -76,6 +91,7 @@
   "commonApple": "Apple",
   "commonFacebook": "Facebook",
   "commonSocialUnavailable": "Вход в один клик скоро появится.",
+  "commonResendIn": "Отправить снова через {seconds} с",
 
   "betaBannerTitle": "Открытая бета",
   "betaBannerText": "Gewerber в разработке — некоторые разделы пока заглушки. Обратная связь: github.com/Gewerber/gewerber-app",
@@ -87,17 +103,11 @@
   "moduleComingSoonTitle": "Уже в работе!",
   "moduleComingSoonSubtitle": "Этот модуль следующий в нашем плане и появится здесь совсем скоро.",
 
-  "@invoices": {
-    "description": "Invoices module stubs"
-  },
   "invoicesCreateTitle": "Новый счёт",
   "invoicesCreateSubtitle": "Здесь будут редактироваться реквизиты и позиции счёта.",
   "invoicesDetailTitle": "Счёт",
   "invoicesDetailSubtitle": "Здесь откроется готовый документ счёта.",
 
-  "@time": {
-    "description": "Time tracking module stubs"
-  },
   "timeProjectsTitle": "Проекты",
   "timeProjectsSubtitle": "Здесь появятся проекты и задачи.",
   "timeTimerTitle": "Таймер",
@@ -105,25 +115,16 @@
   "timeEntryCreateTitle": "Ручная запись",
   "timeEntryCreateSubtitle": "Здесь будут добавляться записи времени.",
 
-  "@accounting": {
-    "description": "Basic accounting module stubs"
-  },
   "accountingReportTitle": "Отчёт",
   "accountingReportSubtitle": "Здесь появится простой отчёт о прибылях и убытках.",
   "accountingEntryCreateTitle": "Добавить запись",
   "accountingEntryCreateSubtitle": "Здесь будут учитываться доходы и расходы.",
 
-  "@guides": {
-    "description": "Guidance system stubs"
-  },
   "guidesTitle": "Гиды",
   "guidesSubtitle": "Здесь появятся чек-листы и советы для вашего дела.",
   "checklistTitle": "Чек-лист",
   "checklistSubtitle": "Здесь появится пошаговый чек-лист.",
 
-  "@settings": {
-    "description": "Settings stub"
-  },
   "settingsTitle": "Настройки",
   "settingsBusinessProfile": "Профиль бизнеса",
   "settingsBusinessSettings": "Настройки бизнеса",

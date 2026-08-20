@@ -9,6 +9,7 @@ import 'package:gewerber_app/presentation/screens/home/business_settings_screen.
 import 'package:gewerber_app/presentation/screens/home/dashboard_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/settings_master_detail.dart';
 import 'package:gewerber_app/presentation/screens/onboarding/onboarding_screen.dart';
+import 'package:gewerber_app/presentation/widgets/forms/custom_text_field.dart';
 
 void main() {
   setUpAll(configureDependencies);
@@ -22,7 +23,12 @@ void main() {
     await tester.pumpWidget(const GewerberApp());
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Explore the demo'));
+    await tester.enterText(
+      find.byType(CustomTextField).at(0),
+      'demo@gewerber.de',
+    );
+    await tester.enterText(find.byType(CustomTextField).at(1), 'demo-password');
+    await tester.tap(find.text('Log in'));
     await tester.pumpAndSettle();
 
     if (find.byType(OnboardingScreen).evaluate().isNotEmpty) {

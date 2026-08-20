@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+import 'package:gewerber_app/core/config/flavor_values.dart';
+
 /// Injectable environments used to select the authentication backend.
 ///
 /// The live environment talks to the Serverpod backend; the mock environment
@@ -19,11 +21,14 @@ abstract final class AppEnvironment {
 
   /// Resolves the default authentication environment.
   ///
-  /// An explicit `--dart-define=AUTH_MODE=...` wins. Without it, release
-  /// builds use the live backend while debug builds and widget tests keep
-  /// the mock repository (no network, deterministic).
+  /// Precedence: an explicit `--dart-define=AUTH_MODE=...` wins, then the
+  /// active flavor's `authMode` variable (set by the entry point), then the
+  /// build mode — release builds use the live backend while debug builds and
+  /// widget tests keep the mock repository (no network, deterministic).
   static String get authEnvironment {
-    return switch (_authModeOverride) {
+    if (_authModeOverride == 'live') return authLive;
+    if (_authModeOverride == 'mock') return authMock;
+    return switch (FlavorValues.authMode) {
       'live' => authLive,
       'mock' => authMock,
       _ => kReleaseMode ? authLive : authMock,

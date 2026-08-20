@@ -56,10 +56,15 @@ void main() {
     expect(find.byType(DashboardScreen), findsOneWidget);
   });
 
-  testWidgets('Demo button signs in and shell tabs navigate', (tester) async {
+  testWidgets('Mock login and shell tabs navigate', (tester) async {
     await pumpAtLogin(tester);
 
-    await tester.tap(find.text('Explore the demo'));
+    await tester.enterText(
+      find.byType(CustomTextField).at(0),
+      'demo@gewerber.de',
+    );
+    await tester.enterText(find.byType(CustomTextField).at(1), 'demo-password');
+    await tester.tap(find.text('Log in'));
     await tester.pumpAndSettle();
 
     await completeOnboarding(tester);

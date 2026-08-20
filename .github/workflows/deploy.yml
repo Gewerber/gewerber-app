@@ -89,6 +89,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             SERVER_HOST=${{ env.SERVER_HOST }}
+            FLAVOR=${{ github.ref_name == 'main' && 'prod' || 'staging' }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           # Grants `flutter pub get` access to the private

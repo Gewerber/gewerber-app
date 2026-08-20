@@ -70,17 +70,38 @@ class AuthCubit extends Cubit<AuthState> {
 
   /// Attempts to sign the user in through a social identity provider.
   Future<void> socialLogin(SocialAuthProvider provider) async {
-    emit(state.copyWith(isSubmitting: true, clearFailure: true));
+    emit(
+      state.copyWith(
+        isSubmitting: true,
+        clearFailure: true,
+        submittingProvider: provider,
+      ),
+    );
     try {
       final user = await _repository.socialLogin(provider);
       emit(AuthState(status: AuthStatus.authenticated, user: user));
     } on AppException catch (e) {
-      emit(state.copyWith(isSubmitting: false, failure: mapAppException(e)));
+      emit(
+        state.copyWith(
+          isSubmitting: false,
+          failure: mapAppException(e),
+          clearSubmittingProvider: true,
+        ),
+      );
     } on Exception {
       emit(
-        state.copyWith(isSubmitting: false, failure: const NetworkFailure()),
+        state.copyWith(
+          isSubmitting: false,
+          failure: const NetworkFailure(),
+          clearSubmittingProvider: true,
+        ),
       );
     }
+  }
+
+  /// Clears the current failure so inline error UI can be dismissed.
+  void clearFailure() {
+    emit(state.copyWith(clearFailure: true));
   }
 
   /// Marks the session as authenticated without a sign-in call.

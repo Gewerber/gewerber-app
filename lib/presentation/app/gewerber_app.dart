@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_flavor/flutter_flavor.dart';
 
 import 'package:gewerber_app/application/auth/auth_cubit.dart';
 import 'package:gewerber_app/application/auth/auth_state.dart';
@@ -57,17 +58,22 @@ class _AppView extends StatelessWidget {
       },
       child: BlocBuilder<AppSettingsCubit, AppSettingsState>(
         builder: (context, state) {
-          return MaterialApp.router(
-            title: 'Gewerber',
-            debugShowCheckedModeBanner: false,
-            routerConfig: appRouter,
-            theme: GewerberTheme.light(),
-            darkTheme: GewerberTheme.dark(),
-            themeMode: state.themeMode,
-            locale: state.locale,
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
-            onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
+          // Overlays a "DEV"/"STAGING" ribbon in non-production flavors
+          // (configured in the entry points, see `lib/main_*.dart`).
+          return FlavorBanner(
+            child: MaterialApp.router(
+              title: 'Gewerber',
+              debugShowCheckedModeBanner: false,
+              routerConfig: appRouter,
+              theme: GewerberTheme.light(),
+              darkTheme: GewerberTheme.dark(),
+              themeMode: state.themeMode,
+              locale: state.locale,
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              onGenerateTitle: (context) =>
+                  AppLocalizations.of(context).appTitle,
+            ),
           );
         },
       ),
