@@ -10,7 +10,9 @@ import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 /// Row of social identity-provider buttons shown on auth screens.
 ///
 /// Taps delegate to [AuthCubit.socialLogin]; failures (e.g. a provider that
-/// is not configured for the current build) surface as a snackbar.
+/// is not configured for the current build) surface as a snackbar. The button
+/// for the provider being signed in with shows a loading spinner and all
+/// social buttons are disabled while any auth operation is in flight.
 class SocialSignInRow extends StatelessWidget {
   const SocialSignInRow({super.key});
 
@@ -34,48 +36,63 @@ class SocialSignInRow extends StatelessWidget {
           ).showSnackBar(SnackBar(content: Text(message)));
         }
       },
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
+      child: BlocBuilder<AuthCubit, AuthState>(
+        builder: (context, state) {
+          final busy = state.isSubmitting;
+          final activeProvider = state.submittingProvider;
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Expanded(child: Divider()),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: Text(
-                  l10n.commonOrContinueWith,
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
+              Row(
+                children: [
+                  const Expanded(child: Divider()),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: Text(
+                      l10n.commonOrContinueWith,
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ),
+                  const Expanded(child: Divider()),
+                ],
               ),
-              const Expanded(child: Divider()),
+              const SizedBox(height: 16),
+              Wrap(
+                alignment: WrapAlignment.center,
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  _ProviderButton(
+                    label: l10n.commonGoogle,
+                    icon: Icons.g_mobiledata,
+                    isLoading: activeProvider == SocialAuthProvider.google,
+                    onPressed: busy
+                        ? null
+                        : () => _signIn(context, SocialAuthProvider.google),
+                  ),
+                  _ProviderButton(
+                    label: l10n.commonApple,
+                    icon: Icons.apple,
+                    isLoading: activeProvider == SocialAuthProvider.apple,
+                    onPressed: busy
+                        ? null
+                        : () => _signIn(context, SocialAuthProvider.apple),
+                  ),
+                  // Facebook is feature-gated: rendered once the backend provider
+                  // and its configuration exist (see core/config/app_config.dart).
+                  _ProviderButton(
+                    label: l10n.commonFacebook,
+                    icon: Icons.facebook,
+                    isLoading: activeProvider == SocialAuthProvider.facebook,
+                    onPressed: busy
+                        ? null
+                        : () => _signIn(context, SocialAuthProvider.facebook),
+                  ),
+                ],
+              ),
             ],
-          ),
-          const SizedBox(height: 16),
-          Wrap(
-            alignment: WrapAlignment.center,
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              _ProviderButton(
-                label: l10n.commonGoogle,
-                icon: Icons.g_mobiledata,
-                onPressed: () => _signIn(context, SocialAuthProvider.google),
-              ),
-              _ProviderButton(
-                label: l10n.commonApple,
-                icon: Icons.apple,
-                onPressed: () => _signIn(context, SocialAuthProvider.apple),
-              ),
-              // Facebook is feature-gated: rendered once the backend provider
-              // and its configuration exist (see core/config/app_config.dart).
-              _ProviderButton(
-                label: l10n.commonFacebook,
-                icon: Icons.facebook,
-                onPressed: () => _signIn(context, SocialAuthProvider.facebook),
-              ),
-            ],
-          ),
-        ],
+          );
+        },
       ),
     );
   }
@@ -90,17 +107,25 @@ class _ProviderButton extends StatelessWidget {
     required this.label,
     required this.icon,
     this.onPressed,
+    this.isLoading = false,
   });
 
   final String label;
   final IconData icon;
   final VoidCallback? onPressed;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
     return OutlinedButton.icon(
       onPressed: onPressed,
-      icon: Icon(icon, size: 20),
+      icon: isLoading
+          ? const SizedBox(
+              width: 16,
+              height: 16,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            )
+          : Icon(icon, size: 20),
       label: Text(label),
     );
   }

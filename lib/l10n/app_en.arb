@@ -3,26 +3,17 @@
   "appTitle": "Gewerber",
   "tagline": "Business. Simplified.",
 
-  "@@splash": {
-    "description": "Splash / auth landing screen"
-  },
   "splashTitle": "Your business, finally simple.",
   "splashSubtitle": "Bills, time tracking and bookkeeping — friendly software made for solo entrepreneurs in Germany.",
   "splashGetStarted": "Get started",
   "splashLogIn": "I already have an account",
   "splashPrivacy": "Open source · GDPR friendly · Built for solos",
 
-  "@@authPanel": {
-    "description": "Shared brand panel on auth screens"
-  },
   "panelTrustCreate": "Create an account in under two minutes",
   "panelTrustInvoices": "Send your first invoice today",
   "panelTrustTax": "Understand the taxes that apply to you",
   "panelTrustOpenSource": "Your data, your business — open source",
 
-  "@@login": {
-    "description": "Login screen"
-  },
   "loginTitle": "Welcome back",
   "loginSubtitle": "Sign in to keep running your business.",
   "emailLabel": "Email address",
@@ -35,26 +26,37 @@
   "loginCreateAccount": "Create your account",
   "loginInvalidCredentials": "The email address or password is incorrect. Please try again.",
   "loginTooManyAttempts": "Too many failed attempts. Please try again in a few minutes.",
-  "loginDemoCta": "Explore the demo",
-  "loginDemoHint": "Signs you in without a real account so you can browse the app.",
+  "loginEmailInvalid": "Please enter a valid email address.",
+  "loginPasswordRequired": "Please enter your password.",
 
-  "@auth": {
-    "description": "Shared auth error strings"
-  },
   "authUserBlocked": "This account has been blocked. Contact support if you think this is a mistake.",
   "authValidationError": "Please check the details you entered.",
   "authNetworkError": "We couldn't reach the server. Check your connection and try again.",
   "authPasswordPolicy": "This password doesn't meet the requirements.",
 
-  "@register": {
-    "description": "Registration flow (email → code → password)"
-  },
+  "passwordStrengthWeak": "Weak",
+  "passwordStrengthMedium": "Medium",
+  "passwordStrengthStrong": "Strong",
+  "passwordRuleLength": "At least 8 characters",
+  "passwordRuleCase": "Upper and lower case letters",
+  "passwordRuleDigit": "At least one number",
+  "passwordRuleSymbol": "At least one symbol",
+
   "registerTitle": "Create your account",
   "registerSubtitle": "A couple of quick steps and you're set.",
   "registerEmailStepTitle": "Start with your email",
   "registerEmailStepSubtitle": "We'll send you a code to verify it's really you.",
   "registerCodeStepTitle": "Enter the code",
   "registerCodeStepSubtitle": "We emailed a 6-digit code to {email}.",
+  "@registerCodeStepSubtitle": {
+    "description": "Subtitle on the code verification step, informing the user that a code was sent to their email address.",
+    "placeholders": {
+      "email": {
+        "type": "String",
+        "example": "user@example.com"
+      }
+    }
+  },
   "registerCodeHint": "Check your inbox (and spam, just in case).",
   "registerPasswordStepTitle": "Set your password",
   "registerPasswordStepSubtitle": "At least 8 characters. You can change this later.",
@@ -69,14 +71,24 @@
   "passwordMismatch": "Passwords do not match.",
   "registerHaveAccount": "Already have an account?",
   "reRegisterCta": "Log in",
+  "registerStepEmail": "Email",
+  "registerStepCode": "Code",
+  "registerStepPassword": "Password",
+  "registerEditEmail": "Edit email",
 
-  "@forgot": {
-    "description": "Forgot password flow"
-  },
   "forgotTitle": "Reset your password",
   "forgotSubtitle": "We'll email you a code so you can pick a new password.",
   "forgotCodeStepTitle": "Enter the code",
   "forgotCodeStepSubtitle": "We emailed a 6-digit code to {email}.",
+  "@forgotCodeStepSubtitle": {
+    "description": "Subtitle on the password reset code step, informing the user that a code was sent to their email address.",
+    "placeholders": {
+      "email": {
+        "type": "String",
+        "example": "user@example.com"
+      }
+    }
+  },
   "forgotPasswordStepTitle": "Choose a new password",
   "forgotPasswordStepSubtitle": "At least 8 characters. Avoid reusing old passwords.",
   "forgotSendCode": "Send reset code",
@@ -84,12 +96,13 @@
   "forgotBackToLogin": "Back to log in",
   "forgotSuccessTitle": "Password updated",
   "forgotSuccessSubtitle": "You can now log in with your new password.",
+  "forgotStepEmail": "Email",
+  "forgotStepCode": "Code",
+  "forgotStepPassword": "New password",
 
-  "@common": {
-    "description": "Shared UI strings"
-  },
   "commonContinue": "Continue",
   "commonBack": "Back",
+  "commonLoading": "Loading",
   "commonOrContinueWith": "or continue with",
   "commonComingSoon": "Coming soon",
   "commonAdd": "Add",
@@ -97,10 +110,17 @@
   "commonApple": "Apple",
   "commonFacebook": "Facebook",
   "commonSocialUnavailable": "One-tap sign-in is coming soon.",
-
-  "@home": {
-    "description": "Authenticated app shell"
+  "commonResendIn": "Resend in {seconds}s",
+  "@commonResendIn": {
+    "description": "Shows how long until the code can be resent.",
+    "placeholders": {
+      "seconds": {
+        "type": "int",
+        "example": "30"
+      }
+    }
   },
+
   "betaBannerTitle": "Public beta",
   "betaBannerText": "Gewerber is under construction – some areas are placeholders. Feedback: github.com/Gewerber/gewerber-app",
 
@@ -111,17 +131,11 @@
   "moduleComingSoonTitle": "On it!",
   "moduleComingSoonSubtitle": "This module is next on our roadmap and lands here soon.",
 
-  "@invoices": {
-    "description": "Invoicing module stubs"
-  },
   "invoicesCreateTitle": "New invoice",
   "invoicesCreateSubtitle": "Invoice data and line items will be edited here.",
   "invoicesDetailTitle": "Invoice",
   "invoicesDetailSubtitle": "A ready invoice document will open here.",
 
-  "@time": {
-    "description": "Time tracking module stubs"
-  },
   "timeProjectsTitle": "Projects",
   "timeProjectsSubtitle": "Projects and tasks will appear here.",
   "timeTimerTitle": "Timer",
@@ -129,25 +143,16 @@
   "timeEntryCreateTitle": "Manual entry",
   "timeEntryCreateSubtitle": "Tracked time will be added here in seconds.",
 
-  "@accounting": {
-    "description": "Basic accounting module stubs"
-  },
   "accountingReportTitle": "Report",
   "accountingReportSubtitle": "A simple profit and loss view will appear here.",
   "accountingEntryCreateTitle": "Add entry",
   "accountingEntryCreateSubtitle": "Income and expenses will be recorded here.",
 
-  "@guides": {
-    "description": "Guidance system stubs"
-  },
   "guidesTitle": "Guides",
   "guidesSubtitle": "Checklists and tips for running your business appear here.",
   "checklistTitle": "Checklist",
   "checklistSubtitle": "A step-by-step checklist will appear here.",
 
-  "@settings": {
-    "description": "Settings stub"
-  },
   "settingsTitle": "Settings",
   "settingsBusinessProfile": "Business profile",
   "settingsBusinessSettings": "Business settings",
@@ -169,9 +174,6 @@
   "aboutTitle": "About Gewerber",
   "aboutSubtitle": "Version, licenses and privacy information arrive here.",
 
-  "@onboarding": {
-    "description": "Onboarding flow for new businesses"
-  },
   "onboardingTitle": "Set up your business",
   "onboardingSubtitle": "A few details and you can send your first invoice.",
   "onboardingBusinessName": "Business name",
@@ -197,9 +199,6 @@
   "onboardingCreating": "Creating…",
   "onboardingError": "We couldn't create your business. Please try again.",
 
-  "@business": {
-    "description": "Business profile form"
-  },
   "businessFormName": "Business name",
   "businessFormLegalForm": "Legal form",
   "businessFormKleinunternehmer": "Kleinunternehmer (§ 19 UStG)",
@@ -214,9 +213,6 @@
   "businessFormSaved": "Business profile updated.",
   "businessFormError": "We couldn't save your business. Please try again.",
 
-  "@businessSettings": {
-    "description": "Business settings screen"
-  },
   "businessSettingsTitle": "Business settings",
   "businessSettingsSubtitle": "Invoice numbering and payment terms.",
   "businessSettingsPaymentTerms": "Payment terms",
@@ -230,9 +226,6 @@
   "businessSettingsSaved": "Settings updated.",
   "businessSettingsError": "We couldn't save the settings. Please try again.",
 
-  "@customers": {
-    "description": "Customer management"
-  },
   "customersTitle": "Customers",
   "customersEmpty": "No customers yet. Add your first customer to create invoices.",
   "customersAdd": "Add customer",
@@ -252,9 +245,6 @@
   "customersArchive": "Archive",
   "customersArchived": "Customer archived.",
 
-  "@invoices": {
-    "description": "Invoicing module"
-  },
   "invoicesTitle": "Invoices",
   "invoicesEmpty": "No invoices yet. Create your first invoice.",
   "invoicesNew": "New invoice",

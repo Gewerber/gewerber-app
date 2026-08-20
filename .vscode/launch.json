@@ -1,0 +1,23 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Gewerber (PROD)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart"
+    },
+    {
+      "name": "Gewerber (DEV)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main_dev.dart"
+    },
+    {
+      "name": "Gewerber (STAGING)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main_staging.dart"
+    }
+  ]
+}

@@ -18,18 +18,22 @@ class AuthPanelLayout extends StatelessWidget {
   const AuthPanelLayout({
     super.key,
     this.showBackButton = true,
+    this.onBack,
     required this.child,
   });
 
   /// Whether a back button is shown (mobile layout only).
   final bool showBackButton;
 
+  /// Optional custom action for the header back button — used by multi-step
+  /// flows to step back within the flow instead of popping the route.
+  final VoidCallback? onBack;
+
   /// The form content to render.
   final Widget child;
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
     return Scaffold(
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -55,11 +59,11 @@ class AuthPanelLayout extends StatelessWidget {
                       _l10n(context).panelTrustOpenSource,
                     ),
                   ],
-                  colors: colors,
                 ),
               Expanded(
                 child: _ContentPane(
                   showBackButton: showBackButton,
+                  onBack: onBack,
                   child: child,
                 ),
               ),
@@ -72,18 +76,23 @@ class AuthPanelLayout extends StatelessWidget {
 }
 
 class _ContentPane extends StatelessWidget {
-  const _ContentPane({required this.child, required this.showBackButton});
+  const _ContentPane({
+    required this.child,
+    required this.showBackButton,
+    this.onBack,
+  });
 
   final Widget child;
   final bool showBackButton;
+  final VoidCallback? onBack;
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
 
-    return Scaffold(
-      backgroundColor: colors.surfaceContainerLow,
-      body: SafeArea(
+    return ColoredBox(
+      color: colors.surfaceContainerLow,
+      child: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -91,11 +100,11 @@ class _ContentPane extends StatelessWidget {
               padding: const EdgeInsets.all(GewerberTokens.space16),
               child: Row(
                 children: [
-                  if (showBackButton && context.canPop())
+                  if (showBackButton && (onBack != null || context.canPop()))
                     IconButton(
                       icon: const Icon(Icons.arrow_back),
                       tooltip: _l10n(context).commonBack,
-                      onPressed: () => context.pop(),
+                      onPressed: onBack ?? () => context.pop(),
                     ),
                   const _BrandMark(),
                 ],
@@ -120,15 +129,10 @@ class _ContentPane extends StatelessWidget {
 }
 
 class _BrandPanel extends StatelessWidget {
-  const _BrandPanel({
-    required this.tagline,
-    required this.trustPoints,
-    required this.colors,
-  });
+  const _BrandPanel({required this.tagline, required this.trustPoints});
 
   final String tagline;
   final List<_TrustPoint> trustPoints;
-  final ColorScheme colors;
 
   @override
   Widget build(BuildContext context) {
@@ -141,9 +145,9 @@ class _BrandPanel extends StatelessWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              colors.primary,
-              colors.secondary,
-              colors.tertiary.withValues(alpha: 0.9),
+              GewerberColors.primaryDark,
+              GewerberColors.primary,
+              GewerberColors.accentDark,
             ],
           ),
         ),
@@ -157,18 +161,18 @@ class _BrandPanel extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const _BrandMark(inverse: true),
+                const _BrandMark(inverse: true, foreground: Colors.white),
                 const SizedBox(height: GewerberTokens.space40),
                 Text(
                   tagline,
                   style: textTheme.headlineMedium?.copyWith(
-                    color: colors.onPrimary,
+                    color: Colors.white,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(height: GewerberTokens.space32),
                 for (final point in trustPoints) ...[
-                  _TrustRow(point, colors: colors),
+                  _TrustRow(point),
                   const SizedBox(height: GewerberTokens.space12),
                 ],
               ],
@@ -188,22 +192,21 @@ class _TrustPoint {
 }
 
 class _TrustRow extends StatelessWidget {
-  const _TrustRow(this.point, {required this.colors});
+  const _TrustRow(this.point);
 
   final _TrustPoint point;
-  final ColorScheme colors;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(point.icon, size: 20, color: colors.onPrimary),
+        Icon(point.icon, size: 20, color: Colors.white),
         const SizedBox(width: GewerberTokens.space12),
         Expanded(
           child: Text(
             point.text,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: colors.onPrimary.withValues(alpha: 0.92),
+              color: Colors.white.withValues(alpha: 0.92),
             ),
           ),
         ),
@@ -214,23 +217,25 @@ class _TrustRow extends StatelessWidget {
 
 /// Small brand logo used in headers and panels.
 class _BrandMark extends StatelessWidget {
-  const _BrandMark({this.inverse = false});
+  const _BrandMark({this.inverse = false, this.foreground});
 
   final bool inverse;
+  final Color? foreground;
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
+    final foreground = this.foreground ?? (inverse ? colors.onPrimary : null);
 
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        BrandLogo(size: 32, color: inverse ? colors.onPrimary : null),
+        BrandLogo(size: 32, color: foreground),
         const SizedBox(width: GewerberTokens.space8),
         Text(
           'Gewerber',
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            color: inverse ? colors.onPrimary : colors.onSurface,
+            color: foreground ?? colors.onSurface,
             fontWeight: FontWeight.w700,
           ),
         ),

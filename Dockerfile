@@ -28,10 +28,19 @@ RUN --mount=type=secret,id=commercial_token \
 # from `--dart-define=SERVER_HOST`, see lib/core/config/app_config.dart).
 # CI passes the environment-specific backend URL; the default targets
 # production (https://api.gewerber.de).
+#
+# FLAVOR selects the entry point: "prod" uses lib/main.dart (no flavor
+# banner), any other value builds lib/main_<flavor>.dart (banner + per-flavor
+# defaults).
 COPY . .
 RUN flutter pub get
+ARG FLAVOR=prod
 ARG SERVER_HOST=https://api.gewerber.de
-RUN flutter build web --release --base-href / --dart-define=SERVER_HOST=$SERVER_HOST
+RUN if [ "$FLAVOR" = "prod" ]; then \
+      flutter build web --release --base-href / --dart-define=SERVER_HOST=$SERVER_HOST; \
+    else \
+      flutter build web --release --base-href / --dart-define=SERVER_HOST=$SERVER_HOST -t lib/main_${FLAVOR}.dart; \
+    fi
 
 # ---- Runtime stage -------------------------------------------------------
 # A slim nginx serving the static Flutter Web build. Flutter uses client-side
