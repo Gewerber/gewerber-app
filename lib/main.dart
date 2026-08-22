@@ -20,7 +20,7 @@ Future<void> main() async {
       // default; without it the app targets the local backend.
       'serverHost': String.fromEnvironment(
         'SERVER_HOST',
-        defaultValue: 'http://localhost:8080',
+        defaultValue: 'https://api.gewerber.de',
       ),
       'googleClientId': String.fromEnvironment('GOOGLE_CLIENT_ID'),
       'appleClientId': String.fromEnvironment('APPLE_CLIENT_ID'),

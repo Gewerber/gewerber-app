@@ -69,6 +69,81 @@ class _FakeInvoiceRepository implements InvoiceRepository {
   Future<void> delete(int invoiceId) async {
     _invoices.removeWhere((value) => value.id == invoiceId);
   }
+
+  Invoice _transition(int invoiceId, InvoiceStatus status) {
+    final index = _invoices.indexWhere((value) => value.id == invoiceId);
+    if (index < 0) throw StateError('Unknown invoice $invoiceId');
+    final current = _invoices[index];
+    final updated = Invoice(
+      id: current.id,
+      number: current.number,
+      status: status,
+      customerId: current.customerId,
+      issueDate: current.issueDate,
+      dueDate: current.dueDate,
+      totalCents: current.totalCents,
+      notes: current.notes,
+    );
+    _invoices[index] = updated;
+    return updated;
+  }
+
+  @override
+  Future<Invoice> markSent(int invoiceId) async =>
+      _transition(invoiceId, InvoiceStatus.sent);
+
+  @override
+  Future<Invoice> cancel(int invoiceId) async =>
+      _transition(invoiceId, InvoiceStatus.cancelled);
+
+  @override
+  Future<InvoicePdf> generatePdf(int invoiceId) async {
+    return InvoicePdf(
+      documentId: invoiceId,
+      fileName: 'invoice-$invoiceId.pdf',
+      bytes: const [1, 2, 3],
+    );
+  }
+
+  @override
+  Future<String> exportCsv({InvoiceStatus? status}) async => 'number;status';
+
+  @override
+  Future<String> exportJson({InvoiceStatus? status}) async => '{}';
+
+  @override
+  Future<PaymentRecord> recordPayment({
+    required int invoiceId,
+    required int amountCents,
+    DateTime? paidAt,
+    String? reference,
+  }) async {
+    return PaymentRecord(
+      id: 1,
+      invoiceId: invoiceId,
+      amountCents: amountCents,
+      paidAt: paidAt,
+      reference: reference,
+    );
+  }
+
+  @override
+  Future<InvoicePaymentStatus> paymentStatus(int invoiceId) async {
+    return InvoicePaymentStatus(
+      invoiceId: invoiceId,
+      paidTotalCents: 0,
+      remainingCents: 0,
+      isPaid: true,
+    );
+  }
+
+  @override
+  Future<List<InvoiceReminder>> listReminders(int invoiceId) async => const [];
+
+  @override
+  Future<InvoiceReminder> sendReminder(int invoiceId) async {
+    return InvoiceReminder(id: 1, invoiceId: invoiceId, level: 1);
+  }
 }
 
 void main() {

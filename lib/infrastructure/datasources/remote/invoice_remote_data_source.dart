@@ -110,4 +110,105 @@ class InvoiceRemoteDataSource {
       throw const NetworkException();
     }
   }
+
+  Future<Invoice> markSent(int invoiceId) async {
+    try {
+      final model = await _client.invoice.markSent(invoiceId);
+      return _mapper.fromModel(model);
+    } on sdk.ServerpodClientException {
+      throw const NetworkException();
+    }
+  }
+
+  Future<Invoice> cancel(int invoiceId) async {
+    try {
+      final model = await _client.invoice.cancel(invoiceId);
+      return _mapper.fromModel(model);
+    } on sdk.ServerpodClientException {
+      throw const NetworkException();
+    }
+  }
+
+  /// Generates the PDF on the server and downloads its bytes.
+  Future<InvoicePdf> generatePdf(int invoiceId) async {
+    try {
+      final document = await _client.invoice.generatePdf(invoiceId);
+      final bytes = await _client.document.download(document.id ?? -1);
+      return InvoicePdf(
+        documentId: document.id ?? -1,
+        fileName: document.fileName,
+        bytes: bytes.buffer.asUint8List().toList(),
+      );
+    } on sdk.ServerpodClientException {
+      throw const NetworkException();
+    }
+  }
+
+  Future<String> exportCsv({InvoiceStatus? status}) async {
+    try {
+      return await _client.invoice.exportCsv(
+        status: status == null ? null : _mapper.toProtocolStatus(status),
+      );
+    } on sdk.ServerpodClientException {
+      throw const NetworkException();
+    }
+  }
+
+  Future<String> exportJson({InvoiceStatus? status}) async {
+    try {
+      return await _client.invoice.exportJson(
+        status: status == null ? null : _mapper.toProtocolStatus(status),
+      );
+    } on sdk.ServerpodClientException {
+      throw const NetworkException();
+    }
+  }
+
+  Future<PaymentRecord> recordPayment({
+    required int invoiceId,
+    required int amountCents,
+    DateTime? paidAt,
+    String? reference,
+  }) async {
+    try {
+      final model = await _client.payment.record(
+        sdk.RecordPaymentRequest(
+          invoiceId: invoiceId,
+          amountCents: amountCents,
+          paidAt: paidAt,
+          reference: reference,
+        ),
+      );
+      return _mapper.paymentFromModel(model);
+    } on sdk.ServerpodClientException {
+      throw const NetworkException();
+    }
+  }
+
+  Future<InvoicePaymentStatus> paymentStatus(int invoiceId) async {
+    try {
+      final model = await _client.payment.status(invoiceId);
+      return _mapper.paymentStatusFromModel(model);
+    } on sdk.ServerpodClientException {
+      throw const NetworkException();
+    }
+  }
+
+  Future<List<InvoiceReminder>> listReminders(int invoiceId) async {
+    try {
+      final models = await _client.reminder.list(invoiceId);
+      return models.map(_mapper.reminderFromModel).toList();
+    } on sdk.ServerpodClientException {
+      throw const NetworkException();
+    }
+  }
+
+  Future<InvoiceReminder> sendReminder(int invoiceId) async {
+    try {
+      final model = await _client.reminder.send(invoiceId);
+      return _mapper.reminderFromModel(model);
+    } on sdk.ServerpodClientException {
+      throw const NetworkException();
+    }
+  }
 }

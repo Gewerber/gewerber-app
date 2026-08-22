@@ -46,11 +46,15 @@ class SocialSignInRow extends StatelessWidget {
               Row(
                 children: [
                   const Expanded(child: Divider()),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    child: Text(
-                      l10n.commonOrContinueWith,
-                      style: Theme.of(context).textTheme.bodySmall,
+                  Flexible(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: Text(
+                        l10n.commonOrContinueWith,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
                     ),
                   ),
                   const Expanded(child: Divider()),

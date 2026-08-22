@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
+import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -28,6 +32,32 @@ class _InvoicingScreenState extends State<InvoicingScreen> {
     context.read<CustomerCubit>().load();
   }
 
+  Future<void> _export(String format) async {
+    final l10n = AppLocalizations.of(context);
+    final cubit = context.read<InvoiceCubit>();
+    final content = format == 'csv'
+        ? await cubit.exportCsv(status: _filter)
+        : await cubit.exportJson(status: _filter);
+    if (!mounted) return;
+    if (content == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.exportError)));
+      return;
+    }
+    final isCsv = format == 'csv';
+    await FileSaver.instance.saveFile(
+      name: 'gewerber-invoices',
+      bytes: Uint8List.fromList(utf8.encode(content)),
+      fileExtension: isCsv ? 'csv' : 'json',
+      mimeType: isCsv ? MimeType.csv : MimeType.json,
+    );
+    if (!mounted) return;
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(l10n.exportSuccess)));
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -37,6 +67,30 @@ class _InvoicingScreenState extends State<InvoicingScreen> {
       appBar: AppBar(
         title: Text(l10n.invoicesTitle),
         actions: [
+          PopupMenuButton<String>(
+            tooltip: l10n.exportMenu,
+            onSelected: _export,
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 'csv',
+                child: ListTile(
+                  dense: true,
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.table_chart_outlined),
+                  title: Text(l10n.exportCsv),
+                ),
+              ),
+              PopupMenuItem(
+                value: 'json',
+                child: ListTile(
+                  dense: true,
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.data_object),
+                  title: Text(l10n.exportJson),
+                ),
+              ),
+            ],
+          ),
           IconButton(
             tooltip: l10n.customersTitle,
             icon: const Icon(Icons.people_outline),

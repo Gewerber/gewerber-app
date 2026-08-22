@@ -16,6 +16,7 @@ import 'package:gewerber_app/presentation/screens/home/customer_edit_screen.dart
 import 'package:gewerber_app/presentation/screens/home/customers_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/dashboard_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/guidance_screen.dart';
+import 'package:gewerber_app/presentation/screens/home/guidance_tips_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/home_shell.dart';
 import 'package:gewerber_app/presentation/screens/home/invoice_create_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/invoice_detail_screen.dart';
@@ -25,6 +26,7 @@ import 'package:gewerber_app/presentation/screens/home/projects_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/report_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/settings_master_detail.dart';
 import 'package:gewerber_app/presentation/screens/home/time_entry_create_screen.dart';
+import 'package:gewerber_app/presentation/screens/home/time_report_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/time_tracking_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/timer_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/theme_screen.dart';
@@ -62,11 +64,6 @@ final GoRouter appRouter = GoRouter(
     getIt<BusinessRedirectController>(),
   ]),
   redirect: (context, state) {
-    // The shell has no path of its own; landing on it goes to the dashboard.
-    if (state.matchedLocation == RouteNames.app) {
-      return RouteNames.dashboard;
-    }
-
     final auth = getIt<AuthRedirectController>();
     final isAuthFlow = _authFlowRoutes.contains(state.matchedLocation);
 
@@ -113,6 +110,14 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: RouteNames.onboarding,
       builder: (context, state) => const OnboardingScreen(),
+    ),
+    // The shell has no path of its own; landing on `/app` goes to the
+    // dashboard. Several screens navigate to `RouteNames.app` after sign-in,
+    // so this route must exist or GoRouter throws
+    // `GoException: no routes for location: /app`.
+    GoRoute(
+      path: RouteNames.app,
+      redirect: (context, state) => RouteNames.dashboard,
     ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) =>
@@ -180,6 +185,10 @@ final GoRouter appRouter = GoRouter(
               path: RouteNames.timeEntryCreate,
               builder: (context, state) => const TimeEntryCreateScreen(),
             ),
+            GoRoute(
+              path: RouteNames.timeReport,
+              builder: (context, state) => const TimeReportScreen(),
+            ),
           ],
         ),
         StatefulShellBranch(
@@ -231,6 +240,10 @@ final GoRouter appRouter = GoRouter(
             GoRoute(
               path: RouteNames.guideChecklist,
               builder: (context, state) => const ChecklistScreen(),
+            ),
+            GoRoute(
+              path: RouteNames.guideTips,
+              builder: (context, state) => const GuidanceTipsScreen(),
             ),
           ],
         ),

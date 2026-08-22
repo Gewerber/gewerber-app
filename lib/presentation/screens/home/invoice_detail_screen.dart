@@ -1,3 +1,6 @@
+import 'dart:typed_data';
+
+import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -5,11 +8,13 @@ import 'package:go_router/go_router.dart';
 import 'package:gewerber_app/application/customers/customer_cubit.dart';
 import 'package:gewerber_app/application/invoices/invoice_cubit.dart';
 import 'package:gewerber_app/core/theme/app_theme.dart';
+import 'package:gewerber_app/core/utils/format.dart';
 import 'package:gewerber_app/domain/entities/invoice.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 import 'package:gewerber_app/presentation/router/route_names.dart';
 
-/// InvoiceDetailScreen — shows a single invoice and its line items.
+/// InvoiceDetailScreen — shows a single invoice, its line items and the
+/// lifecycle actions (send, cancel, PDF, payments, reminders).
 class InvoiceDetailScreen extends StatefulWidget {
   const InvoiceDetailScreen({super.key, this.invoice});
 
@@ -23,6 +28,11 @@ class InvoiceDetailScreen extends StatefulWidget {
 class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
   List<InvoiceItem>? _items;
   bool _loaded = false;
+  bool _busy = false;
+  InvoicePaymentStatus? _paymentStatus;
+  List<InvoiceReminder> _reminders = const [];
+
+  Invoice get _invoice => widget.invoice!;
 
   @override
   void initState() {
@@ -37,6 +47,49 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
     final result = await context.read<InvoiceCubit>().get(invoice.id);
     if (!mounted || result == null) return;
     setState(() => _items = result.items);
+
+    // Payment state and reminder history matter once the invoice left the
+    // draft state.
+    if (!invoice.isDraft) {
+      final cubit = context.read<InvoiceCubit>();
+      final status = await cubit.paymentStatus(invoice.id);
+      final reminders = await cubit.listReminders(invoice.id);
+      if (!mounted) return;
+      setState(() {
+        _paymentStatus = status;
+        _reminders = reminders ?? const [];
+      });
+    }
+  }
+
+  /// Re-reads the invoice from the cubit's list after a status transition.
+  Invoice _currentInvoice() {
+    final invoices = context.read<InvoiceCubit>().state.invoices;
+    return invoices
+            .where((candidate) => candidate.id == _invoice.id)
+            .firstOrNull ??
+        _invoice;
+  }
+
+  Future<void> _run(
+    Future<bool> Function() action,
+    String successMessage,
+  ) async {
+    if (_busy) return;
+    setState(() => _busy = true);
+    final success = await action();
+    if (!mounted) return;
+    setState(() => _busy = false);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          success
+              ? successMessage
+              : AppLocalizations.of(context).invoiceActionError,
+        ),
+      ),
+    );
+    if (success) setState(() {});
   }
 
   Future<void> _delete() async {
@@ -76,6 +129,171 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
     }
   }
 
+  Future<void> _downloadPdf() async {
+    final l10n = AppLocalizations.of(context);
+    setState(() => _busy = true);
+    final pdf = await context.read<InvoiceCubit>().downloadPdf(_invoice.id);
+    if (!mounted) return;
+    setState(() => _busy = false);
+    if (pdf == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.invoiceActionError)));
+      return;
+    }
+    final name = pdf.fileName.endsWith('.pdf')
+        ? pdf.fileName.substring(0, pdf.fileName.length - 4)
+        : pdf.fileName;
+    await FileSaver.instance.saveFile(
+      name: name,
+      bytes: Uint8List.fromList(pdf.bytes),
+      fileExtension: 'pdf',
+      mimeType: MimeType.pdf,
+    );
+    if (!mounted) return;
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(l10n.invoicePdfSaved)));
+  }
+
+  Future<void> _recordPayment() async {
+    final l10n = AppLocalizations.of(context);
+    final remaining = _paymentStatus?.remainingCents ?? _invoice.totalCents;
+    final amountController = TextEditingController(
+      text: (remaining / 100).toStringAsFixed(2),
+    );
+    final referenceController = TextEditingController();
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.paymentRecordTitle),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: amountController,
+              autofocus: true,
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
+              decoration: InputDecoration(
+                labelText: l10n.paymentAmountLabel,
+                suffixText: '€',
+              ),
+            ),
+            const SizedBox(height: GewerberTokens.space12),
+            TextField(
+              controller: referenceController,
+              decoration: InputDecoration(
+                labelText: l10n.paymentReferenceLabel,
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.commonBack),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(l10n.paymentRecordTitle),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+
+    final amountCents = parseEuroInput(amountController.text);
+    if (amountCents == null || amountCents <= 0) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.transactionAmountInvalid)));
+      return;
+    }
+    final success = await context.read<InvoiceCubit>().recordPayment(
+      invoiceId: _invoice.id,
+      amountCents: amountCents,
+      reference: referenceController.text.trim().isEmpty
+          ? null
+          : referenceController.text.trim(),
+    );
+    if (!mounted) return;
+    if (success) {
+      final status = await context.read<InvoiceCubit>().paymentStatus(
+        _invoice.id,
+      );
+      if (!mounted) return;
+      setState(() => _paymentStatus = status);
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.paymentRecorded)));
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.invoiceActionError)));
+    }
+  }
+
+  Future<void> _sendReminder() async {
+    final l10n = AppLocalizations.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.reminderSendTitle),
+        content: Text(l10n.reminderSendConfirm),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.commonBack),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(l10n.reminderSendTitle),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    await _run(
+      () => context.read<InvoiceCubit>().sendReminder(_invoice.id),
+      l10n.reminderSent,
+    );
+    if (!mounted) return;
+    final reminders = await context.read<InvoiceCubit>().listReminders(
+      _invoice.id,
+    );
+    if (!mounted) return;
+    setState(() => _reminders = reminders ?? const []);
+  }
+
+  Future<void> _cancelInvoice() async {
+    final l10n = AppLocalizations.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.invoiceCancelTitle),
+        content: Text(l10n.invoiceCancelConfirm),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.commonBack),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(l10n.invoiceCancelTitle),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    await _run(
+      () => context.read<InvoiceCubit>().cancelInvoice(_invoice.id),
+      l10n.invoiceCancelled,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -86,26 +304,87 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
         body: Center(child: Text(l10n.invoiceNotFound)),
       );
     }
+    // Reflect status transitions applied through this screen.
+    final current = _loaded ? _currentInvoice() : invoice;
     final customers = context.watch<CustomerCubit>().state.customers;
     final customer = customers
-        .where((c) => c.id == invoice.customerId)
+        .where((c) => c.id == current.customerId)
         .firstOrNull;
 
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.invoiceNumber),
         actions: [
-          if (invoice.isDraft) ...[
-            IconButton(
-              tooltip: l10n.invoiceEditTitle,
-              icon: const Icon(Icons.edit_outlined),
-              onPressed: () =>
-                  context.push(RouteNames.invoiceCreate, extra: invoice),
-            ),
-            IconButton(
-              tooltip: l10n.invoiceDelete,
-              icon: const Icon(Icons.delete_outline),
-              onPressed: _delete,
+          if (_busy)
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Center(
+                child: SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+              ),
+            )
+          else ...[
+            if (current.isDraft) ...[
+              IconButton(
+                tooltip: l10n.invoiceMarkSent,
+                icon: const Icon(Icons.send_outlined),
+                onPressed: () => _run(
+                  () => context.read<InvoiceCubit>().markSent(current.id),
+                  l10n.invoiceMarkedSent,
+                ),
+              ),
+              IconButton(
+                tooltip: l10n.invoiceEditTitle,
+                icon: const Icon(Icons.edit_outlined),
+                onPressed: () =>
+                    context.push(RouteNames.invoiceCreate, extra: current),
+              ),
+              IconButton(
+                tooltip: l10n.invoiceDelete,
+                icon: const Icon(Icons.delete_outline),
+                onPressed: _delete,
+              ),
+            ],
+            if (current.status == InvoiceStatus.sent ||
+                current.status == InvoiceStatus.overdue) ...[
+              IconButton(
+                tooltip: l10n.paymentRecordTitle,
+                icon: const Icon(Icons.payments_outlined),
+                onPressed: _recordPayment,
+              ),
+              IconButton(
+                tooltip: l10n.reminderSendTitle,
+                icon: const Icon(Icons.notifications_outlined),
+                onPressed: _sendReminder,
+              ),
+              IconButton(
+                tooltip: l10n.invoiceCancelTitle,
+                icon: const Icon(Icons.cancel_outlined),
+                onPressed: _cancelInvoice,
+              ),
+            ],
+            PopupMenuButton<String>(
+              tooltip: l10n.invoiceMoreActions,
+              onSelected: (value) {
+                switch (value) {
+                  case 'pdf':
+                    _downloadPdf();
+                }
+              },
+              itemBuilder: (context) => [
+                PopupMenuItem(
+                  value: 'pdf',
+                  child: ListTile(
+                    dense: true,
+                    contentPadding: EdgeInsets.zero,
+                    leading: const Icon(Icons.picture_as_pdf_outlined),
+                    title: Text(l10n.invoiceDownloadPdf),
+                  ),
+                ),
+              ],
             ),
           ],
         ],
@@ -121,11 +400,11 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      invoice.number,
+                      current.number,
                       style: Theme.of(context).textTheme.headlineSmall,
                     ),
                     const SizedBox(height: 4),
-                    Text(_statusLabel(l10n, invoice.status)),
+                    Text(_statusLabel(l10n, current.status)),
                   ],
                 ),
               ),
@@ -133,13 +412,26 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    _formatCents(invoice.totalCents),
+                    formatCents(current.totalCents),
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                 ],
               ),
             ],
           ),
+          if (_paymentStatus != null &&
+              (_paymentStatus!.payments.isNotEmpty ||
+                  current.status == InvoiceStatus.paid)) ...[
+            const SizedBox(height: GewerberTokens.space16),
+            _PaymentStatusCard(
+              status: _paymentStatus!,
+              totalCents: current.totalCents,
+            ),
+          ],
+          if (_reminders.isNotEmpty) ...[
+            const SizedBox(height: GewerberTokens.space12),
+            _RemindersCard(reminders: _reminders),
+          ],
           const Divider(height: 32),
           _InfoRow(
             label: l10n.invoiceCustomer,
@@ -147,18 +439,18 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
           ),
           _InfoRow(
             label: l10n.invoiceIssueDate,
-            value: _formatDate(invoice.issueDate),
+            value: formatDate(current.issueDate),
           ),
-          if (invoice.dueDate != null)
+          if (current.dueDate != null)
             _InfoRow(
               label: l10n.invoiceDueDate,
-              value: _formatDate(invoice.dueDate!),
+              value: formatDate(current.dueDate!),
             ),
-          if (invoice.serviceDateFrom != null && invoice.serviceDateTo != null)
+          if (current.serviceDateFrom != null && current.serviceDateTo != null)
             _InfoRow(
               label: l10n.invoiceServicePeriod,
               value:
-                  '${_formatDate(invoice.serviceDateFrom!)} – ${_formatDate(invoice.serviceDateTo!)}',
+                  '${formatDate(current.serviceDateFrom!)} – ${formatDate(current.serviceDateTo!)}',
             ),
           const SizedBox(height: GewerberTokens.space16),
           Text(
@@ -186,9 +478,9 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                       dense: true,
                       title: Text(item.description),
                       subtitle: Text(
-                        '${item.quantity} × ${_formatCents(item.unitPriceCents)}',
+                        '${item.quantity} × ${formatCents(item.unitPriceCents)}',
                       ),
-                      trailing: Text(_formatCents(item.lineTotalCents)),
+                      trailing: Text(formatCents(item.lineTotalCents)),
                     ),
                 ],
               ),
@@ -202,30 +494,30 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                 children: [
                   _SummaryRow(
                     l10n.invoiceSubtotal,
-                    _formatCents(invoice.subtotalCents),
+                    formatCents(current.subtotalCents),
                   ),
                   _SummaryRow(
                     l10n.invoiceVat,
-                    _formatCents(invoice.vatTotalCents),
+                    formatCents(current.vatTotalCents),
                   ),
                   const Divider(),
                   _SummaryRow(
                     l10n.invoiceTotal,
-                    _formatCents(invoice.totalCents),
+                    formatCents(current.totalCents),
                     emphasized: true,
                   ),
                 ],
               ),
             ],
           ),
-          if (invoice.notes != null && invoice.notes!.isNotEmpty) ...[
+          if (current.notes != null && current.notes!.isNotEmpty) ...[
             const SizedBox(height: GewerberTokens.space24),
             Text(
               l10n.invoiceNotes,
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: GewerberTokens.space8),
-            Text(invoice.notes!),
+            Text(current.notes!),
           ],
         ],
       ),
@@ -240,6 +532,99 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
       InvoiceStatus.overdue => l10n.invoiceStatusOverdue,
       InvoiceStatus.cancelled => l10n.invoiceStatusCancelled,
     };
+  }
+}
+
+class _PaymentStatusCard extends StatelessWidget {
+  const _PaymentStatusCard({required this.status, required this.totalCents});
+
+  final InvoicePaymentStatus status;
+  final int totalCents;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final colors = Theme.of(context).colorScheme;
+    return Card(
+      margin: EdgeInsets.zero,
+      color: status.isPaid
+          ? colors.primaryContainer
+          : colors.surfaceContainerHighest,
+      child: Padding(
+        padding: const EdgeInsets.all(GewerberTokens.space16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              status.isPaid ? l10n.paymentStatusPaid : l10n.paymentStatusOpen,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                color: status.isPaid
+                    ? colors.onPrimaryContainer
+                    : colors.onSurface,
+              ),
+            ),
+            const SizedBox(height: GewerberTokens.space8),
+            Text(
+              '${l10n.paymentPaidAmount}: ${formatCents(status.paidTotalCents)}',
+            ),
+            if (!status.isPaid)
+              Text(
+                '${l10n.paymentRemainingAmount}: '
+                '${formatCents(status.remainingCents)}',
+              ),
+            for (final payment in status.payments)
+              Padding(
+                padding: const EdgeInsets.only(top: GewerberTokens.space4),
+                child: Text(
+                  '${payment.paidAt == null ? '' : '${formatDate(payment.paidAt!)} · '}'
+                  '${formatCents(payment.amountCents)}'
+                  '${payment.reference == null || payment.reference!.isEmpty ? '' : ' · ${payment.reference}'}',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: colors.onSurfaceVariant,
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _RemindersCard extends StatelessWidget {
+  const _RemindersCard({required this.reminders});
+
+  final List<InvoiceReminder> reminders;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final colors = Theme.of(context).colorScheme;
+    return Card(
+      margin: EdgeInsets.zero,
+      color: colors.errorContainer,
+      child: Padding(
+        padding: const EdgeInsets.all(GewerberTokens.space16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              l10n.reminderHistoryTitle,
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(color: colors.onErrorContainer),
+            ),
+            const SizedBox(height: GewerberTokens.space8),
+            for (final reminder in reminders)
+              Text(
+                '${l10n.reminderLevel(reminder.level)}'
+                '${reminder.sentAt == null ? '' : ' · ${formatDate(reminder.sentAt!)}'}',
+                style: TextStyle(color: colors.onErrorContainer),
+              ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -293,15 +678,4 @@ class _SummaryRow extends StatelessWidget {
       ),
     );
   }
-}
-
-String _formatDate(DateTime date) {
-  return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
-}
-
-String _formatCents(int cents) {
-  final euros = cents ~/ 100;
-  final rest = (cents % 100).abs().toString().padLeft(2, '0');
-  final sign = cents < 0 ? '-' : '';
-  return '$sign$euros.$rest €';
 }

@@ -8,12 +8,20 @@ class StubMenuTile extends StatelessWidget {
     required this.title,
     required this.onTap,
     this.subtitle,
+    this.trailing,
+    this.enabled = true,
   });
 
   final IconData icon;
   final String title;
   final String? subtitle;
   final VoidCallback onTap;
+
+  /// Replaces the default chevron (e.g. with a progress indicator).
+  final Widget? trailing;
+
+  /// When false the tile is greyed out and not tappable.
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
@@ -23,18 +31,24 @@ class StubMenuTile extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 4),
       child: ListTile(
+        enabled: enabled,
         leading: Icon(icon, color: colors.primary),
-        title: Text(title, style: textTheme.bodyLarge),
+        title: Text(
+          title,
+          style: textTheme.bodyLarge?.copyWith(
+            color: enabled ? null : colors.outline,
+          ),
+        ),
         subtitle: subtitle == null
             ? null
             : Text(
                 subtitle!,
                 style: textTheme.bodySmall?.copyWith(
-                  color: colors.onSurfaceVariant,
+                  color: enabled ? colors.onSurfaceVariant : colors.outline,
                 ),
               ),
-        trailing: const Icon(Icons.chevron_right, size: 20),
-        onTap: onTap,
+        trailing: trailing ?? const Icon(Icons.chevron_right, size: 20),
+        onTap: enabled ? onTap : null,
       ),
     );
   }

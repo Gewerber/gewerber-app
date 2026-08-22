@@ -35,6 +35,11 @@ void main() {
   Future<void> completeOnboarding(WidgetTester tester) async {
     await tester.pumpAndSettle();
     if (find.byType(OnboardingScreen).evaluate().isEmpty) return;
+    // The preferences step (theme/language) comes before the business form.
+    if (find.text('Continue').evaluate().isNotEmpty) {
+      await tester.tap(find.text('Continue'));
+      await tester.pumpAndSettle();
+    }
     await tester.enterText(find.byType(TextFormField), 'Demo GmbH');
     await tester.tap(find.text('Create business'));
     await tester.pumpAndSettle();

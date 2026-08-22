@@ -73,6 +73,86 @@ class InvoiceItem extends Equatable {
   ];
 }
 
+/// A recorded payment for an invoice.
+class PaymentRecord extends Equatable {
+  const PaymentRecord({
+    required this.id,
+    required this.invoiceId,
+    required this.amountCents,
+    this.paidAt,
+    this.reference,
+  });
+
+  final int id;
+  final int invoiceId;
+  final DateTime? paidAt;
+  final int amountCents;
+  final String? reference;
+
+  @override
+  List<Object?> get props => [id, invoiceId, paidAt, amountCents, reference];
+}
+
+/// Payment state of a single invoice.
+class InvoicePaymentStatus extends Equatable {
+  const InvoicePaymentStatus({
+    required this.invoiceId,
+    required this.paidTotalCents,
+    required this.remainingCents,
+    required this.isPaid,
+    this.payments = const [],
+  });
+
+  final int invoiceId;
+  final int paidTotalCents;
+  final int remainingCents;
+  final bool isPaid;
+  final List<PaymentRecord> payments;
+
+  @override
+  List<Object?> get props => [
+    invoiceId,
+    paidTotalCents,
+    remainingCents,
+    isPaid,
+    payments,
+  ];
+}
+
+/// A payment reminder (dunning level) sent for an invoice.
+class InvoiceReminder extends Equatable {
+  const InvoiceReminder({
+    required this.id,
+    required this.invoiceId,
+    required this.level,
+    this.sentAt,
+  });
+
+  final int id;
+  final int invoiceId;
+  final int level;
+  final DateTime? sentAt;
+
+  @override
+  List<Object?> get props => [id, invoiceId, level, sentAt];
+}
+
+/// Metadata of a generated invoice PDF stored as a document on the server.
+class InvoicePdf extends Equatable {
+  const InvoicePdf({
+    required this.documentId,
+    required this.fileName,
+    required this.bytes,
+  });
+
+  final int documentId;
+  final String fileName;
+  final List<int> bytes;
+
+  @override
+  List<Object?> get props => [documentId, fileName, bytes.length];
+}
+
 /// An invoice issued by the business.
 class Invoice extends Equatable {
   const Invoice({

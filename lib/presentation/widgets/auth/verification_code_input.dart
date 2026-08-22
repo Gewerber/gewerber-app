@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 import 'package:gewerber_app/core/theme/app_theme.dart';
@@ -158,41 +160,63 @@ class _VerificationCodeInputState extends State<VerificationCodeInput> {
     final colors = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
-    return Semantics(
-      label: widget.semanticsLabel,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: List.generate(widget.length, (index) {
-          return SizedBox(
-            width: 48,
-            height: 56,
-            child: TextField(
-              controller: _controllers[index],
-              focusNode: _focusNodes[index],
-              enabled: widget.enabled,
-              obscureText: false,
-              keyboardType: TextInputType.number,
-              textAlign: TextAlign.center,
-              maxLength: 1,
-              style: textTheme.titleLarge?.copyWith(
-                color: colors.onSurface,
-                fontWeight: FontWeight.w600,
-              ),
-              onChanged: (text) => _handleChange(index, text),
-              decoration: InputDecoration(
-                isDense: true,
-                counterText: '',
-                border: _borderFor(index, colors),
-                enabledBorder: _borderFor(index, colors),
-                focusedBorder: _borderFor(index, colors),
-                errorBorder: _borderFor(index, colors),
-                focusedErrorBorder: _borderFor(index, colors),
-                semanticCounterText: index == 0 ? widget.semanticsLabel : null,
-              ),
-            ),
-          );
-        }),
-      ),
+    // Spacing between the code boxes; boxes shrink to fit narrow screens
+    // instead of overflowing (6 fixed 48px boxes need 288px and can exceed
+    // the ~272px available on small phones).
+    const spacing = 8.0;
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final boxWidth = math.min(
+          48.0,
+          (constraints.maxWidth - spacing * (widget.length - 1)) /
+              widget.length,
+        );
+
+        return Semantics(
+          label: widget.semanticsLabel,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(widget.length, (index) {
+              return Padding(
+                padding: EdgeInsets.only(
+                  right: index == widget.length - 1 ? 0 : spacing,
+                ),
+                child: SizedBox(
+                  width: boxWidth,
+                  height: 56,
+                  child: TextField(
+                    controller: _controllers[index],
+                    focusNode: _focusNodes[index],
+                    enabled: widget.enabled,
+                    obscureText: false,
+                    keyboardType: TextInputType.number,
+                    textAlign: TextAlign.center,
+                    maxLength: 1,
+                    style: textTheme.titleLarge?.copyWith(
+                      color: colors.onSurface,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    onChanged: (text) => _handleChange(index, text),
+                    decoration: InputDecoration(
+                      isDense: true,
+                      counterText: '',
+                      border: _borderFor(index, colors),
+                      enabledBorder: _borderFor(index, colors),
+                      focusedBorder: _borderFor(index, colors),
+                      errorBorder: _borderFor(index, colors),
+                      focusedErrorBorder: _borderFor(index, colors),
+                      semanticCounterText: index == 0
+                          ? widget.semanticsLabel
+                          : null,
+                    ),
+                  ),
+                ),
+              );
+            }),
+          ),
+        );
+      },
     );
   }
 }

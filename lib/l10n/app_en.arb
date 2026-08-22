@@ -152,6 +152,34 @@
   "guidesSubtitle": "Checklists and tips for running your business appear here.",
   "checklistTitle": "Checklist",
   "checklistSubtitle": "A step-by-step checklist will appear here.",
+  "checklistProgress": "Done {completed} of {total}",
+  "@checklistProgress": {
+    "description": "Progress counter on the getting-started checklist.",
+    "placeholders": {
+      "completed": {
+        "type": "int",
+        "example": "2"
+      },
+      "total": {
+        "type": "int",
+        "example": "6"
+      }
+    }
+  },
+  "checklistCompleteTitle": "All done! 🎉",
+  "checklistCompleteSubtitle": "Your business is ready to go. Everything else you can do at your own pace.",
+  "checklistItemProfile": "Set up your business profile",
+  "checklistItemProfileHint": "Company name, address and legal form.",
+  "checklistItemInvoiceDefaults": "Configure your invoice defaults",
+  "checklistItemInvoiceDefaultsHint": "Invoice numbering and payment terms.",
+  "checklistItemFirstCustomer": "Add your first customer",
+  "checklistItemFirstCustomerHint": "Create a customer so you can bill them.",
+  "checklistItemFirstInvoice": "Create your first invoice",
+  "checklistItemFirstInvoiceHint": "Send a professional invoice in minutes.",
+  "checklistItemVat": "Understand VAT basics",
+  "checklistItemVatHint": "Standard, reduced and Kleinunternehmer §19 rules.",
+  "checklistItemPersonalize": "Personalize the app",
+  "checklistItemPersonalizeHint": "Pick your theme and language.",
 
   "settingsTitle": "Settings",
   "settingsBusinessProfile": "Business profile",
@@ -173,6 +201,25 @@
   "themeDark": "Dark",
   "aboutTitle": "About Gewerber",
   "aboutSubtitle": "Version, licenses and privacy information arrive here.",
+
+  "onboardingPreferencesTitle": "Make it yours",
+  "onboardingPreferencesSubtitle": "Pick how Gewerber looks and reads for you. You can change this anytime in settings.",
+  "onboardingPreferencesTheme": "Theme",
+  "onboardingPreferencesLanguage": "Language",
+  "onboardingStepOf": "Step {current} of {total}",
+  "@onboardingStepOf": {
+    "description": "Progress indicator on the onboarding flow.",
+    "placeholders": {
+      "current": {
+        "type": "int",
+        "example": "1"
+      },
+      "total": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
 
   "onboardingTitle": "Set up your business",
   "onboardingSubtitle": "A few details and you can send your first invoice.",
@@ -285,5 +332,153 @@
   "invoiceMissingItems": "Please add at least one item with a description.",
   "invoiceNumber": "Invoice",
   "invoiceNumberLabel": "Number",
-  "invoiceNotFound": "Invoice not found."
+  "invoiceNotFound": "Invoice not found.",
+
+  "invoiceMarkSent": "Mark as sent",
+  "invoiceMarkedSent": "Invoice marked as sent.",
+  "invoiceActionError": "That didn't work. Please try again.",
+  "invoiceCancelTitle": "Cancel invoice",
+  "invoiceCancelConfirm": "Cancel this invoice? A cancelled invoice cannot be reactivated.",
+  "invoiceCancelled": "Invoice cancelled.",
+  "invoiceDownloadPdf": "Download PDF",
+  "invoicePdfSaved": "PDF downloaded.",
+  "invoiceMoreActions": "More actions",
+
+  "paymentRecordTitle": "Record payment",
+  "paymentAmountLabel": "Amount",
+  "paymentReferenceLabel": "Reference (optional)",
+  "paymentRecorded": "Payment recorded.",
+  "paymentStatusPaid": "Paid",
+  "paymentStatusOpen": "Payment pending",
+  "paymentPaidAmount": "Paid",
+  "paymentRemainingAmount": "Remaining",
+
+  "reminderSendTitle": "Send reminder",
+  "reminderSendConfirm": "Send a payment reminder to the customer?",
+  "reminderSent": "Reminder sent.",
+  "reminderHistoryTitle": "Reminders sent",
+  "reminderLevel": "Reminder {level}",
+  "@reminderLevel": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+
+  "exportMenu": "Export",
+  "exportCsv": "Export CSV",
+  "exportJson": "Export JSON",
+  "exportError": "Export failed. Please try again.",
+  "exportSuccess": "Export downloaded.",
+
+  "projectNewTitle": "New project",
+  "projectNameLabel": "Project name",
+  "projectHourlyRateLabel": "Hourly rate",
+  "projectHourlyRateHint": "Optional, e.g. 85.00",
+  "projectSaveError": "We couldn't save the project. Please try again.",
+  "projectLoadError": "We couldn't load the projects. Please try again.",
+  "projectsEmpty": "No projects yet. Create your first project.",
+  "projectDeleteTitle": "Delete project",
+  "projectDeleteConfirm": "Delete this project and its tasks? This cannot be undone.",
+  "projectStatusArchived": "Archived",
+  "projectArchive": "Archive",
+  "projectReactivate": "Reactivate",
+  "taskNewTitle": "Add task",
+  "taskNameLabel": "Task name",
+  "tasksEmpty": "No tasks yet.",
+
+  "timerStartTitle": "Start tracking",
+  "timerRunningTitle": "Timer running",
+  "timerStart": "Start timer",
+  "timerStop": "Stop timer",
+  "timerStartError": "Couldn't start the timer. Please try again.",
+  "timerStopError": "Couldn't stop the timer. Please try again.",
+  "timerLoadError": "We couldn't load the time entries. Please try again.",
+  "timerProjectLabel": "Project",
+  "timerNoProject": "No project",
+  "timerTaskLabel": "Task",
+  "timerNoTask": "No task",
+  "timerDescriptionLabel": "Description (optional)",
+  "timerBillableLabel": "Billable",
+  "timerRecentTitle": "Recent entries",
+  "timerEntriesEmpty": "No time entries yet.",
+
+  "timeEntryHours": "Hours",
+  "timeEntryMinutes": "Minutes",
+  "timeEntryDurationInvalid": "Please enter a duration greater than zero.",
+  "timeEntrySaved": "Time entry saved.",
+  "timeEntrySaveError": "We couldn't save the time entry. Please try again.",
+
+  "timeReportTitle": "Time report",
+  "timeReportSubtitle": "Aggregated tracked time for a period.",
+  "timeReportUntil": "until",
+  "timeReportTotal": "Total",
+  "timeReportBillable": "Billable",
+  "timeReportEmpty": "No tracked time in this period.",
+  "timeReportByProject": "By project",
+  "timeReportEntryCount": "{count} entries",
+  "@timeReportEntryCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "accountingLoadError": "We couldn't load the transactions. Please try again.",
+  "transactionsAll": "All",
+  "transactionsEmpty": "No transactions yet. Record your first income or expense.",
+  "transactionTypeIncome": "Income",
+  "transactionTypeExpense": "Expense",
+  "transactionDeleteTitle": "Delete entry",
+  "transactionDeleteConfirm": "Delete this transaction? This cannot be undone.",
+  "transactionAmountLabel": "Amount",
+  "transactionAmountInvalid": "Please enter a valid amount greater than zero.",
+  "transactionCategory": "Category",
+  "transactionDescriptionLabel": "Description (optional)",
+  "transactionSaved": "Transaction saved.",
+  "transactionSaveError": "We couldn't save the transaction. Please try again.",
+
+  "categorySalesRevenue": "Sales revenue",
+  "categoryServiceRevenue": "Service revenue",
+  "categoryOtherIncome": "Other income",
+  "categoryGoodsPurchase": "Goods purchase",
+  "categoryRent": "Rent",
+  "categoryOffice": "Office",
+  "categoryTravel": "Travel",
+  "categoryVehicle": "Vehicle",
+  "categoryAdvertising": "Advertising",
+  "categoryInsurance": "Insurance",
+  "categoryTelecommunication": "Telecommunication",
+  "categoryTraining": "Training",
+  "categoryConsulting": "Consulting",
+  "categoryFeesAndDuties": "Fees and duties",
+  "categoryTools": "Tools",
+  "categoryOtherExpense": "Other expense",
+
+  "reportIncome": "Income",
+  "reportExpenses": "Expenses",
+  "reportProfit": "Profit",
+  "reportIncomeByCategory": "Income by category",
+  "reportExpensesByCategory": "Expenses by category",
+  "reportEmpty": "No transactions in this period.",
+  "reportLineCount": "{count} transactions",
+  "@reportLineCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportPeriodThisMonth": "This month",
+  "reportPeriodLastMonth": "Last month",
+  "reportPeriodThisQuarter": "This quarter",
+  "reportPeriodThisYear": "This year",
+
+  "tipsTitle": "Tips",
+  "tipsSubtitle": "Short explanations of important concepts.",
+  "tipsEmpty": "No tips available right now.",
+  "tipsLoadError": "We couldn't load the tips. Please try again.",
+  "tipsDismiss": "Don't show again"
 }

@@ -44,6 +44,9 @@ void main() {
     // reach the shell. No-op when a business already exists (singletons
     // persist between tests in this file).
     if (find.byType(OnboardingScreen).evaluate().isNotEmpty) {
+      // The preferences step (theme/language) comes before the business form.
+      await tester.tap(find.text('Continue'));
+      await tester.pumpAndSettle();
       await tester.enterText(find.byType(TextFormField), 'Demo GmbH');
       await tester.tap(find.text('Create business'));
       await tester.pumpAndSettle();

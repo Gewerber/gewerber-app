@@ -22,6 +22,12 @@ class GuidanceIndex extends StatelessWidget {
           subtitle: l10n.checklistSubtitle,
           onTap: () => context.push(RouteNames.guideChecklist),
         ),
+        StubMenuTile(
+          icon: Icons.lightbulb_outline,
+          title: l10n.tipsTitle,
+          subtitle: l10n.tipsSubtitle,
+          onTap: () => context.push(RouteNames.guideTips),
+        ),
       ],
     );
   }

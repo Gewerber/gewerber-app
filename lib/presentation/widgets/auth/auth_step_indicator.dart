@@ -24,40 +24,48 @@ class AuthStepIndicator extends StatelessWidget {
       label:
           'Step ${currentIndex + 1} of ${labels.length}: '
           '${labels[currentIndex]}',
-      child: Row(
-        children: [
-          for (var i = 0; i < labels.length; i++) ...[
-            if (i > 0)
-              Expanded(
-                child: Padding(
+      // Scales the whole indicator down instead of overflowing when the step
+      // labels are wider than the available space on narrow screens.
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        alignment: Alignment.centerLeft,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (var i = 0; i < labels.length; i++) ...[
+              if (i > 0)
+                Padding(
                   padding: const EdgeInsets.only(top: 11, left: 8, right: 8),
                   child: Container(
+                    width: 24,
                     height: 2,
                     color: i <= currentIndex ? colors.primary : colors.outline,
                   ),
                 ),
-              ),
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _StepDot(
-                  completed: i < currentIndex,
-                  current: i == currentIndex,
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  labels[i],
-                  style: textTheme.bodySmall?.copyWith(
-                    color: i == currentIndex
-                        ? colors.onSurface
-                        : colors.onSurfaceVariant,
-                    fontWeight: i == currentIndex ? FontWeight.w600 : null,
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _StepDot(
+                    completed: i < currentIndex,
+                    current: i == currentIndex,
                   ),
-                ),
-              ],
-            ),
+                  const SizedBox(height: 4),
+                  Text(
+                    labels[i],
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: textTheme.bodySmall?.copyWith(
+                      color: i == currentIndex
+                          ? colors.onSurface
+                          : colors.onSurfaceVariant,
+                      fontWeight: i == currentIndex ? FontWeight.w600 : null,
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }

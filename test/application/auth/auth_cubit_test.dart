@@ -16,11 +16,13 @@ class _FakeAuthRepository implements AuthRepository {
     this.restoredUser,
     this.failLogin = false,
     this.failSocial = false,
+    this.failLogOut = false,
   });
 
   final User? restoredUser;
   final bool failLogin;
   final bool failSocial;
+  final bool failLogOut;
 
   @override
   Future<User?> restoreSession() async => restoredUser;
@@ -70,7 +72,9 @@ class _FakeAuthRepository implements AuthRepository {
   }
 
   @override
-  Future<void> logOut() async {}
+  Future<void> logOut() async {
+    if (failLogOut) throw const NetworkException();
+  }
 }
 
 void main() {
@@ -184,6 +188,16 @@ void main() {
 
   test('logOut clears the session', () async {
     final cubit = AuthCubit(_FakeAuthRepository());
+
+    await cubit.login(email: 'test@gewerber.de', password: 'password123');
+    await cubit.logOut();
+
+    expect(cubit.state.status, AuthStatus.unauthenticated);
+    expect(cubit.state.user, isNull);
+  });
+
+  test('logOut still signs out when the backend is unreachable', () async {
+    final cubit = AuthCubit(_FakeAuthRepository(failLogOut: true));
 
     await cubit.login(email: 'test@gewerber.de', password: 'password123');
     await cubit.logOut();

@@ -110,4 +110,12 @@ class BusinessCubit extends Cubit<BusinessState> {
       return false;
     }
   }
+
+  /// Resets to the initial state.
+  ///
+  /// Used after sign-out so the previous user's businesses never leak into the
+  /// next session.
+  void reset() {
+    emit(const BusinessState());
+  }
 }

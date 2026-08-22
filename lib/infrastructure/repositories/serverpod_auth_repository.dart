@@ -146,10 +146,14 @@ class ServerpodAuthRepository implements AuthRepository {
 
   @override
   Future<void> logOut() async {
-    await _guard(() async {
+    try {
       await _dataSource.signOut();
-      await _sessionStore.clear();
-    });
+    } catch (_) {
+      // Best-effort: revoking the device session on the server is nice-to-have.
+      // The local session is always cleared below so the user can sign out
+      // even when the backend is unreachable.
+    }
+    await _sessionStore.clear();
   }
 
   /// Runs [action] and rethrows [AppException]s, wrapping any other error as

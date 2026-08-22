@@ -42,6 +42,12 @@ class TimeTrackingScreen extends StatelessWidget {
             subtitle: l10n.timeEntryCreateSubtitle,
             onTap: () => context.push(RouteNames.timeEntryCreate),
           ),
+          StubMenuTile(
+            icon: Icons.insights_outlined,
+            title: l10n.timeReportTitle,
+            subtitle: l10n.timeReportSubtitle,
+            onTap: () => context.push(RouteNames.timeReport),
+          ),
         ],
       ),
     );

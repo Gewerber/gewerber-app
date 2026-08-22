@@ -9,11 +9,16 @@ class SettingsNavigationRail extends StatelessWidget {
     required this.selectedIndex,
     required this.onDestinationSelected,
     this.extended = true,
+    this.isSigningOut = false,
   });
 
   final int selectedIndex;
   final ValueChanged<int> onDestinationSelected;
   final bool extended;
+
+  /// Shows a spinner on the sign-out destination and disables it while the
+  /// session is being cleared.
+  final bool isSigningOut;
 
   @override
   Widget build(BuildContext context) {
@@ -64,8 +69,20 @@ class SettingsNavigationRail extends StatelessWidget {
           label: Text(l10n.settingsAbout),
         ),
         NavigationRailDestination(
-          icon: const Icon(Icons.logout_outlined),
-          selectedIcon: const Icon(Icons.logout),
+          icon: isSigningOut
+              ? const SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Icon(Icons.logout_outlined),
+          selectedIcon: isSigningOut
+              ? const SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Icon(Icons.logout),
           label: Text(l10n.settingsSignOut),
         ),
       ],

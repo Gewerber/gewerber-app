@@ -46,4 +46,33 @@ class InvoiceMapper {
 
   sdk.InvoiceStatus toProtocolStatus(InvoiceStatus status) =>
       sdk.InvoiceStatus.values.byName(status.name);
+
+  PaymentRecord paymentFromModel(sdk.PaymentRecord model) {
+    return PaymentRecord(
+      id: model.id ?? -1,
+      invoiceId: model.invoiceId,
+      paidAt: model.paidAt,
+      amountCents: model.amountCents,
+      reference: model.reference,
+    );
+  }
+
+  InvoicePaymentStatus paymentStatusFromModel(sdk.InvoicePaymentStatus model) {
+    return InvoicePaymentStatus(
+      invoiceId: model.invoiceId,
+      paidTotalCents: model.paidTotalCents,
+      remainingCents: model.remainingCents,
+      isPaid: model.isPaid,
+      payments: model.payments.map(paymentFromModel).toList(),
+    );
+  }
+
+  InvoiceReminder reminderFromModel(sdk.Reminder model) {
+    return InvoiceReminder(
+      id: model.id ?? -1,
+      invoiceId: model.invoiceId,
+      level: model.level,
+      sentAt: model.sentAt,
+    );
+  }
 }

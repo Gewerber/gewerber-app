@@ -112,9 +112,27 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthState(status: AuthStatus.authenticated, user: user));
   }
 
+  /// Resets to the initial unknown state.
+  ///
+  /// Used by tests to isolate scenarios from the shared singleton; the splash
+  /// flow re-runs [restoreSession] afterwards.
+  void reset() {
+    emit(const AuthState(status: AuthStatus.unknown));
+  }
+
   /// Clears the current session.
+  ///
+  /// Best-effort: even when the backend cannot be reached, the local session
+  /// is cleared and the app returns to the login flow. A stale server session
+  /// expires on its own.
   Future<void> logOut() async {
-    await _repository.logOut();
+    try {
+      await _repository.logOut();
+    } on Exception {
+      // The local session is authoritative for signing out; keep going so the
+      // user is never left stuck in a half-signed-out state.
+    }
+    if (isClosed) return;
     emit(const AuthState(status: AuthStatus.unauthenticated));
   }
 }

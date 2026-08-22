@@ -12,22 +12,32 @@
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
+import '../application/accounting/accounting_cubit.dart' as _i946;
 import '../application/auth/auth_cubit.dart' as _i487;
 import '../application/business/business_cubit.dart' as _i139;
 import '../application/business_settings/business_settings_cubit.dart' as _i419;
 import '../application/customers/customer_cubit.dart' as _i598;
 import '../application/forgot_password/forgot_password_cubit.dart' as _i318;
+import '../application/guidance/checklist_cubit.dart' as _i873;
+import '../application/guidance/guidance_cubit.dart' as _i140;
 import '../application/invoices/invoice_cubit.dart' as _i1027;
 import '../application/register/register_cubit.dart' as _i66;
+import '../application/time_tracking/projects_cubit.dart' as _i593;
+import '../application/time_tracking/time_entries_cubit.dart' as _i266;
 import '../core/config/app_config.dart' as _i221;
+import '../domain/repositories/accounting_repository.dart' as _i188;
 import '../domain/repositories/auth_repository.dart' as _i800;
 import '../domain/repositories/business_repository.dart' as _i93;
 import '../domain/repositories/business_settings_repository.dart' as _i743;
 import '../domain/repositories/customer_repository.dart' as _i907;
+import '../domain/repositories/guidance_repository.dart' as _i78;
 import '../domain/repositories/invoice_repository.dart' as _i778;
+import '../domain/repositories/time_tracking_repository.dart' as _i323;
 import '../domain/repositories/user_preferences_repository.dart' as _i101;
 import '../infrastructure/core/serverpod_client_factory.dart' as _i661;
 import '../infrastructure/datasources/local/session_store.dart' as _i900;
+import '../infrastructure/datasources/remote/accounting_remote_data_source.dart'
+    as _i253;
 import '../infrastructure/datasources/remote/auth_remote_data_source.dart'
     as _i322;
 import '../infrastructure/datasources/remote/business_remote_data_source.dart'
@@ -36,25 +46,39 @@ import '../infrastructure/datasources/remote/business_settings_remote_data_sourc
     as _i334;
 import '../infrastructure/datasources/remote/customer_remote_data_source.dart'
     as _i1067;
+import '../infrastructure/datasources/remote/guidance_remote_data_source.dart'
+    as _i126;
 import '../infrastructure/datasources/remote/invoice_remote_data_source.dart'
     as _i206;
 import '../infrastructure/datasources/remote/social_auth_remote_data_source.dart'
     as _i691;
+import '../infrastructure/datasources/remote/time_tracking_remote_data_source.dart'
+    as _i876;
 import '../infrastructure/datasources/remote/user_preferences_remote_data_source.dart'
     as _i984;
 import '../infrastructure/mappers/business_mapper.dart' as _i457;
 import '../infrastructure/mappers/customer_mapper.dart' as _i234;
+import '../infrastructure/mappers/guidance_mapper.dart' as _i367;
 import '../infrastructure/mappers/invoice_mapper.dart' as _i295;
+import '../infrastructure/mappers/time_tracking_mapper.dart' as _i42;
+import '../infrastructure/mappers/transaction_mapper.dart' as _i756;
 import '../infrastructure/mappers/user_mapper.dart' as _i980;
 import '../infrastructure/mappers/user_preferences_mapper.dart' as _i53;
+import '../infrastructure/repositories/mock_accounting_repository.dart'
+    as _i254;
 import '../infrastructure/repositories/mock_auth_repository.dart' as _i338;
 import '../infrastructure/repositories/mock_business_repository.dart' as _i869;
 import '../infrastructure/repositories/mock_business_settings_repository.dart'
     as _i587;
 import '../infrastructure/repositories/mock_customer_repository.dart' as _i569;
+import '../infrastructure/repositories/mock_guidance_repository.dart' as _i420;
 import '../infrastructure/repositories/mock_invoice_repository.dart' as _i555;
+import '../infrastructure/repositories/mock_time_tracking_repository.dart'
+    as _i368;
 import '../infrastructure/repositories/mock_user_preferences_repository.dart'
     as _i732;
+import '../infrastructure/repositories/serverpod_accounting_repository.dart'
+    as _i224;
 import '../infrastructure/repositories/serverpod_auth_repository.dart' as _i194;
 import '../infrastructure/repositories/serverpod_business_repository.dart'
     as _i1028;
@@ -62,8 +86,12 @@ import '../infrastructure/repositories/serverpod_business_settings_repository.da
     as _i63;
 import '../infrastructure/repositories/serverpod_customer_repository.dart'
     as _i720;
+import '../infrastructure/repositories/serverpod_guidance_repository.dart'
+    as _i34;
 import '../infrastructure/repositories/serverpod_invoice_repository.dart'
     as _i1035;
+import '../infrastructure/repositories/serverpod_time_tracking_repository.dart'
+    as _i640;
 import '../infrastructure/repositories/serverpod_user_preferences_repository.dart'
     as _i763;
 import '../presentation/router/auth_redirect_controller.dart' as _i1070;
@@ -82,7 +110,10 @@ extension GetItInjectableX on _i174.GetIt {
     final appConfigModule = _$AppConfigModule();
     gh.factory<_i457.BusinessMapper>(() => const _i457.BusinessMapper());
     gh.factory<_i234.CustomerMapper>(() => const _i234.CustomerMapper());
+    gh.factory<_i367.GuidanceMapper>(() => const _i367.GuidanceMapper());
     gh.factory<_i295.InvoiceMapper>(() => const _i295.InvoiceMapper());
+    gh.factory<_i42.TimeTrackingMapper>(() => const _i42.TimeTrackingMapper());
+    gh.factory<_i756.TransactionMapper>(() => const _i756.TransactionMapper());
     gh.factory<_i980.UserMapper>(() => const _i980.UserMapper());
     gh.factory<_i53.UserPreferencesMapper>(
       () => const _i53.UserPreferencesMapper(),
@@ -106,8 +137,30 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i555.MockInvoiceRepository(),
       registerFor: {_auth_mock},
     );
+    gh.lazySingleton<_i253.AccountingRemoteDataSource>(
+      () => _i253.AccountingRemoteDataSource(
+        gh<_i661.ServerpodClientFactory>(),
+        gh<_i756.TransactionMapper>(),
+      ),
+      registerFor: {_auth_live},
+    );
     gh.lazySingleton<_i101.UserPreferencesRepository>(
       () => _i732.MockUserPreferencesRepository(),
+      registerFor: {_auth_mock},
+    );
+    gh.lazySingleton<_i323.TimeTrackingRepository>(
+      () => _i368.MockTimeTrackingRepository(),
+      registerFor: {_auth_mock},
+    );
+    gh.lazySingleton<_i126.GuidanceRemoteDataSource>(
+      () => _i126.GuidanceRemoteDataSource(
+        gh<_i661.ServerpodClientFactory>(),
+        gh<_i367.GuidanceMapper>(),
+      ),
+      registerFor: {_auth_live},
+    );
+    gh.lazySingleton<_i188.AccountingRepository>(
+      () => _i254.MockAccountingRepository(),
       registerFor: {_auth_mock},
     );
     gh.lazySingleton<_i800.AuthRepository>(
@@ -120,6 +173,10 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i457.BusinessMapper>(),
       ),
       registerFor: {_auth_live},
+    );
+    gh.lazySingleton<_i78.GuidanceRepository>(
+      () => _i420.MockGuidanceRepository(),
+      registerFor: {_auth_mock},
     );
     gh.lazySingleton<_i743.BusinessSettingsRepository>(
       () => _i587.MockBusinessSettingsRepository(),
@@ -163,13 +220,35 @@ extension GetItInjectableX on _i174.GetIt {
       ),
       registerFor: {_auth_live},
     );
+    gh.lazySingleton<_i876.TimeTrackingRemoteDataSource>(
+      () => _i876.TimeTrackingRemoteDataSource(
+        gh<_i661.ServerpodClientFactory>(),
+        gh<_i42.TimeTrackingMapper>(),
+      ),
+      registerFor: {_auth_live},
+    );
+    gh.lazySingleton<_i188.AccountingRepository>(
+      () => _i224.ServerpodAccountingRepository(
+        gh<_i253.AccountingRemoteDataSource>(),
+      ),
+      registerFor: {_auth_live},
+    );
     gh.lazySingleton<_i981.BusinessRedirectController>(
       () => _i981.BusinessRedirectController(gh<_i139.BusinessCubit>()),
+    );
+    gh.lazySingleton<_i946.AccountingCubit>(
+      () => _i946.AccountingCubit(gh<_i188.AccountingRepository>()),
     );
     gh.lazySingleton<_i1067.CustomerRemoteDataSource>(
       () => _i1067.CustomerRemoteDataSource(
         gh<_i661.ServerpodClientFactory>(),
         gh<_i234.CustomerMapper>(),
+      ),
+      registerFor: {_auth_live},
+    );
+    gh.lazySingleton<_i78.GuidanceRepository>(
+      () => _i34.ServerpodGuidanceRepository(
+        gh<_i126.GuidanceRemoteDataSource>(),
       ),
       registerFor: {_auth_live},
     );
@@ -204,8 +283,20 @@ extension GetItInjectableX on _i174.GetIt {
       ),
       registerFor: {_auth_live},
     );
+    gh.lazySingleton<_i323.TimeTrackingRepository>(
+      () => _i640.ServerpodTimeTrackingRepository(
+        gh<_i876.TimeTrackingRemoteDataSource>(),
+      ),
+      registerFor: {_auth_live},
+    );
     gh.lazySingleton<_i598.CustomerCubit>(
       () => _i598.CustomerCubit(gh<_i907.CustomerRepository>()),
+    );
+    gh.lazySingleton<_i873.ChecklistCubit>(
+      () => _i873.ChecklistCubit(gh<_i78.GuidanceRepository>()),
+    );
+    gh.lazySingleton<_i140.GuidanceCubit>(
+      () => _i140.GuidanceCubit(gh<_i78.GuidanceRepository>()),
     );
     gh.lazySingleton<_i101.UserPreferencesRepository>(
       () => _i763.ServerpodUserPreferencesRepository(
@@ -224,6 +315,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i1070.AuthRedirectController>(
       () => _i1070.AuthRedirectController(gh<_i487.AuthCubit>()),
+    );
+    gh.lazySingleton<_i593.ProjectsCubit>(
+      () => _i593.ProjectsCubit(gh<_i323.TimeTrackingRepository>()),
+    );
+    gh.lazySingleton<_i266.TimeEntriesCubit>(
+      () => _i266.TimeEntriesCubit(gh<_i323.TimeTrackingRepository>()),
     );
     gh.factory<_i66.RegisterCubit>(
       () =>

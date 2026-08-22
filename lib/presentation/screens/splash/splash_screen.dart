@@ -65,84 +65,89 @@ class _SplashScreenState extends State<SplashScreen> {
       },
       child: Scaffold(
         body: SafeArea(
+          // Scrollable so short viewports (small phones, landscape) do not
+          // overflow: the content column can exceed the available height.
           child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 480),
-              child: Padding(
-                padding: const EdgeInsets.all(GewerberTokens.space32),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Semantics(
-                      label: l10n.commonLoading,
-                      child: const Align(
-                        alignment: Alignment.center,
-                        child: SizedBox(
-                          width: 32,
-                          height: 32,
-                          child: CircularProgressIndicator(strokeWidth: 3),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: GewerberTokens.space24),
-                    logo,
-                    const SizedBox(height: GewerberTokens.space16),
-                    entrance(
-                      Text(
-                        l10n.appTitle,
-                        textAlign: TextAlign.center,
-                        style: textTheme.headlineMedium?.copyWith(
-                          color: colors.onSurface,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      delay: 150.ms,
-                    ),
-                    const SizedBox(height: GewerberTokens.space8),
-                    entrance(
-                      Text(
-                        l10n.splashSubtitle,
-                        textAlign: TextAlign.center,
-                        style: textTheme.bodyMedium?.copyWith(
-                          color: colors.onSurfaceVariant,
-                        ),
-                      ),
-                      delay: 250.ms,
-                    ),
-                    const SizedBox(height: GewerberTokens.space40),
-                    entrance(
-                      FilledButton(
-                        onPressed: () => context.go(RouteNames.register),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: GewerberTokens.space4,
+            child: SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 480),
+                child: Padding(
+                  padding: const EdgeInsets.all(GewerberTokens.space32),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Semantics(
+                        label: l10n.commonLoading,
+                        child: const Align(
+                          alignment: Alignment.center,
+                          child: SizedBox(
+                            width: 32,
+                            height: 32,
+                            child: CircularProgressIndicator(strokeWidth: 3),
                           ),
-                          child: Text(l10n.splashGetStarted),
                         ),
                       ),
-                      delay: 350.ms,
-                    ),
-                    const SizedBox(height: GewerberTokens.space12),
-                    entrance(
-                      OutlinedButton(
-                        onPressed: () => context.go(RouteNames.login),
-                        child: Text(l10n.splashLogIn),
-                      ),
-                      delay: 400.ms,
-                    ),
-                    const SizedBox(height: GewerberTokens.space24),
-                    entrance(
-                      Text(
-                        l10n.splashPrivacy,
-                        textAlign: TextAlign.center,
-                        style: textTheme.bodySmall?.copyWith(
-                          color: colors.onSurfaceVariant,
+                      const SizedBox(height: GewerberTokens.space24),
+                      logo,
+                      const SizedBox(height: GewerberTokens.space16),
+                      entrance(
+                        Text(
+                          l10n.appTitle,
+                          textAlign: TextAlign.center,
+                          style: textTheme.headlineMedium?.copyWith(
+                            color: colors.onSurface,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
+                        delay: 150.ms,
                       ),
-                      delay: 450.ms,
-                    ),
-                  ],
+                      const SizedBox(height: GewerberTokens.space8),
+                      entrance(
+                        Text(
+                          l10n.splashSubtitle,
+                          textAlign: TextAlign.center,
+                          style: textTheme.bodyMedium?.copyWith(
+                            color: colors.onSurfaceVariant,
+                          ),
+                        ),
+                        delay: 250.ms,
+                      ),
+                      const SizedBox(height: GewerberTokens.space40),
+                      entrance(
+                        FilledButton(
+                          onPressed: () => context.go(RouteNames.register),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: GewerberTokens.space4,
+                            ),
+                            child: Text(l10n.splashGetStarted),
+                          ),
+                        ),
+                        delay: 350.ms,
+                      ),
+                      const SizedBox(height: GewerberTokens.space12),
+                      entrance(
+                        OutlinedButton(
+                          onPressed: () => context.go(RouteNames.login),
+                          child: Text(l10n.splashLogIn),
+                        ),
+                        delay: 400.ms,
+                      ),
+                      const SizedBox(height: GewerberTokens.space24),
+                      entrance(
+                        Text(
+                          l10n.splashPrivacy,
+                          textAlign: TextAlign.center,
+                          style: textTheme.bodySmall?.copyWith(
+                            color: colors.onSurfaceVariant,
+                          ),
+                        ),
+                        delay: 450.ms,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

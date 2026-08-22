@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:gewerber_app/presentation/screens/home/widgets/about_content.dart';
 import 'package:gewerber_app/presentation/screens/home/widgets/business_profile_form.dart';
 import 'package:gewerber_app/presentation/screens/home/widgets/business_settings_form.dart';
-import 'package:gewerber_app/presentation/screens/home/widgets/checklist_content.dart';
 import 'package:gewerber_app/presentation/screens/home/widgets/guidance_index.dart';
 import 'package:gewerber_app/presentation/screens/home/widgets/language_selector.dart'
     show LanguageSelector;
@@ -56,11 +55,6 @@ class SettingsDetailPane extends StatelessWidget {
         return const _DetailContainer(
           key: ValueKey('about'),
           child: AboutContent(),
-        );
-      case 6:
-        return const _DetailContainer(
-          key: ValueKey('checklist'),
-          child: ChecklistContent(),
         );
       default:
         return const _DetailContainer(

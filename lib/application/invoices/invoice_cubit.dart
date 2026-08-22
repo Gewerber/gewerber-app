@@ -136,4 +136,142 @@ class InvoiceCubit extends Cubit<InvoiceState> {
       return false;
     }
   }
+
+  /// Transitions a draft invoice to `sent`.
+  ///
+  /// Returns `true` on success.
+  Future<bool> markSent(int invoiceId) {
+    return _transition(invoiceId, () => _repository.markSent(invoiceId));
+  }
+
+  /// Cancels an invoice that is not paid or already cancelled.
+  ///
+  /// Returns `true` on success.
+  Future<bool> cancelInvoice(int invoiceId) {
+    return _transition(invoiceId, () => _repository.cancel(invoiceId));
+  }
+
+  Future<bool> _transition(
+    int invoiceId,
+    Future<Invoice> Function() action,
+  ) async {
+    try {
+      final updated = await action();
+      if (!isClosed) {
+        emit(
+          InvoiceState(
+            status: InvoiceViewStatus.loaded,
+            invoices: [
+              for (final current in state.invoices)
+                if (current.id == updated.id) updated else current,
+            ],
+          ),
+        );
+      }
+      return true;
+    } on Exception {
+      return false;
+    }
+  }
+
+  /// Generates the invoice PDF on the server and returns it for download.
+  Future<InvoicePdf?> downloadPdf(int invoiceId) async {
+    try {
+      return await _repository.generatePdf(invoiceId);
+    } on Exception {
+      return null;
+    }
+  }
+
+  /// Exports invoices as CSV. Returns `null` on failure.
+  Future<String?> exportCsv({InvoiceStatus? status}) async {
+    try {
+      return await _repository.exportCsv(status: status);
+    } on Exception {
+      return null;
+    }
+  }
+
+  /// Exports invoices as JSON. Returns `null` on failure.
+  Future<String?> exportJson({InvoiceStatus? status}) async {
+    try {
+      return await _repository.exportJson(status: status);
+    } on Exception {
+      return null;
+    }
+  }
+
+  /// Records a payment for the invoice.
+  ///
+  /// Returns `true` on success.
+  Future<bool> recordPayment({
+    required int invoiceId,
+    required int amountCents,
+    DateTime? paidAt,
+    String? reference,
+  }) async {
+    try {
+      await _repository.recordPayment(
+        invoiceId: invoiceId,
+        amountCents: amountCents,
+        paidAt: paidAt,
+        reference: reference,
+      );
+      // A fully paid invoice transitions to `paid` server-side; refresh the
+      // cached list entry so the status chip updates.
+      await refresh(invoiceId);
+      return true;
+    } on Exception {
+      return false;
+    }
+  }
+
+  /// Loads the payment state of the invoice. Returns `null` on failure.
+  Future<InvoicePaymentStatus?> paymentStatus(int invoiceId) async {
+    try {
+      return await _repository.paymentStatus(invoiceId);
+    } on Exception {
+      return null;
+    }
+  }
+
+  /// Lists all reminders sent for the invoice. Returns `null` on failure.
+  Future<List<InvoiceReminder>?> listReminders(int invoiceId) async {
+    try {
+      return await _repository.listReminders(invoiceId);
+    } on Exception {
+      return null;
+    }
+  }
+
+  /// Sends a payment reminder for the invoice.
+  ///
+  /// Returns `true` on success.
+  Future<bool> sendReminder(int invoiceId) async {
+    try {
+      await _repository.sendReminder(invoiceId);
+      return true;
+    } on Exception {
+      return false;
+    }
+  }
+
+  /// Re-fetches a single invoice and updates the cached list entry.
+  Future<void> refresh(int invoiceId) async {
+    try {
+      final result = await _repository.get(invoiceId);
+      if (isClosed) return;
+      emit(
+        InvoiceState(
+          status: InvoiceViewStatus.loaded,
+          invoices: [
+            for (final current in state.invoices)
+              if (current.id == invoiceId) result.invoice else current,
+          ],
+        ),
+      );
+    } on Exception {
+      // Non-fatal: the stale entry stays in the list.
+    }
+  }
 }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
-import 'package:gewerber_app/presentation/router/route_names.dart';
 import 'package:gewerber_app/presentation/widgets/common/beta_banner.dart';
 
 /// Authenticated shell hosting the bottom navigation bar.
@@ -63,25 +62,5 @@ class HomeShell extends StatelessWidget {
         ],
       ),
     );
-  }
-}
-
-/// Helper to navigate to a specific shell branch by route name.
-void goToBranch(StatefulNavigationShell shell, String route) {
-  switch (route) {
-    case RouteNames.invoicing:
-      shell.goBranch(1, initialLocation: route == RouteNames.invoicing);
-      break;
-    case RouteNames.timeTracking:
-      shell.goBranch(2, initialLocation: route == RouteNames.timeTracking);
-      break;
-    case RouteNames.accounting:
-      shell.goBranch(3, initialLocation: route == RouteNames.accounting);
-      break;
-    case RouteNames.settings:
-      shell.goBranch(4, initialLocation: route == RouteNames.settings);
-      break;
-    default:
-      shell.goBranch(0);
   }
 }

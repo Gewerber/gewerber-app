@@ -74,8 +74,11 @@ class PasswordStrengthMeter extends StatelessWidget {
       children: [
         Row(
           children: [
-            ExcludeSemantics(
-              child: Expanded(
+            // `Expanded` must be a direct child of this Row; wrapping it in
+            // ExcludeSemantics broke the Flex parent data and threw an
+            // assertion whenever the meter was rendered.
+            Expanded(
+              child: ExcludeSemantics(
                 child: Row(
                   children: List.generate(3, (i) {
                     return Container(
@@ -157,12 +160,16 @@ class _Rule extends StatelessWidget {
               : colors.onSurfaceVariant.withValues(alpha: 0.5),
         ),
         const SizedBox(width: 4),
-        Text(
-          label,
-          style: textTheme.bodySmall?.copyWith(
-            color: met
-                ? colors.onSurfaceVariant
-                : colors.onSurfaceVariant.withValues(alpha: 0.7),
+        // `Flexible` lets long localized labels wrap instead of overflowing
+        // the row on narrow screens.
+        Flexible(
+          child: Text(
+            label,
+            style: textTheme.bodySmall?.copyWith(
+              color: met
+                  ? colors.onSurfaceVariant
+                  : colors.onSurfaceVariant.withValues(alpha: 0.7),
+            ),
           ),
         ),
       ],

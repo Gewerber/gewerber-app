@@ -24,4 +24,36 @@ abstract interface class InvoiceRepository {
 
   /// Deletes the given invoice (only draft invoices can be deleted).
   Future<void> delete(int invoiceId);
+
+  /// Transitions a draft invoice to `sent`.
+  Future<Invoice> markSent(int invoiceId);
+
+  /// Cancels an invoice that is not paid or already cancelled.
+  Future<Invoice> cancel(int invoiceId);
+
+  /// Generates the invoice PDF on the server and returns it for download.
+  Future<InvoicePdf> generatePdf(int invoiceId);
+
+  /// Exports invoices as CSV (semicolon-separated, comma decimals).
+  Future<String> exportCsv({InvoiceStatus? status});
+
+  /// Exports invoices (with items) as a JSON string.
+  Future<String> exportJson({InvoiceStatus? status});
+
+  /// Records a payment for the invoice.
+  Future<PaymentRecord> recordPayment({
+    required int invoiceId,
+    required int amountCents,
+    DateTime? paidAt,
+    String? reference,
+  });
+
+  /// Loads the payment state of the invoice.
+  Future<InvoicePaymentStatus> paymentStatus(int invoiceId);
+
+  /// Lists all reminders sent for the invoice, ordered by send date.
+  Future<List<InvoiceReminder>> listReminders(int invoiceId);
+
+  /// Sends a payment reminder to the customer and records it.
+  Future<InvoiceReminder> sendReminder(int invoiceId);
 }

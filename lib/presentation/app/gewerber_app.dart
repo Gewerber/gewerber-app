@@ -2,14 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_flavor/flutter_flavor.dart';
 
+import 'package:gewerber_app/application/accounting/accounting_cubit.dart';
 import 'package:gewerber_app/application/auth/auth_cubit.dart';
 import 'package:gewerber_app/application/auth/auth_state.dart';
 import 'package:gewerber_app/application/business/business_cubit.dart';
 import 'package:gewerber_app/application/business_settings/business_settings_cubit.dart';
 import 'package:gewerber_app/application/customers/customer_cubit.dart';
+import 'package:gewerber_app/application/guidance/checklist_cubit.dart';
+import 'package:gewerber_app/application/guidance/guidance_cubit.dart';
 import 'package:gewerber_app/application/invoices/invoice_cubit.dart';
 import 'package:gewerber_app/application/settings/app_settings_cubit.dart';
 import 'package:gewerber_app/application/settings/app_settings_state.dart';
+import 'package:gewerber_app/application/time_tracking/projects_cubit.dart';
+import 'package:gewerber_app/application/time_tracking/time_entries_cubit.dart';
 import 'package:gewerber_app/core/theme/app_theme.dart';
 import 'package:gewerber_app/di/injection.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
@@ -34,6 +39,13 @@ class GewerberApp extends StatelessWidget {
           ),
           BlocProvider<CustomerCubit>.value(value: getIt<CustomerCubit>()),
           BlocProvider<InvoiceCubit>.value(value: getIt<InvoiceCubit>()),
+          BlocProvider<ChecklistCubit>.value(value: getIt<ChecklistCubit>()),
+          BlocProvider<GuidanceCubit>.value(value: getIt<GuidanceCubit>()),
+          BlocProvider<ProjectsCubit>.value(value: getIt<ProjectsCubit>()),
+          BlocProvider<TimeEntriesCubit>.value(
+            value: getIt<TimeEntriesCubit>(),
+          ),
+          BlocProvider<AccountingCubit>.value(value: getIt<AccountingCubit>()),
         ],
         child: const _AppView(),
       ),
@@ -47,14 +59,19 @@ class _AppView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthCubit, AuthState>(
-      listenWhen: (previous, current) =>
-          previous.status != current.status &&
-          current.status == AuthStatus.authenticated,
+      listenWhen: (previous, current) => previous.status != current.status,
       listener: (context, state) {
-        // Restore the server-side preferences and the user's businesses right
-        // after signing in.
-        context.read<AppSettingsCubit>().syncFromServer();
-        context.read<BusinessCubit>().load();
+        if (state.status == AuthStatus.authenticated) {
+          // Restore the server-side preferences and the user's businesses right
+          // after signing in.
+          context.read<AppSettingsCubit>().syncFromServer();
+          context.read<BusinessCubit>().load();
+        } else if (state.status == AuthStatus.unauthenticated) {
+          // Drop the previous user's preferences and businesses so nothing
+          // leaks across accounts after sign-out.
+          context.read<AppSettingsCubit>().reset();
+          context.read<BusinessCubit>().reset();
+        }
       },
       child: BlocBuilder<AppSettingsCubit, AppSettingsState>(
         builder: (context, state) {

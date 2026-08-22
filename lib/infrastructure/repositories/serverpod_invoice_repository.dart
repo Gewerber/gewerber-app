@@ -58,6 +58,63 @@ class ServerpodInvoiceRepository implements InvoiceRepository {
     return _guard(() => _dataSource.delete(invoiceId));
   }
 
+  @override
+  Future<Invoice> markSent(int invoiceId) {
+    return _guard(() => _dataSource.markSent(invoiceId));
+  }
+
+  @override
+  Future<Invoice> cancel(int invoiceId) {
+    return _guard(() => _dataSource.cancel(invoiceId));
+  }
+
+  @override
+  Future<InvoicePdf> generatePdf(int invoiceId) {
+    return _guard(() => _dataSource.generatePdf(invoiceId));
+  }
+
+  @override
+  Future<String> exportCsv({InvoiceStatus? status}) {
+    return _guard(() => _dataSource.exportCsv(status: status));
+  }
+
+  @override
+  Future<String> exportJson({InvoiceStatus? status}) {
+    return _guard(() => _dataSource.exportJson(status: status));
+  }
+
+  @override
+  Future<PaymentRecord> recordPayment({
+    required int invoiceId,
+    required int amountCents,
+    DateTime? paidAt,
+    String? reference,
+  }) {
+    return _guard(
+      () => _dataSource.recordPayment(
+        invoiceId: invoiceId,
+        amountCents: amountCents,
+        paidAt: paidAt,
+        reference: reference,
+      ),
+    );
+  }
+
+  @override
+  Future<InvoicePaymentStatus> paymentStatus(int invoiceId) {
+    return _guard(() => _dataSource.paymentStatus(invoiceId));
+  }
+
+  @override
+  Future<List<InvoiceReminder>> listReminders(int invoiceId) {
+    return _guard(() => _dataSource.listReminders(invoiceId));
+  }
+
+  @override
+  Future<InvoiceReminder> sendReminder(int invoiceId) {
+    return _guard(() => _dataSource.sendReminder(invoiceId));
+  }
+
   /// Runs [action] and rethrows [AppException]s, wrapping any other error as
   /// a [NetworkException].
   Future<T> _guard<T>(Future<T> Function() action) async {

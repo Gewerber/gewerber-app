@@ -12,7 +12,7 @@ class AppConfig {
   /// Runtime default, overridable with `--dart-define=SERVER_HOST=...`.
   static const String defaultServerHost = String.fromEnvironment(
     'SERVER_HOST',
-    defaultValue: 'http://localhost:8080',
+    defaultValue: 'https://api.gewerber.de',
   );
 
   /// Google OAuth client id default, overridable with
