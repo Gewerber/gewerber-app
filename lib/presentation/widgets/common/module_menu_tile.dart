@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-/// A single tappable entry inside a module/index stub screen.
-class StubMenuTile extends StatelessWidget {
-  const StubMenuTile({
+/// A single tappable entry inside a module/index screen.
+class ModuleMenuTile extends StatelessWidget {
+  const ModuleMenuTile({
     super.key,
     required this.icon,
     required this.title,

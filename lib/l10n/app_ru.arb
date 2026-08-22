@@ -100,8 +100,6 @@
   "homeInvoicing": "Счета",
   "homeTimeTracking": "Время",
   "homeAccounting": "Учёт",
-  "moduleComingSoonTitle": "Уже в работе!",
-  "moduleComingSoonSubtitle": "Этот модуль следующий в нашем плане и появится здесь совсем скоро.",
 
   "invoicesCreateTitle": "Новый счёт",
   "invoicesCreateSubtitle": "Здесь будут редактироваться реквизиты и позиции счёта.",
@@ -159,7 +157,7 @@
   "themeLight": "Светлая",
   "themeDark": "Тёмная",
   "aboutTitle": "О Gewerber",
-  "aboutSubtitle": "Здесь появятся версия, лицензии и данные о конфиденциальности.",
+  "aboutSubtitle": "Счета, учёт времени и бухгалтерия для вашего бизнеса.",
 
   "onboardingPreferencesTitle": "Настрой под себя",
   "onboardingPreferencesSubtitle": "Выберите, как Gewerber выглядит и на каком языке говорит. Это можно изменить в настройках в любой момент.",
@@ -405,5 +403,26 @@
   "tipsSubtitle": "Короткие объяснения важных понятий.",
   "tipsEmpty": "Советов пока нет.",
   "tipsLoadError": "Не удалось загрузить советы. Попробуйте ещё раз.",
-  "tipsDismiss": "Больше не показывать"
+  "tipsDismiss": "Больше не показывать",
+
+  "dashboardQuickActions": "Быстрые действия",
+  "dashboardActionNewInvoice": "Новый счёт",
+  "dashboardActionTimer": "Таймер",
+  "dashboardActionTransaction": "Операция",
+  "dashboardOpenInvoicesTitle": "Открытые счёта",
+  "dashboardOutstandingEmpty": "Открытых счетов нет. Всё оплачено!",
+  "dashboardInvoicesOpenCount": "Открыто: {count}",
+  "dashboardInvoicesOverdueCount": "Просрочено: {count}",
+  "dashboardInvoicesDraftCount": "Черновиков: {count}",
+  "dashboardMonthTitle": "Этот месяц",
+  "dashboardTrackedTimeTitle": "Учтённое время",
+  "dashboardBillableOf": "{duration} биллируется",
+  "dashboardLoadError": "Часть данных не удалось загрузить.",
+  "commonRetry": "Повторить",
+
+  "aboutVersionLabel": "Версия",
+  "aboutLicenses": "Лицензии open-source",
+  "aboutWebsite": "Сайт",
+  "aboutImprint": "Импрессум",
+  "aboutPrivacy": "Конфиденциальность"
 }

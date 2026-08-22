@@ -128,8 +128,6 @@
   "homeInvoicing": "Invoicing",
   "homeTimeTracking": "Time",
   "homeAccounting": "Accounting",
-  "moduleComingSoonTitle": "On it!",
-  "moduleComingSoonSubtitle": "This module is next on our roadmap and lands here soon.",
 
   "invoicesCreateTitle": "New invoice",
   "invoicesCreateSubtitle": "Invoice data and line items will be edited here.",
@@ -200,7 +198,7 @@
   "themeLight": "Light",
   "themeDark": "Dark",
   "aboutTitle": "About Gewerber",
-  "aboutSubtitle": "Version, licenses and privacy information arrive here.",
+  "aboutSubtitle": "Invoicing, time tracking and bookkeeping for your business.",
 
   "onboardingPreferencesTitle": "Make it yours",
   "onboardingPreferencesSubtitle": "Pick how Gewerber looks and reads for you. You can change this anytime in settings.",
@@ -480,5 +478,54 @@
   "tipsSubtitle": "Short explanations of important concepts.",
   "tipsEmpty": "No tips available right now.",
   "tipsLoadError": "We couldn't load the tips. Please try again.",
-  "tipsDismiss": "Don't show again"
+  "tipsDismiss": "Don't show again",
+
+  "dashboardQuickActions": "Quick actions",
+  "dashboardActionNewInvoice": "New invoice",
+  "dashboardActionTimer": "Timer",
+  "dashboardActionTransaction": "Transaction",
+  "dashboardOpenInvoicesTitle": "Open invoices",
+  "dashboardOutstandingEmpty": "No open invoices. All settled!",
+  "dashboardInvoicesOpenCount": "{count} open",
+  "@dashboardInvoicesOpenCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dashboardInvoicesOverdueCount": "{count} overdue",
+  "@dashboardInvoicesOverdueCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dashboardInvoicesDraftCount": "{count} drafts",
+  "@dashboardInvoicesDraftCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dashboardMonthTitle": "This month",
+  "dashboardTrackedTimeTitle": "Tracked time",
+  "dashboardBillableOf": "{duration} billable",
+  "@dashboardBillableOf": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "dashboardLoadError": "Some data couldn't be loaded.",
+  "commonRetry": "Retry",
+
+  "aboutVersionLabel": "Version",
+  "aboutLicenses": "Open-source licenses",
+  "aboutWebsite": "Website",
+  "aboutImprint": "Imprint",
+  "aboutPrivacy": "Privacy policy"
 }

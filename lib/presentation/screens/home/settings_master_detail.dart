@@ -7,7 +7,7 @@ import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 import 'package:gewerber_app/presentation/router/route_names.dart';
 import 'package:gewerber_app/presentation/screens/home/widgets/settings_detail_pane.dart';
 import 'package:gewerber_app/presentation/screens/home/widgets/settings_navigation_rail.dart';
-import 'package:gewerber_app/presentation/widgets/common/stub_menu_tile.dart';
+import 'package:gewerber_app/presentation/widgets/common/module_menu_tile.dart';
 
 /// Breakpoint for two-pane master-detail layout (standard Material tablet breakpoint).
 const double _settingsBreakpoint = 600;
@@ -131,37 +131,37 @@ class _SettingsMasterDetailState extends State<SettingsMasterDetail> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          StubMenuTile(
+          ModuleMenuTile(
             icon: Icons.storefront_outlined,
             title: AppLocalizations.of(context).settingsBusinessProfile,
             onTap: () => _onMobileTap(context, 0),
           ),
-          StubMenuTile(
+          ModuleMenuTile(
             icon: Icons.receipt_long_outlined,
             title: AppLocalizations.of(context).settingsBusinessSettings,
             onTap: () => _onMobileTap(context, 1),
           ),
-          StubMenuTile(
+          ModuleMenuTile(
             icon: Icons.language_outlined,
             title: AppLocalizations.of(context).settingsLanguage,
             onTap: () => _onMobileTap(context, 2),
           ),
-          StubMenuTile(
+          ModuleMenuTile(
             icon: Icons.brightness_6_outlined,
             title: AppLocalizations.of(context).settingsTheme,
             onTap: () => _onMobileTap(context, 3),
           ),
-          StubMenuTile(
+          ModuleMenuTile(
             icon: Icons.lightbulb_outline,
             title: AppLocalizations.of(context).settingsGuides,
             onTap: () => _onMobileTap(context, 4),
           ),
-          StubMenuTile(
+          ModuleMenuTile(
             icon: Icons.info_outline,
             title: AppLocalizations.of(context).settingsAbout,
             onTap: () => _onMobileTap(context, 5),
           ),
-          StubMenuTile(
+          ModuleMenuTile(
             icon: Icons.logout_outlined,
             title: AppLocalizations.of(context).settingsSignOut,
             onTap: () => _onMobileTap(context, 7),

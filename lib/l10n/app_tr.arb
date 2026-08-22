@@ -100,8 +100,6 @@
   "homeInvoicing": "Faturalama",
   "homeTimeTracking": "Zaman",
   "homeAccounting": "Muhasebe",
-  "moduleComingSoonTitle": "Üzerinde çalışıyoruz!",
-  "moduleComingSoonSubtitle": "Bu modül yol haritamızda sırada ve yakında burada olacak.",
 
   "invoicesCreateTitle": "Yeni fatura",
   "invoicesCreateSubtitle": "Fatura verileri ve kalemleri burada düzenlenecek.",
@@ -159,7 +157,7 @@
   "themeLight": "Açık",
   "themeDark": "Koyu",
   "aboutTitle": "Gewerber hakkında",
-  "aboutSubtitle": "Sürüm, lisanslar ve gizlilik bilgileri buraya gelecek.",
+  "aboutSubtitle": "İşletmeniz için faturalama, süre takibi ve defter tutma.",
 
   "onboardingPreferencesTitle": "Kendine göre ayarla",
   "onboardingPreferencesSubtitle": "Gewerber'in nasıl görüneceğini ve hangi dilde olacağını seç. Bunu istediğin zaman ayarlardan değiştirebilirsin.",
@@ -405,5 +403,26 @@
   "tipsSubtitle": "Önemli kavramların kısa açıklamaları.",
   "tipsEmpty": "Şu anda ipucu yok.",
   "tipsLoadError": "İpuçları yüklenemedi. Lütfen tekrar deneyin.",
-  "tipsDismiss": "Bir daha gösterme"
+  "tipsDismiss": "Bir daha gösterme",
+
+  "dashboardQuickActions": "Hızlı işlemler",
+  "dashboardActionNewInvoice": "Yeni fatura",
+  "dashboardActionTimer": "Zamanlayıcı",
+  "dashboardActionTransaction": "Kayıt",
+  "dashboardOpenInvoicesTitle": "Açık faturalar",
+  "dashboardOutstandingEmpty": "Açık fatura yok. Hepsi ödendi!",
+  "dashboardInvoicesOpenCount": "{count} açık",
+  "dashboardInvoicesOverdueCount": "{count} gecikmiş",
+  "dashboardInvoicesDraftCount": "{count} taslak",
+  "dashboardMonthTitle": "Bu ay",
+  "dashboardTrackedTimeTitle": "Kaydedilen süre",
+  "dashboardBillableOf": "{duration} faturalandırılabilir",
+  "dashboardLoadError": "Bazı veriler yüklenemedi.",
+  "commonRetry": "Tekrar dene",
+
+  "aboutVersionLabel": "Sürüm",
+  "aboutLicenses": "Açık kaynak lisansları",
+  "aboutWebsite": "Web sitesi",
+  "aboutImprint": "Künye",
+  "aboutPrivacy": "Gizlilik"
 }

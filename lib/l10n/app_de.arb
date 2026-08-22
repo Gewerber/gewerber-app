@@ -100,8 +100,6 @@
   "homeInvoicing": "Rechnungen",
   "homeTimeTracking": "Zeit",
   "homeAccounting": "Buchhaltung",
-  "moduleComingSoonTitle": "In Arbeit!",
-  "moduleComingSoonSubtitle": "Dieses Modul steht als Nächstes auf unserer Roadmap und kommt schon bald.",
 
   "invoicesCreateTitle": "Neue Rechnung",
   "invoicesCreateSubtitle": "Rechnungsdaten und Positionen werden hier bearbeitet.",
@@ -159,7 +157,7 @@
   "themeLight": "Hell",
   "themeDark": "Dunkel",
   "aboutTitle": "Über Gewerber",
-  "aboutSubtitle": "Version, Lizenzen und Hinweise zum Datenschutz folgen hier.",
+  "aboutSubtitle": "Rechnungen, Zeiterfassung und Buchhaltung für dein Unternehmen.",
 
   "onboardingPreferencesTitle": "Mach es zu deinem",
   "onboardingPreferencesSubtitle": "Wähle, wie Gewerber aussieht und für dich klingt. Du kannst das jederzeit in den Einstellungen ändern.",
@@ -405,5 +403,26 @@
   "tipsSubtitle": "Kurze Erklärungen zu wichtigen Begriffen.",
   "tipsEmpty": "Aktuell sind keine Tipps verfügbar.",
   "tipsLoadError": "Wir konnten die Tipps nicht laden. Bitte versuche es erneut.",
-  "tipsDismiss": "Nicht mehr anzeigen"
+  "tipsDismiss": "Nicht mehr anzeigen",
+
+  "dashboardQuickActions": "Schnellzugriff",
+  "dashboardActionNewInvoice": "Neue Rechnung",
+  "dashboardActionTimer": "Timer",
+  "dashboardActionTransaction": "Buchung",
+  "dashboardOpenInvoicesTitle": "Offene Rechnungen",
+  "dashboardOutstandingEmpty": "Keine offenen Rechnungen. Alles bezahlt!",
+  "dashboardInvoicesOpenCount": "{count} offen",
+  "dashboardInvoicesOverdueCount": "{count} überfällig",
+  "dashboardInvoicesDraftCount": "{count} Entwürfe",
+  "dashboardMonthTitle": "Dieser Monat",
+  "dashboardTrackedTimeTitle": "Erfasste Zeit",
+  "dashboardBillableOf": "{duration} abrechenbar",
+  "dashboardLoadError": "Einige Daten konnten nicht geladen werden.",
+  "commonRetry": "Erneut versuchen",
+
+  "aboutVersionLabel": "Version",
+  "aboutLicenses": "Open-Source-Lizenzen",
+  "aboutWebsite": "Website",
+  "aboutImprint": "Impressum",
+  "aboutPrivacy": "Datenschutz"
 }
