@@ -162,6 +162,7 @@ class ServerpodTimeTrackingRepository implements TimeTrackingRepository {
     DateTime? to,
     int? customerId,
     DateTime? issueDate,
+    List<int>? timeEntryIds,
   }) {
     return _guard(
       () => _dataSource.createInvoice(
@@ -170,6 +171,7 @@ class ServerpodTimeTrackingRepository implements TimeTrackingRepository {
         to: to,
         customerId: customerId,
         issueDate: issueDate,
+        timeEntryIds: timeEntryIds,
       ),
     );
   }

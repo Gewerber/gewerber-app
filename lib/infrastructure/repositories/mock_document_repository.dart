@@ -21,6 +21,14 @@ class MockDocumentRepository implements DocumentRepository {
   }
 
   @override
+  Future<BusinessDocument?> get(int documentId) async {
+    for (final document in _documents) {
+      if (document.id == documentId) return document;
+    }
+    return null;
+  }
+
+  @override
   Future<List<BusinessDocument>> list({
     DocumentKind? kind,
     String? relatedEntityType,

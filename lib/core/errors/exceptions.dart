@@ -54,6 +54,13 @@ final class AccountDeletedException extends AppException {
   const AccountDeletedException() : super('Account has been deleted');
 }
 
+/// Thrown when the backend rejects the request payload as invalid
+/// (mirrors the server's serializable `ValidationException`, e.g. a billing
+/// selection referencing entries that were invoiced in the meantime).
+final class ValidationException extends AppException {
+  const ValidationException([super.message = 'Invalid input']);
+}
+
 /// Thrown when the backend could not be reached.
 final class NetworkException extends AppException {
   const NetworkException([super.message = 'Network error']);

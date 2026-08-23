@@ -270,7 +270,11 @@ class MockTimeTrackingRepository implements TimeTrackingRepository {
     DateTime? to,
     int? customerId,
     DateTime? issueDate,
+    List<int>? timeEntryIds,
   }) async {
+    final ids = (timeEntryIds == null || timeEntryIds.isEmpty)
+        ? null
+        : Set<int>.of(timeEntryIds);
     final billable = _entries
         .where(
           (entry) =>
@@ -278,6 +282,7 @@ class MockTimeTrackingRepository implements TimeTrackingRepository {
               !entry.isRunning &&
               entry.billable &&
               entry.invoicedAt == null &&
+              (ids == null || ids.contains(entry.id)) &&
               (from == null || !entry.startedAt.isBefore(from)) &&
               (to == null || !entry.startedAt.isAfter(to)),
         )

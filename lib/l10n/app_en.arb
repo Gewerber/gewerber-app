@@ -47,7 +47,7 @@
   "registerEmailStepTitle": "Start with your email",
   "registerEmailStepSubtitle": "We'll send you a code to verify it's really you.",
   "registerCodeStepTitle": "Enter the code",
-  "registerCodeStepSubtitle": "We emailed a 6-digit code to {email}.",
+  "registerCodeStepSubtitle": "We emailed an 8-digit code to {email}.",
   "@registerCodeStepSubtitle": {
     "description": "Subtitle on the code verification step, informing the user that a code was sent to their email address.",
     "placeholders": {
@@ -79,7 +79,7 @@
   "forgotTitle": "Reset your password",
   "forgotSubtitle": "We'll email you a code so you can pick a new password.",
   "forgotCodeStepTitle": "Enter the code",
-  "forgotCodeStepSubtitle": "We emailed a 6-digit code to {email}.",
+  "forgotCodeStepSubtitle": "We emailed an 8-digit code to {email}.",
   "@forgotCodeStepSubtitle": {
     "description": "Subtitle on the password reset code step, informing the user that a code was sent to their email address.",
     "placeholders": {
@@ -531,6 +531,8 @@
   "transactionDescriptionLabel": "Description (optional)",
   "transactionSaved": "Transaction saved.",
   "transactionSaveError": "We couldn't save the transaction. Please try again.",
+  "accountingEntryEditTitle": "Edit entry",
+  "transactionUpdated": "Transaction updated.",
 
   "categorySalesRevenue": "Sales revenue",
   "categoryServiceRevenue": "Service revenue",
@@ -643,6 +645,7 @@
   "timeBillingFrom": "From (optional)",
   "timeBillingTo": "To (optional)",
   "timeBillingLoadError": "We couldn't load the time entries. Please try again.",
+  "timeBillingSelectionInvalid": "Some of the selected entries were billed in the meantime. The list has been refreshed — please review and try again.",
   "timeBillingEntriesTitle": "Unbilled entries",
   "timeBillingPickProject": "Select a project to preview its unbilled billable entries.",
   "timeBillingEmpty": "No unbilled billable entries for this selection.",
@@ -655,6 +658,8 @@
     }
   },
   "timeBillingCreateButton": "Create invoice",
+  "timeBillingEstimatedTotal": "Estimated total",
+  "timeBillingEstimateDisclaimer": "Estimate only — the final amount is calculated when the invoice is created.",
   "timeBillingSuccess": "Invoice {number} created.",
   "@timeBillingSuccess": {
     "placeholders": {

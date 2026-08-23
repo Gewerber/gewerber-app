@@ -43,6 +43,17 @@ class DocumentRemoteDataSource {
     }
   }
 
+  Future<BusinessDocument?> get(int documentId) async {
+    try {
+      final model = await _client.document.get(documentId);
+      return _mapper.fromModel(model);
+    } on sdk.NotFoundException {
+      return null;
+    } on sdk.ServerpodClientException {
+      throw const NetworkException();
+    }
+  }
+
   Future<BusinessDocument> upload({
     required int businessId,
     required PickedFileAttachment file,

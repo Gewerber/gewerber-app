@@ -15,6 +15,10 @@ abstract interface class DocumentRepository {
     int? offset,
   });
 
+  /// Fetches a single document by id, or `null` when it does not exist
+  /// (e.g. it was deleted after being linked to a transaction).
+  Future<BusinessDocument?> get(int documentId);
+
   /// Uploads [file] for the given [businessId] and returns the stored
   /// document's metadata.
   ///

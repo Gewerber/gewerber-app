@@ -88,15 +88,19 @@ abstract interface class TimeTrackingRepository {
 
   // ── Billing ─────────────────────────────────────────────────────────────
 
-  /// Turns the unbilled billable time entries of [projectId] (optionally
-  /// limited to the [from]–[to] period) into a new draft invoice and marks
-  /// them as invoiced. The invoice is associated with [customerId] when
-  /// given; [issueDate] overrides the default "today".
+  /// Turns the unbilled billable time entries of [projectId] into a new
+  /// draft invoice and marks them as invoiced. Without [timeEntryIds] all
+  /// unbilled billable entries of the [from]–[to] period are billed; with
+  /// [timeEntryIds] only those entries are billed (they must be stopped,
+  /// billable, not yet invoiced and belong to [projectId]). The invoice is
+  /// associated with [customerId] when given; [issueDate] overrides the
+  /// default "today".
   Future<Invoice> createInvoice({
     required int projectId,
     DateTime? from,
     DateTime? to,
     int? customerId,
     DateTime? issueDate,
+    List<int>? timeEntryIds,
   });
 }

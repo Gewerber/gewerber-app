@@ -9,6 +9,7 @@ import 'package:gewerber_app/domain/entities/customer.dart';
 import 'package:gewerber_app/domain/entities/invoice.dart';
 import 'package:gewerber_app/domain/entities/invoice_template.dart';
 import 'package:gewerber_app/domain/entities/recurring_schedule.dart';
+import 'package:gewerber_app/domain/entities/transaction.dart';
 import 'package:gewerber_app/presentation/screens/forgot_password/forgot_password_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/accounting_entry_create_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/accounting_screen.dart';
@@ -250,6 +251,14 @@ final GoRouter appRouter = GoRouter(
             GoRoute(
               path: RouteNames.accountingEntryCreate,
               builder: (context, state) => const AccountingEntryCreateScreen(),
+            ),
+            GoRoute(
+              path: RouteNames.accountingEntryEdit,
+              builder: (context, state) => AccountingEntryCreateScreen(
+                transaction: state.extra is AccountingTransaction
+                    ? state.extra as AccountingTransaction
+                    : null,
+              ),
             ),
           ],
         ),

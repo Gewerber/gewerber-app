@@ -93,6 +93,30 @@ class AccountingCubit extends Cubit<AccountingState> {
     }
   }
 
+  /// Persists edits to an existing transaction and replaces it in the
+  /// loaded list. Returns `true` on success.
+  ///
+  /// Passing `null` for [receiptDocumentId] clears the receipt link on the
+  /// server (the update request replaces all fields).
+  Future<bool> update(AccountingTransaction transaction) async {
+    try {
+      final updated = await _repository.update(transaction);
+      if (!isClosed) {
+        emit(
+          state.copyWith(
+            transactions: [
+              for (final current in state.transactions)
+                if (current.id == updated.id) updated else current,
+            ],
+          ),
+        );
+      }
+      return true;
+    } on Exception {
+      return false;
+    }
+  }
+
   /// Deletes a transaction. Returns `true` on success.
   Future<bool> delete(int transactionId) async {
     try {

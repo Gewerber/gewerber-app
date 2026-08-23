@@ -12,7 +12,7 @@ import 'package:gewerber_app/core/theme/app_theme.dart';
 class VerificationCodeInput extends StatefulWidget {
   const VerificationCodeInput({
     super.key,
-    this.length = 6,
+    this.length = 8,
     required this.onCompleted,
     this.initialValue = '',
     this.enabled = true,
@@ -161,8 +161,8 @@ class _VerificationCodeInputState extends State<VerificationCodeInput> {
     final textTheme = Theme.of(context).textTheme;
 
     // Spacing between the code boxes; boxes shrink to fit narrow screens
-    // instead of overflowing (6 fixed 48px boxes need 288px and can exceed
-    // the ~272px available on small phones).
+    // instead of overflowing (fixed-size boxes can exceed the ~272px
+    // available on small phones).
     const spacing = 8.0;
 
     return LayoutBuilder(

@@ -54,6 +54,17 @@ class DocumentsCubit extends Cubit<DocumentsState> {
     }
   }
 
+  /// Fetches a single document by id, or `null` when it does not exist or
+  /// the lookup fails. Used to resolve e.g. the file name of a receipt
+  /// attached to a transaction.
+  Future<BusinessDocument?> getById(int documentId) async {
+    try {
+      return await _repository.get(documentId);
+    } on Exception {
+      return null;
+    }
+  }
+
   /// Opens the device file picker and returns the picked file without
   /// uploading it. Callers decide whether to keep (receipt attachment) or
   /// upload ([upload]) the result.

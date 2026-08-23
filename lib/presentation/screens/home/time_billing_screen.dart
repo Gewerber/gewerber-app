@@ -2,21 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:gewerber_app/application/time_billing/billing_estimate.dart';
 import 'package:gewerber_app/application/time_billing/time_billing_cubit.dart';
 import 'package:gewerber_app/application/time_billing/time_billing_state.dart';
 import 'package:gewerber_app/application/time_tracking/projects_cubit.dart';
 import 'package:gewerber_app/application/time_tracking/projects_state.dart';
+import 'package:gewerber_app/core/errors/failures.dart';
 import 'package:gewerber_app/core/theme/app_theme.dart';
 import 'package:gewerber_app/core/utils/format.dart';
+import 'package:gewerber_app/domain/entities/time_tracking.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 import 'package:gewerber_app/presentation/router/route_names.dart';
 
 /// TimeBillingScreen — turns unbilled billable time entries of a project
 /// into a draft invoice via `timeEntry.createInvoice`.
 ///
-/// The server endpoint bills by project (+ optional period), so the entry
-/// list below is a read-only preview of what will be billed — individual
-/// entries cannot be deselected.
+/// The entry list below previews what will be billed; individual entries
+/// can be unchecked, and only the remaining ones are sent as
+/// `timeEntryIds` to the server.
 class TimeBillingScreen extends StatefulWidget {
   const TimeBillingScreen({super.key});
 
@@ -34,6 +37,13 @@ class _TimeBillingScreenState extends State<TimeBillingScreen> {
     final projects = context.read<ProjectsCubit>();
     if (projects.state.status == ProjectsViewStatus.initial) {
       projects.load(includeArchived: false);
+    }
+    // Task rates are needed for the per-entry estimates; the billing cubit
+    // may hold a selection from a previous visit.
+    final selectedProjectId = context.read<TimeBillingCubit>().state.projectId;
+    if (selectedProjectId != null &&
+        projects.state.tasks[selectedProjectId] == null) {
+      projects.loadTasks(selectedProjectId);
     }
   }
 
@@ -75,10 +85,8 @@ class _TimeBillingScreenState extends State<TimeBillingScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final state = context.watch<TimeBillingCubit>().state;
-    final projects = context
-        .watch<ProjectsCubit>()
-        .state
-        .projects
+    final projectsState = context.watch<ProjectsCubit>().state;
+    final projects = projectsState.projects
         .where((project) => !project.isArchived)
         .toList();
 
@@ -110,6 +118,14 @@ class _TimeBillingScreenState extends State<TimeBillingScreen> {
                   onChanged: (value) {
                     if (value != null) {
                       context.read<TimeBillingCubit>().setProject(value);
+                      // Task rates feed the per-entry estimates.
+                      final tasks = context
+                          .read<ProjectsCubit>()
+                          .state
+                          .tasks[value];
+                      if (tasks == null) {
+                        context.read<ProjectsCubit>().loadTasks(value);
+                      }
                     }
                   },
                 ),
@@ -163,19 +179,33 @@ class _TimeBillingScreenState extends State<TimeBillingScreen> {
                 if (state.failure != null) ...[
                   const SizedBox(height: GewerberTokens.space16),
                   Text(
-                    l10n.timeBillingLoadError,
+                    switch (state.failure) {
+                      // The selection was rejected (e.g. entries billed in
+                      // parallel); the cubit refreshes the preview so the
+                      // user sees the current server state.
+                      ValidationFailure() => l10n.timeBillingSelectionInvalid,
+                      _ => l10n.timeBillingLoadError,
+                    },
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.error,
                     ),
                   ),
                 ],
                 const SizedBox(height: GewerberTokens.space24),
-                _EntryPreview(state: state),
+                _EntryPreview(
+                  state: state,
+                  project: projectsState.projects
+                      .where((project) => project.id == state.projectId)
+                      .firstOrNull,
+                  tasks: state.projectId == null
+                      ? const []
+                      : projectsState.tasksOf(state.projectId!),
+                  onToggle: context.read<TimeBillingCubit>().toggleEntry,
+                ),
                 const SizedBox(height: GewerberTokens.space24),
                 FilledButton.icon(
                   onPressed:
-                      state.hasSelection &&
-                          state.unbilledEntries.isNotEmpty &&
+                      state.hasSelectedEntries &&
                           !state.isCreating &&
                           !state.isLoadingEntries
                       ? _createInvoice
@@ -203,12 +233,31 @@ class _TimeBillingScreenState extends State<TimeBillingScreen> {
   }
 }
 
-/// Read-only preview of the entries that will be billed, with an estimated
-/// total based on the project's hourly rate.
+/// Preview of the entries that will be billed, with a checkbox per entry
+/// (all selected by default), a per-entry and total euro estimate over the
+/// selected rows (task rate first, then the project rate; "—" when no rate
+/// is defined) and an estimate disclaimer.
 class _EntryPreview extends StatelessWidget {
-  const _EntryPreview({required this.state});
+  const _EntryPreview({
+    required this.state,
+    required this.project,
+    required this.tasks,
+    required this.onToggle,
+  });
 
   final TimeBillingState state;
+
+  /// The project being billed, if still loaded.
+  final Project? project;
+
+  /// Tasks of the selected project (source of task-level hourly rates).
+  final List<Task> tasks;
+
+  /// Called when the user checks/unchecks an entry.
+  final ValueChanged<int> onToggle;
+
+  /// Placeholder for entries without any applicable hourly rate.
+  static const String _noEstimate = '—';
 
   @override
   Widget build(BuildContext context) {
@@ -261,9 +310,23 @@ class _EntryPreview extends StatelessWidget {
       );
     }
 
-    final totalMinutes = state.unbilledEntries.fold<int>(
+    // Totals cover only the entries that are still checked.
+    final selectedEntries = state.unbilledEntries
+        .where((entry) => !state.deselectedEntryIds.contains(entry.id))
+        .toList();
+    final totalMinutes = selectedEntries.fold<int>(
       0,
       (sum, entry) => sum + (entry.durationMinutes ?? 0),
+    );
+    final estimatedCents = totalEstimatedCents(
+      selectedEntries,
+      project: project,
+      tasks: tasks,
+    );
+    // Selected entries without a task/project rate show no estimate at all.
+    final hasEstimates = selectedEntries.any(
+      (entry) =>
+          estimateEntryCents(entry, project: project, tasks: tasks) != null,
     );
 
     return Column(
@@ -278,6 +341,11 @@ class _EntryPreview extends StatelessWidget {
               for (final entry in state.unbilledEntries)
                 ListTile(
                   dense: true,
+                  leading: Checkbox(
+                    value: !state.deselectedEntryIds.contains(entry.id),
+                    onChanged: (_) => onToggle(entry.id),
+                  ),
+                  onTap: () => onToggle(entry.id),
                   title: Text(
                     entry.description ?? l10n.timerNoTask,
                     maxLines: 1,
@@ -287,6 +355,17 @@ class _EntryPreview extends StatelessWidget {
                     '${formatDate(entry.startedAt)} · '
                     '${formatMinutes(entry.durationMinutes ?? 0)}',
                   ),
+                  trailing: switch (estimateEntryCents(
+                    entry,
+                    project: project,
+                    tasks: tasks,
+                  )) {
+                    null => Text(
+                      _noEstimate,
+                      style: TextStyle(color: colors.onSurfaceVariant),
+                    ),
+                    final cents => Text(formatCents(cents)),
+                  },
                 ),
             ],
           ),
@@ -302,6 +381,25 @@ class _EntryPreview extends StatelessWidget {
             ),
           ],
         ),
+        if (hasEstimates) ...[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(l10n.timeBillingEstimatedTotal),
+              Text(
+                formatCents(estimatedCents),
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ],
+          ),
+          const SizedBox(height: GewerberTokens.space4),
+          Text(
+            l10n.timeBillingEstimateDisclaimer,
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: colors.onSurfaceVariant),
+          ),
+        ],
       ],
     );
   }

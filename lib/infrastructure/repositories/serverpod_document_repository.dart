@@ -33,6 +33,11 @@ class ServerpodDocumentRepository implements DocumentRepository {
   }
 
   @override
+  Future<BusinessDocument?> get(int documentId) {
+    return _guard(() => _dataSource.get(documentId));
+  }
+
+  @override
   Future<BusinessDocument> upload({
     required int businessId,
     required PickedFileAttachment file,

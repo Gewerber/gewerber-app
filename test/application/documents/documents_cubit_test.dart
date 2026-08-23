@@ -160,6 +160,9 @@ class _FailingRepository implements DocumentRepository {
   }) async => throw const NetworkException('offline');
 
   @override
+  Future<BusinessDocument?> get(int documentId) => throw UnimplementedError();
+
+  @override
   Future<BusinessDocument> upload({
     required int businessId,
     required PickedFileAttachment file,

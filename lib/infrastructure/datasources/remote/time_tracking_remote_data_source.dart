@@ -282,6 +282,7 @@ class TimeTrackingRemoteDataSource {
     DateTime? to,
     int? customerId,
     DateTime? issueDate,
+    List<int>? timeEntryIds,
   }) async {
     try {
       final model = await _client.timeEntry.createInvoice(
@@ -291,9 +292,12 @@ class TimeTrackingRemoteDataSource {
           to: to,
           customerId: customerId,
           issueDate: issueDate,
+          timeEntryIds: timeEntryIds,
         ),
       );
       return _invoiceMapper.fromModel(model);
+    } on sdk.ValidationException catch (e) {
+      throw ValidationException(e.message);
     } on sdk.ServerpodClientException {
       throw const NetworkException();
     }

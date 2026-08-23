@@ -40,6 +40,7 @@ abstract final class RouteNames {
   /// Accounting sub-screens.
   static const String accountingReport = '/app/accounting/reports';
   static const String accountingEntryCreate = '/app/accounting/new';
+  static const String accountingEntryEdit = '/app/accounting/edit';
 
   /// Guidance system.
   static const String guides = '/app/guides';

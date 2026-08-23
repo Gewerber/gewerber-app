@@ -16,6 +16,7 @@ class TimeBillingState extends Equatable {
     this.from,
     this.to,
     this.unbilledEntries = const [],
+    this.deselectedEntryIds = const {},
     this.isLoadingEntries = false,
     this.isCreating = false,
     this.createdInvoice,
@@ -34,6 +35,10 @@ class TimeBillingState extends Equatable {
   /// Stopped billable entries of the selection that were not invoiced yet.
   final List<TimeEntry> unbilledEntries;
 
+  /// Preview entries the user unchecked; every entry is selected by
+  /// default, so only the deselected ids are tracked.
+  final Set<int> deselectedEntryIds;
+
   /// Whether the unbilled-entry preview is being refreshed.
   final bool isLoadingEntries;
 
@@ -45,6 +50,16 @@ class TimeBillingState extends Equatable {
 
   bool get hasSelection => projectId != null;
 
+  /// Ids of the preview entries that will be billed (all entries except
+  /// the deselected ones).
+  Set<int> get selectedEntryIds => {
+    for (final entry in unbilledEntries)
+      if (!deselectedEntryIds.contains(entry.id)) entry.id,
+  };
+
+  /// Whether at least one preview entry is still selected.
+  bool get hasSelectedEntries => selectedEntryIds.isNotEmpty;
+
   TimeBillingState copyWith({
     TimeBillingViewStatus? status,
     Failure? failure,
@@ -52,6 +67,7 @@ class TimeBillingState extends Equatable {
     DateTime? from,
     DateTime? to,
     List<TimeEntry>? unbilledEntries,
+    Set<int>? deselectedEntryIds,
     bool? isLoadingEntries,
     bool? isCreating,
     Invoice? createdInvoice,
@@ -65,6 +81,7 @@ class TimeBillingState extends Equatable {
       from: from ?? this.from,
       to: to ?? this.to,
       unbilledEntries: unbilledEntries ?? this.unbilledEntries,
+      deselectedEntryIds: deselectedEntryIds ?? this.deselectedEntryIds,
       isLoadingEntries: isLoadingEntries ?? this.isLoadingEntries,
       isCreating: isCreating ?? this.isCreating,
       createdInvoice: clearCreatedInvoice
@@ -81,6 +98,7 @@ class TimeBillingState extends Equatable {
     from,
     to,
     unbilledEntries,
+    deselectedEntryIds,
     isLoadingEntries,
     isCreating,
     createdInvoice,

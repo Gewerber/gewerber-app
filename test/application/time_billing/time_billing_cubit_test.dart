@@ -9,10 +9,17 @@ import 'package:gewerber_app/domain/entities/time_tracking.dart';
 import 'package:gewerber_app/domain/repositories/time_tracking_repository.dart';
 
 class _FakeTimeTrackingRepository implements TimeTrackingRepository {
-  _FakeTimeTrackingRepository({this.entries = const [], this.fail = false});
+  _FakeTimeTrackingRepository({
+    this.entries = const [],
+    this.fail = false,
+    this.createError,
+  });
 
   final List<TimeEntry> entries;
   final bool fail;
+
+  /// When set, [createInvoice] throws this instead of a network error.
+  final AppException? createError;
 
   CreateInvoiceCall? lastCreateInvoiceCall;
 
@@ -43,9 +50,16 @@ class _FakeTimeTrackingRepository implements TimeTrackingRepository {
     DateTime? to,
     int? customerId,
     DateTime? issueDate,
+    List<int>? timeEntryIds,
   }) async {
+    if (createError != null) throw createError!;
     if (fail) throw const NetworkException('boom');
-    lastCreateInvoiceCall = (projectId: projectId, from: from, to: to);
+    lastCreateInvoiceCall = (
+      projectId: projectId,
+      from: from,
+      to: to,
+      timeEntryIds: List<int>.of(timeEntryIds ?? const []),
+    );
     return Invoice(
       id: 42,
       number: 'RE-42',
@@ -121,7 +135,12 @@ class _FakeTimeTrackingRepository implements TimeTrackingRepository {
       throw UnimplementedError();
 }
 
-typedef CreateInvoiceCall = ({int projectId, DateTime? from, DateTime? to});
+typedef CreateInvoiceCall = ({
+  int projectId,
+  DateTime? from,
+  DateTime? to,
+  List<int> timeEntryIds,
+});
 
 void main() {
   TimeEntry entry(
@@ -220,4 +239,96 @@ void main() {
     expect(cubit.state.failure, isA<NetworkFailure>());
     expect(cubit.state.isCreating, isFalse);
   });
+
+  test('all preview entries are selected by default', () async {
+    final repository = _FakeTimeTrackingRepository(
+      entries: [entry(1), entry(5)],
+    );
+    final cubit = TimeBillingCubit(repository);
+    await cubit.setProject(1);
+
+    expect(cubit.state.selectedEntryIds, {1, 5});
+    expect(cubit.state.hasSelectedEntries, isTrue);
+  });
+
+  test('toggleEntry deselects and reselects an entry', () async {
+    final repository = _FakeTimeTrackingRepository(
+      entries: [entry(1), entry(5)],
+    );
+    final cubit = TimeBillingCubit(repository);
+    await cubit.setProject(1);
+
+    cubit.toggleEntry(5);
+    expect(cubit.state.selectedEntryIds, {1});
+    expect(cubit.state.deselectedEntryIds, {5});
+
+    cubit.toggleEntry(5);
+    expect(cubit.state.selectedEntryIds, {1, 5});
+    expect(cubit.state.deselectedEntryIds, isEmpty);
+  });
+
+  test('a fresh preview resets the selection', () async {
+    final repository = _FakeTimeTrackingRepository(
+      entries: [entry(1), entry(5)],
+    );
+    final cubit = TimeBillingCubit(repository);
+    await cubit.setProject(1);
+    cubit.toggleEntry(1);
+
+    await cubit.refreshEntries();
+
+    // The reloaded preview is fully selected again.
+    expect(cubit.state.selectedEntryIds, {1, 5});
+  });
+
+  test('createInvoice sends only the selected entry ids', () async {
+    final repository = _FakeTimeTrackingRepository(
+      entries: [entry(1), entry(5)],
+    );
+    final cubit = TimeBillingCubit(repository);
+    await cubit.setProject(1);
+    cubit.toggleEntry(5);
+
+    await cubit.createInvoice();
+
+    expect(repository.lastCreateInvoiceCall?.timeEntryIds, [1]);
+    expect(repository.lastCreateInvoiceCall?.projectId, 1);
+  });
+
+  test('createInvoice is a no-op when nothing is selected', () async {
+    final repository = _FakeTimeTrackingRepository(entries: [entry(1)]);
+    final cubit = TimeBillingCubit(repository);
+    await cubit.setProject(1);
+    cubit.toggleEntry(1);
+
+    final invoice = await cubit.createInvoice();
+
+    expect(invoice, isNull);
+    expect(repository.lastCreateInvoiceCall, isNull);
+    expect(cubit.state.hasSelectedEntries, isFalse);
+  });
+
+  test(
+    'validation failure exposes a message and refreshes the preview',
+    () async {
+      final repository = _FakeTimeTrackingRepository(
+        entries: [entry(1), entry(5)],
+        createError: const ValidationException('entries already invoiced: 5'),
+      );
+      final cubit = TimeBillingCubit(repository);
+      await cubit.setProject(1);
+      cubit.toggleEntry(1);
+
+      final invoice = await cubit.createInvoice();
+
+      expect(invoice, isNull);
+      expect(cubit.state.isCreating, isFalse);
+      final failure = cubit.state.failure;
+      expect(failure, isA<ValidationFailure>());
+      expect((failure as ValidationFailure).message, contains('invoiced'));
+      // The preview was refreshed from the server instead of staying empty.
+      expect(cubit.state.unbilledEntries.map((e) => e.id), [1, 5]);
+      expect(cubit.state.isLoadingEntries, isFalse);
+    },
+  );
 }
