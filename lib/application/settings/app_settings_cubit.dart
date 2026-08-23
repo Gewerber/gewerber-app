@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 import 'package:gewerber_app/application/settings/app_settings_state.dart';
 import 'package:gewerber_app/domain/entities/user_preferences.dart';
@@ -33,6 +34,7 @@ class AppSettingsCubit extends Cubit<AppSettingsState> {
       final locale = _toLocale(preferences.locale);
       if (theme == state.themeMode && locale == state.locale) return;
       emit(state.copyWith(themeMode: theme, locale: locale));
+      _syncFormatLocale();
     } catch (_) {
       // Non-fatal: keep the current local settings.
     }
@@ -49,6 +51,7 @@ class AppSettingsCubit extends Cubit<AppSettingsState> {
   void setLocale(Locale locale) {
     if (state.locale == locale) return;
     emit(state.copyWith(locale: locale));
+    _syncFormatLocale();
     _persist();
   }
 
@@ -56,6 +59,7 @@ class AppSettingsCubit extends Cubit<AppSettingsState> {
   void useSystemLocale() {
     if (state.locale == null) return;
     emit(state.copyWith(clearLocale: true));
+    _syncFormatLocale();
     _persist();
   }
 
@@ -64,6 +68,7 @@ class AppSettingsCubit extends Cubit<AppSettingsState> {
   /// Used by tests to isolate scenarios from the shared singleton.
   void reset() {
     emit(const AppSettingsState());
+    _syncFormatLocale();
   }
 
   /// Persists the current preferences on the server profile.
@@ -78,6 +83,14 @@ class AppSettingsCubit extends Cubit<AppSettingsState> {
       theme: _toAppTheme(state.themeMode),
     );
     unawaited(_persistSafely(repository, preferences));
+  }
+
+  /// Keeps `package:intl` formatters (currency, dates) aligned with the
+  /// active app language.
+  void _syncFormatLocale() {
+    final locale = state.locale?.toLanguageTag();
+    Intl.defaultLocale =
+        locale ?? PlatformDispatcher.instance.locale.toString();
   }
 
   Future<void> _persistSafely(

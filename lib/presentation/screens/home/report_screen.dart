@@ -75,7 +75,7 @@ class _ReportScreenState extends State<ReportScreen> {
       return;
     }
     await FileSaver.instance.saveFile(
-      name: 'gewerber-transactions-${formatDate(from)}-${formatDate(to)}',
+      name: 'gewerber-transactions-${formatDateIso(from)}-${formatDateIso(to)}',
       bytes: Uint8List.fromList(utf8.encode(csv)),
       fileExtension: 'csv',
       mimeType: MimeType.csv,

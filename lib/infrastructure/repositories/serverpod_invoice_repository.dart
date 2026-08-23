@@ -34,6 +34,7 @@ class ServerpodInvoiceRepository implements InvoiceRepository {
     DateTime? serviceDateFrom,
     DateTime? serviceDateTo,
     String? notes,
+    int? templateId,
   }) {
     return _guard(
       () => _dataSource.create(
@@ -44,6 +45,7 @@ class ServerpodInvoiceRepository implements InvoiceRepository {
         serviceDateFrom: serviceDateFrom,
         serviceDateTo: serviceDateTo,
         notes: notes,
+        templateId: templateId,
       ),
     );
   }

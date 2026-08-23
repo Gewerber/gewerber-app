@@ -1,7 +1,9 @@
 # Builds the app image, pushes it to GHCR and deploys it to the VPS via SSH.
 #
-#   push to main    -> environment "production" -> https://app.gewerber.de
-#   push to develop -> environment "staging"    -> https://test.app.gewerber.de
+#   push to main    -> CI -> environment "production" -> https://app.gewerber.de
+#   push to develop -> CI -> environment "staging"    -> https://test.app.gewerber.de
+#
+# CI (ci.yml) always runs first — the deploy job `needs` it.
 #
 # Required repository/environment secrets:
 #   VPS_HOST    – VPS address
@@ -29,8 +31,14 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # Runs analyze + test from ci.yml; deployment is blocked when it fails.
+  ci:
+    name: CI gate
+    uses: ./.github/workflows/ci.yml
+
   deploy:
     name: Build & deploy (${{ github.ref_name }})
+    needs: ci
     runs-on: ubuntu-latest
     environment: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
     permissions:

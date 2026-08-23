@@ -48,9 +48,26 @@ final class PasswordPolicyViolationException extends AppException {
   const PasswordPolicyViolationException() : super('Password policy violation');
 }
 
+/// Thrown when the backend reports that the signed-in account has been
+/// deleted (the server answers `NotFoundException` on every profile call).
+final class AccountDeletedException extends AppException {
+  const AccountDeletedException() : super('Account has been deleted');
+}
+
 /// Thrown when the backend could not be reached.
 final class NetworkException extends AppException {
   const NetworkException([super.message = 'Network error']);
+}
+
+/// Thrown when the server rejects the action because it conflicts with an
+/// existing resource (e.g. a schedule already attached to an invoice).
+final class ConflictException extends AppException {
+  const ConflictException([super.message = 'Conflict']);
+}
+
+/// Thrown when the requested resource does not exist.
+final class NotFoundException extends AppException {
+  const NotFoundException([super.message = 'Not found']);
 }
 
 /// Thrown when a social identity provider is not configured for the app.

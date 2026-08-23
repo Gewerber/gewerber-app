@@ -22,6 +22,7 @@ class InvoiceMapper {
       vatTotalCents: model.vatTotalCents,
       totalCents: model.totalCents,
       notes: model.notes,
+      templateId: model.templateId,
     );
   }
 

@@ -1,0 +1,71 @@
+# Continuous integration: static analysis and tests.
+#
+# Runs on:
+#   - every push to main/develop (before the Deploy workflow is started)
+#   - every pull request
+# The Deploy workflow calls this workflow as its first job (`needs: ci`),
+# so a red build can never reach the VPS.
+#
+# Required repository secrets:
+#   COMMERCIAL_REPO_TOKEN – PAT with read access to the private
+#                 gewerber-backend-commercial repository (git dependency).
+#                 Not available for pull requests from forks — those fail at
+#                 `pub get` by design; re-run them from a branch of this
+#                 repository.
+
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+  workflow_call:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze-test:
+    name: Analyze & test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.44.8
+          cache: true
+
+      - name: Verify private dependency token
+        if: github.event.pull_request.head.repo.fork != true
+        env:
+          COMMERCIAL_REPO_TOKEN: ${{ secrets.COMMERCIAL_REPO_TOKEN }}
+        run: |
+          if [ -z "$COMMERCIAL_REPO_TOKEN" ]; then
+            echo "::error::Secret COMMERCIAL_REPO_TOKEN is not set. Create a token with read access to the private gewerber-backend-commercial repository (Settings → Secrets and variables → Actions)."
+            exit 1
+          fi
+
+      - name: Configure git for private dependency
+        if: github.event.pull_request.head.repo.fork != true
+        run: |
+          git config --global url."https://x-access-token:${{ secrets.COMMERCIAL_REPO_TOKEN }}@github.com/Gewerber/gewerber-backend-commercial.git".insteadOf "https://github.com/Gewerber/gewerber-backend-commercial.git"
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Generate code (l10n)
+        run: flutter gen-l10n
+
+      - name: Verify formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Analyze
+        run: flutter analyze
+
+      - name: Test
+        run: flutter test

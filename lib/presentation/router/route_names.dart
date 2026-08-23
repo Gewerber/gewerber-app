@@ -24,6 +24,11 @@ abstract final class RouteNames {
   static const String customers = '/app/invoicing/customers';
   static const String customerNew = '/app/invoicing/customers/new';
   static const String customerEdit = '/app/invoicing/customers/edit';
+  static const String invoiceTemplates = '/app/invoicing/templates';
+  static const String templateNew = '/app/invoicing/templates/new';
+  static const String templateEdit = '/app/invoicing/templates/edit';
+  static const String recurringSchedules = '/app/invoicing/recurring';
+  static const String recurringScheduleEdit = '/app/invoicing/recurring/edit';
 
   /// Time tracking sub-screens.
   static const String timeProjects = '/app/time/projects';
@@ -41,6 +46,7 @@ abstract final class RouteNames {
   static const String guideTips = '/app/guides/tips';
 
   /// Settings sub-screens.
+  static const String settingsProfile = '/app/settings/profile';
   static const String settingsBusiness = '/app/settings/business';
   static const String settingsBusinessSettings =
       '/app/settings/business-settings';

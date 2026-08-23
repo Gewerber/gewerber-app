@@ -20,10 +20,14 @@ import '../application/customers/customer_cubit.dart' as _i598;
 import '../application/forgot_password/forgot_password_cubit.dart' as _i318;
 import '../application/guidance/checklist_cubit.dart' as _i873;
 import '../application/guidance/guidance_cubit.dart' as _i140;
+import '../application/invoice_templates/invoice_template_cubit.dart' as _i563;
 import '../application/invoices/invoice_cubit.dart' as _i1027;
+import '../application/recurring_schedules/recurring_schedule_cubit.dart'
+    as _i184;
 import '../application/register/register_cubit.dart' as _i66;
 import '../application/time_tracking/projects_cubit.dart' as _i593;
 import '../application/time_tracking/time_entries_cubit.dart' as _i266;
+import '../application/user_profile/user_profile_cubit.dart' as _i268;
 import '../core/config/app_config.dart' as _i221;
 import '../domain/repositories/accounting_repository.dart' as _i188;
 import '../domain/repositories/auth_repository.dart' as _i800;
@@ -32,8 +36,11 @@ import '../domain/repositories/business_settings_repository.dart' as _i743;
 import '../domain/repositories/customer_repository.dart' as _i907;
 import '../domain/repositories/guidance_repository.dart' as _i78;
 import '../domain/repositories/invoice_repository.dart' as _i778;
+import '../domain/repositories/invoice_template_repository.dart' as _i309;
+import '../domain/repositories/recurring_schedule_repository.dart' as _i721;
 import '../domain/repositories/time_tracking_repository.dart' as _i323;
 import '../domain/repositories/user_preferences_repository.dart' as _i101;
+import '../domain/repositories/user_profile_repository.dart' as _i439;
 import '../infrastructure/core/serverpod_client_factory.dart' as _i661;
 import '../infrastructure/datasources/local/session_store.dart' as _i900;
 import '../infrastructure/datasources/remote/accounting_remote_data_source.dart'
@@ -50,12 +57,18 @@ import '../infrastructure/datasources/remote/guidance_remote_data_source.dart'
     as _i126;
 import '../infrastructure/datasources/remote/invoice_remote_data_source.dart'
     as _i206;
+import '../infrastructure/datasources/remote/invoice_template_remote_data_source.dart'
+    as _i490;
+import '../infrastructure/datasources/remote/recurring_schedule_remote_data_source.dart'
+    as _i317;
 import '../infrastructure/datasources/remote/social_auth_remote_data_source.dart'
     as _i691;
 import '../infrastructure/datasources/remote/time_tracking_remote_data_source.dart'
     as _i876;
 import '../infrastructure/datasources/remote/user_preferences_remote_data_source.dart'
     as _i984;
+import '../infrastructure/datasources/remote/user_profile_remote_data_source.dart'
+    as _i212;
 import '../infrastructure/mappers/business_mapper.dart' as _i457;
 import '../infrastructure/mappers/customer_mapper.dart' as _i234;
 import '../infrastructure/mappers/guidance_mapper.dart' as _i367;
@@ -73,10 +86,16 @@ import '../infrastructure/repositories/mock_business_settings_repository.dart'
 import '../infrastructure/repositories/mock_customer_repository.dart' as _i569;
 import '../infrastructure/repositories/mock_guidance_repository.dart' as _i420;
 import '../infrastructure/repositories/mock_invoice_repository.dart' as _i555;
+import '../infrastructure/repositories/mock_invoice_template_repository.dart'
+    as _i677;
+import '../infrastructure/repositories/mock_recurring_schedule_repository.dart'
+    as _i612;
 import '../infrastructure/repositories/mock_time_tracking_repository.dart'
     as _i368;
 import '../infrastructure/repositories/mock_user_preferences_repository.dart'
     as _i732;
+import '../infrastructure/repositories/mock_user_profile_repository.dart'
+    as _i553;
 import '../infrastructure/repositories/serverpod_accounting_repository.dart'
     as _i224;
 import '../infrastructure/repositories/serverpod_auth_repository.dart' as _i194;
@@ -90,10 +109,16 @@ import '../infrastructure/repositories/serverpod_guidance_repository.dart'
     as _i34;
 import '../infrastructure/repositories/serverpod_invoice_repository.dart'
     as _i1035;
+import '../infrastructure/repositories/serverpod_invoice_template_repository.dart'
+    as _i708;
+import '../infrastructure/repositories/serverpod_recurring_schedule_repository.dart'
+    as _i463;
 import '../infrastructure/repositories/serverpod_time_tracking_repository.dart'
     as _i640;
 import '../infrastructure/repositories/serverpod_user_preferences_repository.dart'
     as _i763;
+import '../infrastructure/repositories/serverpod_user_profile_repository.dart'
+    as _i141;
 import '../presentation/router/auth_redirect_controller.dart' as _i1070;
 import '../presentation/router/business_redirect_controller.dart' as _i981;
 
@@ -133,8 +158,29 @@ extension GetItInjectableX on _i174.GetIt {
       ),
       registerFor: {_auth_live},
     );
+    gh.lazySingleton<_i490.InvoiceTemplateRemoteDataSource>(
+      () => _i490.InvoiceTemplateRemoteDataSource(
+        gh<_i661.ServerpodClientFactory>(),
+      ),
+      registerFor: {_auth_live},
+    );
+    gh.lazySingleton<_i317.RecurringScheduleRemoteDataSource>(
+      () => _i317.RecurringScheduleRemoteDataSource(
+        gh<_i661.ServerpodClientFactory>(),
+      ),
+      registerFor: {_auth_live},
+    );
+    gh.lazySingleton<_i212.UserProfileRemoteDataSource>(
+      () =>
+          _i212.UserProfileRemoteDataSource(gh<_i661.ServerpodClientFactory>()),
+      registerFor: {_auth_live},
+    );
     gh.lazySingleton<_i778.InvoiceRepository>(
       () => _i555.MockInvoiceRepository(),
+      registerFor: {_auth_mock},
+    );
+    gh.lazySingleton<_i309.InvoiceTemplateRepository>(
+      () => _i677.MockInvoiceTemplateRepository(),
       registerFor: {_auth_mock},
     );
     gh.lazySingleton<_i253.AccountingRemoteDataSource>(
@@ -158,6 +204,14 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i367.GuidanceMapper>(),
       ),
       registerFor: {_auth_live},
+    );
+    gh.lazySingleton<_i439.UserProfileRepository>(
+      () => _i553.MockUserProfileRepository(),
+      registerFor: {_auth_mock},
+    );
+    gh.lazySingleton<_i721.RecurringScheduleRepository>(
+      () => _i612.MockRecurringScheduleRepository(),
+      registerFor: {_auth_mock},
     );
     gh.lazySingleton<_i188.AccountingRepository>(
       () => _i254.MockAccountingRepository(),
@@ -207,6 +261,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i139.BusinessCubit>(
       () => _i139.BusinessCubit(gh<_i93.BusinessRepository>()),
     );
+    gh.lazySingleton<_i439.UserProfileRepository>(
+      () => _i141.ServerpodUserProfileRepository(
+        gh<_i212.UserProfileRemoteDataSource>(),
+      ),
+      registerFor: {_auth_live},
+    );
     gh.lazySingleton<_i743.BusinessSettingsRepository>(
       () => _i63.ServerpodBusinessSettingsRepository(
         gh<_i334.BusinessSettingsRemoteDataSource>(),
@@ -238,6 +298,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i946.AccountingCubit>(
       () => _i946.AccountingCubit(gh<_i188.AccountingRepository>()),
+    );
+    gh.lazySingleton<_i309.InvoiceTemplateRepository>(
+      () => _i708.ServerpodInvoiceTemplateRepository(
+        gh<_i490.InvoiceTemplateRemoteDataSource>(),
+      ),
+      registerFor: {_auth_live},
     );
     gh.lazySingleton<_i1067.CustomerRemoteDataSource>(
       () => _i1067.CustomerRemoteDataSource(
@@ -277,6 +343,16 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i419.BusinessSettingsCubit>(
       () => _i419.BusinessSettingsCubit(gh<_i743.BusinessSettingsRepository>()),
     );
+    gh.lazySingleton<_i721.RecurringScheduleRepository>(
+      () => _i463.ServerpodRecurringScheduleRepository(
+        gh<_i317.RecurringScheduleRemoteDataSource>(),
+      ),
+      registerFor: {_auth_live},
+    );
+    gh.lazySingleton<_i184.RecurringScheduleCubit>(
+      () =>
+          _i184.RecurringScheduleCubit(gh<_i721.RecurringScheduleRepository>()),
+    );
     gh.lazySingleton<_i907.CustomerRepository>(
       () => _i720.ServerpodCustomerRepository(
         gh<_i1067.CustomerRemoteDataSource>(),
@@ -288,6 +364,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i876.TimeTrackingRemoteDataSource>(),
       ),
       registerFor: {_auth_live},
+    );
+    gh.lazySingleton<_i563.InvoiceTemplateCubit>(
+      () => _i563.InvoiceTemplateCubit(gh<_i309.InvoiceTemplateRepository>()),
+    );
+    gh.lazySingleton<_i268.UserProfileCubit>(
+      () => _i268.UserProfileCubit(gh<_i439.UserProfileRepository>()),
     );
     gh.lazySingleton<_i598.CustomerCubit>(
       () => _i598.CustomerCubit(gh<_i907.CustomerRepository>()),

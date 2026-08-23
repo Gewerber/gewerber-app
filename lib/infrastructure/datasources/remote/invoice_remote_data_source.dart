@@ -60,6 +60,7 @@ class InvoiceRemoteDataSource {
     DateTime? serviceDateFrom,
     DateTime? serviceDateTo,
     String? notes,
+    int? templateId,
   }) async {
     try {
       final model = await _client.invoice.create(
@@ -70,6 +71,7 @@ class InvoiceRemoteDataSource {
           serviceDateFrom: serviceDateFrom,
           serviceDateTo: serviceDateTo,
           notes: notes,
+          templateId: templateId,
           items: items.map(_mapper.toItemRequest).toList(),
         ),
       );

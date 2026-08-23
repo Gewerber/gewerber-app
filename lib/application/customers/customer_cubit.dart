@@ -17,13 +17,20 @@ class CustomerCubit extends Cubit<CustomerState> {
   final CustomerRepository _repository;
 
   /// Loads the customers, optionally filtered by [status].
-  Future<void> load({CustomerStatus? status}) async {
+  ///
+  /// [limit] and [offset] page through the server-side list; `null` lets the
+  /// backend apply its defaults.
+  Future<void> load({CustomerStatus? status, int? limit, int? offset}) async {
     if (state.isLoading) return;
     emit(
       state.copyWith(status: CustomerViewStatus.loading, clearFailure: true),
     );
     try {
-      final customers = await _repository.list(status: status);
+      final customers = await _repository.list(
+        status: status,
+        limit: limit,
+        offset: offset,
+      );
       if (isClosed) return;
       emit(
         CustomerState(status: CustomerViewStatus.loaded, customers: customers),

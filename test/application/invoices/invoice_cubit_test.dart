@@ -41,6 +41,7 @@ class _FakeInvoiceRepository implements InvoiceRepository {
     DateTime? serviceDateFrom,
     DateTime? serviceDateTo,
     String? notes,
+    int? templateId,
   }) async {
     final invoice = Invoice(
       id: _invoices.length + 1,
@@ -49,6 +50,7 @@ class _FakeInvoiceRepository implements InvoiceRepository {
       customerId: customerId,
       dueDate: dueDate,
       notes: notes,
+      templateId: templateId,
     );
     _invoices.add(invoice);
     return invoice;

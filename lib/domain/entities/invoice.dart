@@ -168,6 +168,7 @@ class Invoice extends Equatable {
     this.vatTotalCents = 0,
     this.totalCents = 0,
     this.notes,
+    this.templateId,
   });
 
   final int id;
@@ -182,6 +183,10 @@ class Invoice extends Equatable {
   final int vatTotalCents;
   final int totalCents;
   final String? notes;
+
+  /// Layout template applied to the invoice (header/footer/logo on the
+  /// generated PDF), if any.
+  final int? templateId;
 
   bool get isDraft => status == InvoiceStatus.draft;
 
@@ -199,5 +204,6 @@ class Invoice extends Equatable {
     vatTotalCents,
     totalCents,
     notes,
+    templateId,
   ];
 }

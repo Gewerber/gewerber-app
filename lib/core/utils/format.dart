@@ -1,13 +1,29 @@
 /// Formatting helpers shared by the invoicing, time tracking and accounting
 /// modules.
+///
+/// Currency and date formatting is locale-aware via `package:intl`. The
+/// default locale is German (`de_DE`) — the product's primary market. The
+/// settings cubit keeps [Intl.defaultLocale] in sync with the app language.
 library;
 
-/// Formats an amount in cents as a simple euro string (e.g. `1200` → `12.00 €`).
-String formatCents(int cents) {
-  final euros = cents ~/ 100;
-  final rest = (cents % 100).abs().toString().padLeft(2, '0');
-  final sign = cents < 0 ? '-' : '';
-  return '$sign$euros.$rest €';
+import 'package:intl/intl.dart';
+
+/// Locale used when neither an explicit locale nor [Intl.defaultLocale] is
+/// available (e.g. plain unit tests).
+const String defaultFormatLocale = 'de_DE';
+
+String _resolveLocale(String? locale) =>
+    locale ?? Intl.defaultLocale ?? defaultFormatLocale;
+
+/// Formats an amount in cents as a localized euro string.
+///
+/// With the default German locale: `123450` → `1.234,50 €`.
+String formatCents(int cents, {String? locale}) {
+  return NumberFormat.currency(
+    locale: _resolveLocale(locale),
+    symbol: '€',
+    decimalDigits: 2,
+  ).format(cents / 100);
 }
 
 /// Parses a decimal euro input (e.g. `12,50` or `12.50`) into cents.
@@ -29,13 +45,19 @@ String formatMinutes(int minutes) {
   return '${hours}h ${rest.toString().padLeft(2, '0')}m';
 }
 
-/// Formats a date as `YYYY-MM-DD`.
-String formatDate(DateTime date) {
-  return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+/// Formats a date for display, e.g. `22.08.2026` in the default German
+/// locale.
+String formatDate(DateTime date, {String? locale}) {
+  return DateFormat.yMd(_resolveLocale(locale)).format(date);
+}
+
+/// Formats a date machine-readably as `YYYY-MM-DD`, independent of the app
+/// language. Use it for file names, exports and other technical contexts.
+String formatDateIso(DateTime date) {
+  return DateFormat('yyyy-MM-dd').format(date);
 }
 
 /// Formats a time of day as `HH:mm`.
-String formatTime(DateTime date) {
-  return '${date.hour.toString().padLeft(2, '0')}:'
-      '${date.minute.toString().padLeft(2, '0')}';
+String formatTime(DateTime date, {String? locale}) {
+  return DateFormat('HH:mm', _resolveLocale(locale)).format(date);
 }

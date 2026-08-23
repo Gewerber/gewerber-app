@@ -9,6 +9,9 @@ abstract interface class InvoiceRepository {
   Future<({Invoice invoice, List<InvoiceItem> items})> get(int invoiceId);
 
   /// Creates a new invoice.
+  ///
+  /// [templateId] associates a layout template whose header/footer are
+  /// applied to the generated PDF.
   Future<Invoice> create({
     required List<InvoiceItem> items,
     int? customerId,
@@ -17,6 +20,7 @@ abstract interface class InvoiceRepository {
     DateTime? serviceDateFrom,
     DateTime? serviceDateTo,
     String? notes,
+    int? templateId,
   });
 
   /// Updates an existing invoice.

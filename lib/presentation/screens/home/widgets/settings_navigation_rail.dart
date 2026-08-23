@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
+import 'package:gewerber_app/presentation/screens/home/settings_master_detail.dart'
+    show SettingsSection;
 
 /// SettingsNavigationRail — master pane for settings master-detail layout.
 class SettingsNavigationRail extends StatelessWidget {
@@ -8,17 +10,26 @@ class SettingsNavigationRail extends StatelessWidget {
     super.key,
     required this.selectedIndex,
     required this.onDestinationSelected,
+    required this.sections,
     this.extended = true,
     this.isSigningOut = false,
+    this.isDeletingAccount = false,
   });
 
   final int selectedIndex;
   final ValueChanged<int> onDestinationSelected;
   final bool extended;
 
+  /// Sections rendered before the sign-out destination.
+  final List<SettingsSection> sections;
+
   /// Shows a spinner on the sign-out destination and disables it while the
   /// session is being cleared.
   final bool isSigningOut;
+
+  /// Shows a spinner on the delete-account destination while the deletion
+  /// request is in flight.
+  final bool isDeletingAccount;
 
   @override
   Widget build(BuildContext context) {
@@ -38,36 +49,12 @@ class SettingsNavigationRail extends StatelessWidget {
       ),
       unselectedLabelTextStyle: TextStyle(color: colors.onSurfaceVariant),
       destinations: [
-        NavigationRailDestination(
-          icon: const Icon(Icons.storefront_outlined),
-          selectedIcon: const Icon(Icons.storefront),
-          label: Text(l10n.settingsBusinessProfile),
-        ),
-        NavigationRailDestination(
-          icon: const Icon(Icons.receipt_long_outlined),
-          selectedIcon: const Icon(Icons.receipt_long),
-          label: Text(l10n.settingsBusinessSettings),
-        ),
-        NavigationRailDestination(
-          icon: const Icon(Icons.language_outlined),
-          selectedIcon: const Icon(Icons.language),
-          label: Text(l10n.settingsLanguage),
-        ),
-        NavigationRailDestination(
-          icon: const Icon(Icons.brightness_6_outlined),
-          selectedIcon: const Icon(Icons.brightness_6),
-          label: Text(l10n.settingsTheme),
-        ),
-        NavigationRailDestination(
-          icon: const Icon(Icons.lightbulb_outline),
-          selectedIcon: const Icon(Icons.lightbulb),
-          label: Text(l10n.settingsGuides),
-        ),
-        NavigationRailDestination(
-          icon: const Icon(Icons.info_outline),
-          selectedIcon: const Icon(Icons.info),
-          label: Text(l10n.settingsAbout),
-        ),
+        for (final section in sections)
+          NavigationRailDestination(
+            icon: Icon(section.icon),
+            selectedIcon: Icon(section.selectedIcon),
+            label: Text(section.label(l10n)),
+          ),
         NavigationRailDestination(
           icon: isSigningOut
               ? const SizedBox(
@@ -84,6 +71,24 @@ class SettingsNavigationRail extends StatelessWidget {
                 )
               : const Icon(Icons.logout),
           label: Text(l10n.settingsSignOut),
+        ),
+        // Danger zone destination (irreversible account deletion).
+        NavigationRailDestination(
+          icon: isDeletingAccount
+              ? const SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : Icon(Icons.delete_forever_outlined, color: colors.error),
+          selectedIcon: isDeletingAccount
+              ? const SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : Icon(Icons.delete_forever, color: colors.error),
+          label: Text(l10n.settingsDeleteAccount),
         ),
       ],
     );
