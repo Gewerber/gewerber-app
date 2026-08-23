@@ -92,6 +92,9 @@ class RecurringScheduleCubit extends Cubit<RecurringScheduleState> {
 
   /// Updates an existing schedule (`null` arguments keep their value).
   ///
+  /// The clear flags lift an end date / occurrence limit entirely; they
+  /// take precedence over the corresponding field argument.
+  ///
   /// Returns `true` on success; failures are exposed like in [attach].
   Future<bool> update(
     RecurringSchedule schedule, {
@@ -99,6 +102,8 @@ class RecurringScheduleCubit extends Cubit<RecurringScheduleState> {
     DateTime? nextRecurrenceDate,
     DateTime? recurrenceEndDate,
     int? recurrenceMaxOccurrences,
+    bool clearRecurrenceEndDate = false,
+    bool clearMaxOccurrences = false,
   }) async {
     if (state.isSaving) return false;
     emit(state.copyWith(isSaving: true, clearFailure: true));
@@ -109,6 +114,8 @@ class RecurringScheduleCubit extends Cubit<RecurringScheduleState> {
         nextRecurrenceDate: nextRecurrenceDate,
         recurrenceEndDate: recurrenceEndDate,
         recurrenceMaxOccurrences: recurrenceMaxOccurrences,
+        clearRecurrenceEndDate: clearRecurrenceEndDate,
+        clearMaxOccurrences: clearMaxOccurrences,
       );
       if (!isClosed) emit(_saved(updated));
       return true;

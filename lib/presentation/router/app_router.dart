@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:gewerber_app/application/auth/auth_state.dart';
+import 'package:gewerber_app/application/time_billing/time_billing_cubit.dart';
 import 'package:gewerber_app/di/injection.dart';
 import 'package:gewerber_app/domain/entities/customer.dart';
 import 'package:gewerber_app/domain/entities/invoice.dart';
@@ -17,6 +19,7 @@ import 'package:gewerber_app/presentation/screens/home/checklist_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/customer_edit_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/customers_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/dashboard_screen.dart';
+import 'package:gewerber_app/presentation/screens/home/documents_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/guidance_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/guidance_tips_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/home_shell.dart';
@@ -33,6 +36,7 @@ import 'package:gewerber_app/presentation/screens/home/recurring_schedules_scree
 import 'package:gewerber_app/presentation/screens/home/report_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/settings_master_detail.dart';
 import 'package:gewerber_app/presentation/screens/home/time_entry_create_screen.dart';
+import 'package:gewerber_app/presentation/screens/home/time_billing_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/time_report_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/time_tracking_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/timer_screen.dart';
@@ -224,6 +228,13 @@ final GoRouter appRouter = GoRouter(
               path: RouteNames.timeReport,
               builder: (context, state) => const TimeReportScreen(),
             ),
+            GoRoute(
+              path: RouteNames.timeBilling,
+              builder: (context, state) => BlocProvider<TimeBillingCubit>.value(
+                value: getIt<TimeBillingCubit>(),
+                child: const TimeBillingScreen(),
+              ),
+            ),
           ],
         ),
         StatefulShellBranch(
@@ -259,6 +270,10 @@ final GoRouter appRouter = GoRouter(
             GoRoute(
               path: RouteNames.settingsBusinessSettings,
               builder: (context, state) => const BusinessSettingsScreen(),
+            ),
+            GoRoute(
+              path: RouteNames.settingsDocuments,
+              builder: (context, state) => const DocumentsScreen(),
             ),
             GoRoute(
               path: RouteNames.settingsLanguage,

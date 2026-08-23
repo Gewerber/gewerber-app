@@ -64,20 +64,21 @@ class MockRecurringScheduleRepository implements RecurringScheduleRepository {
     DateTime? nextRecurrenceDate,
     DateTime? recurrenceEndDate,
     int? recurrenceMaxOccurrences,
+    bool clearRecurrenceEndDate = false,
+    bool clearMaxOccurrences = false,
   }) async {
-    // Mirror the server contract: `null` keeps the current value.
+    // Mirror the server contract: `null` keeps the current value; clear
+    // flags remove the limit regardless of the field value.
     final current = await get(schedule.invoiceId);
-    final updated = RecurringSchedule(
-      invoiceId: current.invoiceId,
-      invoiceNumber: current.invoiceNumber,
+    final updated = current.copyWith(
       interval: interval ?? current.interval,
-      issueDate: current.issueDate,
-      customerId: current.customerId,
       nextRecurrenceDate: nextRecurrenceDate ?? current.nextRecurrenceDate,
-      recurrenceEndDate: recurrenceEndDate ?? current.recurrenceEndDate,
-      recurrenceMaxOccurrences:
-          recurrenceMaxOccurrences ?? current.recurrenceMaxOccurrences,
-      recurrenceOccurrencesCreated: current.recurrenceOccurrencesCreated,
+      recurrenceEndDate: clearRecurrenceEndDate
+          ? null
+          : (recurrenceEndDate ?? current.recurrenceEndDate),
+      recurrenceMaxOccurrences: clearMaxOccurrences
+          ? null
+          : (recurrenceMaxOccurrences ?? current.recurrenceMaxOccurrences),
     );
     _schedules[current.invoiceId] = updated;
     return updated;

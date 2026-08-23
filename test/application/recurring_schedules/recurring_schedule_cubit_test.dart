@@ -21,6 +21,10 @@ class _FakeRecurringScheduleRepository implements RecurringScheduleRepository {
   bool failLoad;
   bool failSave;
 
+  /// Clear flags captured by the last [update] call.
+  bool lastUpdateClearedEndDate = false;
+  bool lastUpdateClearedMaxOccurrences = false;
+
   @override
   Future<List<RecurringSchedule>> list({int? limit, int? offset}) async {
     if (failLoad) throw const NetworkException();
@@ -68,11 +72,16 @@ class _FakeRecurringScheduleRepository implements RecurringScheduleRepository {
     DateTime? nextRecurrenceDate,
     DateTime? recurrenceEndDate,
     int? recurrenceMaxOccurrences,
+    bool clearRecurrenceEndDate = false,
+    bool clearMaxOccurrences = false,
   }) async {
     if (failSave) throw const NetworkException();
+    lastUpdateClearedEndDate = clearRecurrenceEndDate;
+    lastUpdateClearedMaxOccurrences = clearMaxOccurrences;
     final current = _schedules[schedule.invoiceId];
     if (current == null) throw const NotFoundException();
-    // Mirror the server contract: `null` keeps the current value.
+    // Mirror the server contract: `null` keeps the current value; the
+    // clear flags remove the limit regardless of the field value.
     final updated = RecurringSchedule(
       invoiceId: current.invoiceId,
       invoiceNumber: current.invoiceNumber,
@@ -80,9 +89,12 @@ class _FakeRecurringScheduleRepository implements RecurringScheduleRepository {
       issueDate: current.issueDate,
       customerId: current.customerId,
       nextRecurrenceDate: nextRecurrenceDate ?? current.nextRecurrenceDate,
-      recurrenceEndDate: recurrenceEndDate ?? current.recurrenceEndDate,
-      recurrenceMaxOccurrences:
-          recurrenceMaxOccurrences ?? current.recurrenceMaxOccurrences,
+      recurrenceEndDate: clearRecurrenceEndDate
+          ? null
+          : (recurrenceEndDate ?? current.recurrenceEndDate),
+      recurrenceMaxOccurrences: clearMaxOccurrences
+          ? null
+          : (recurrenceMaxOccurrences ?? current.recurrenceMaxOccurrences),
       recurrenceOccurrencesCreated: current.recurrenceOccurrencesCreated,
     );
     _schedules[current.invoiceId] = updated;
@@ -197,6 +209,40 @@ void main() {
 
     expect(saved, isTrue);
     expect(cubit.state.schedules.single.interval, RecurrenceInterval.yearly);
+  });
+
+  test('update forwards the clear flags to the repository', () async {
+    final repository = _FakeRecurringScheduleRepository(
+      schedules: [
+        RecurringSchedule(
+          invoiceId: 1,
+          invoiceNumber: 'RE-1',
+          interval: RecurrenceInterval.monthly,
+          issueDate: DateTime(2026, 9, 1),
+          nextRecurrenceDate: DateTime(2026, 9, 1),
+          recurrenceEndDate: DateTime(2026, 12, 31),
+          recurrenceMaxOccurrences: 12,
+        ),
+      ],
+    );
+    final cubit = RecurringScheduleCubit(repository);
+    await cubit.load();
+
+    final saved = await cubit.update(
+      cubit.state.schedules.single,
+      interval: RecurrenceInterval.monthly,
+      recurrenceEndDate: null,
+      recurrenceMaxOccurrences: null,
+      clearRecurrenceEndDate: true,
+      clearMaxOccurrences: true,
+    );
+
+    expect(saved, isTrue);
+    expect(repository.lastUpdateClearedEndDate, isTrue);
+    expect(repository.lastUpdateClearedMaxOccurrences, isTrue);
+    // Both limits are lifted on the returned schedule.
+    expect(cubit.state.schedules.single.recurrenceEndDate, isNull);
+    expect(cubit.state.schedules.single.recurrenceMaxOccurrences, isNull);
   });
 
   test('update failure exposes the failure and keeps the list', () async {

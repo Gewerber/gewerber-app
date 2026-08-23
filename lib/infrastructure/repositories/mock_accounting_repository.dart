@@ -45,6 +45,7 @@ class MockAccountingRepository implements AccountingRepository {
     required DateTime occurredAt,
     required int amountCents,
     String? description,
+    int? receiptDocumentId,
   }) async {
     final transaction = AccountingTransaction(
       id: _nextId++,
@@ -53,6 +54,7 @@ class MockAccountingRepository implements AccountingRepository {
       occurredAt: occurredAt,
       amountCents: amountCents,
       description: description,
+      receiptDocumentId: receiptDocumentId,
     );
     _transactions.add(transaction);
     return transaction;

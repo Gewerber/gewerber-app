@@ -500,5 +500,53 @@
   "aboutLicenses": "Лицензии open-source",
   "aboutWebsite": "Сайт",
   "aboutImprint": "Импрессум",
-  "aboutPrivacy": "Конфиденциальность"
+  "aboutPrivacy": "Конфиденциальность",
+
+  "commonClear": "Очистить",
+
+  "invoiceTemplateApplied": "Применяется шаблон «{name}»",
+
+  "recurringWillBeCleared": "Будет удалено при сохранении",
+
+  "timeBillingTitle": "Счёт из времени",
+  "timeBillingSubtitle": "Превратите незабилленное оплачиваемое время в счёт.",
+  "timeBillingFrom": "С (необязательно)",
+  "timeBillingTo": "По (необязательно)",
+  "timeBillingLoadError": "Не удалось загрузить записи времени. Попробуйте ещё раз.",
+  "timeBillingEntriesTitle": "Незабилленные записи",
+  "timeBillingPickProject": "Выберите проект, чтобы увидеть его незабилленные оплачиваемые записи.",
+  "timeBillingEmpty": "Для этого выбора нет незабилленных оплачиваемых записей.",
+  "timeBillingTotalMinutes": "{count} минут всего",
+  "timeBillingCreateButton": "Создать счёт",
+  "timeBillingSuccess": "Счёт {number} создан.",
+
+  "receiptAttachButton": "Приложить квитанцию",
+  "receiptAttachedLabel": "Приложенная квитанция",
+  "receiptRemove": "Убрать квитанцию",
+  "receiptTooLarge": "Файл превышает лимит 512 КБ. Выберите файл поменьше.",
+  "receiptUploadError": "Не удалось загрузить квитанцию. Попробуйте ещё раз.",
+
+  "paymentHistoryTitle": "Платежи",
+  "paymentMethodBankTransfer": "Банковский перевод",
+  "paymentMethodCash": "Наличные",
+  "paymentMethodCard": "Карта",
+  "paymentMethodPaypal": "PayPal",
+  "paymentMethodDirectDebit": "Прямое списание",
+  "paymentMethodOther": "Другое",
+
+  "documentsTitle": "Документы",
+  "documentsUploadButton": "Загрузить файл",
+  "documentsUploaded": "Документ загружен.",
+  "documentsUploadError": "Не удалось загрузить файл. Попробуйте ещё раз.",
+  "documentsFileTooLarge": "Файл превышает лимит 512 КБ.",
+  "documentsDownloadButton": "Скачать",
+  "documentsDownloaded": "Загрузка начата.",
+  "documentsDownloadError": "Не удалось скачать документ. Попробуйте ещё раз.",
+  "documentsEmpty": "Документов пока нет. Загрузите первый файл.",
+  "documentsLoadError": "Не удалось загрузить документы. Попробуйте ещё раз.",
+  "documentsKindInvoicePdf": "PDF счёта",
+  "documentsKindReceipt": "Квитанция",
+  "documentsKindLogo": "Логотип",
+  "documentsKindAttachment": "Вложение",
+  "documentsKindOther": "Другое"
 }

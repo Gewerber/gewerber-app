@@ -72,8 +72,8 @@ class RecurringSchedule extends Equatable {
   RecurringSchedule copyWith({
     RecurrenceInterval? interval,
     DateTime? nextRecurrenceDate,
-    DateTime? recurrenceEndDate,
-    int? recurrenceMaxOccurrences,
+    Object? recurrenceEndDate = _sentinel,
+    Object? recurrenceMaxOccurrences = _sentinel,
   }) {
     return RecurringSchedule(
       invoiceId: invoiceId,
@@ -82,9 +82,12 @@ class RecurringSchedule extends Equatable {
       issueDate: issueDate,
       customerId: customerId,
       nextRecurrenceDate: nextRecurrenceDate ?? this.nextRecurrenceDate,
-      recurrenceEndDate: recurrenceEndDate ?? this.recurrenceEndDate,
-      recurrenceMaxOccurrences:
-          recurrenceMaxOccurrences ?? this.recurrenceMaxOccurrences,
+      recurrenceEndDate: recurrenceEndDate is DateTime?
+          ? recurrenceEndDate
+          : this.recurrenceEndDate,
+      recurrenceMaxOccurrences: recurrenceMaxOccurrences is int?
+          ? recurrenceMaxOccurrences
+          : this.recurrenceMaxOccurrences,
       recurrenceOccurrencesCreated: recurrenceOccurrencesCreated,
     );
   }
@@ -102,3 +105,7 @@ class RecurringSchedule extends Equatable {
     recurrenceOccurrencesCreated,
   ];
 }
+
+/// Marker for "not provided" in [RecurringSchedule.copyWith], so optional
+/// limits can be cleared explicitly (`null` would be ambiguous).
+const Object _sentinel = Object();

@@ -54,6 +54,7 @@ class InvoiceMapper {
       invoiceId: model.invoiceId,
       paidAt: model.paidAt,
       amountCents: model.amountCents,
+      method: PaymentMethod.fromName(model.method.name),
       reference: model.reference,
     );
   }

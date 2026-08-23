@@ -74,9 +74,13 @@ class RecurringScheduleRemoteDataSource {
     DateTime? nextRecurrenceDate,
     DateTime? recurrenceEndDate,
     int? recurrenceMaxOccurrences,
+    bool clearRecurrenceEndDate = false,
+    bool clearMaxOccurrences = false,
   }) async {
     try {
-      // The server keeps every field that is sent as `null`.
+      // The server keeps every field that is sent as `null`; the clear
+      // flags remove an end date / occurrence limit regardless of the
+      // field value sent alongside them.
       final model = await _client.recurringSchedule.update(
         sdk.UpdateRecurringScheduleRequest(
           invoiceId: schedule.invoiceId,
@@ -84,6 +88,8 @@ class RecurringScheduleRemoteDataSource {
           nextRecurrenceDate: nextRecurrenceDate,
           recurrenceEndDate: recurrenceEndDate,
           recurrenceMaxOccurrences: recurrenceMaxOccurrences,
+          clearRecurrenceEndDate: clearRecurrenceEndDate,
+          clearMaxOccurrences: clearMaxOccurrences,
         ),
       );
       return _fromModel(model);

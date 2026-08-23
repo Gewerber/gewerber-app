@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:gewerber_app/presentation/screens/home/documents_screen.dart'
+    show DocumentsView;
 import 'package:gewerber_app/presentation/screens/home/settings_master_detail.dart'
     show SettingsSection;
 import 'package:gewerber_app/presentation/screens/home/widgets/about_content.dart';
@@ -43,6 +45,10 @@ class SettingsDetailPane extends StatelessWidget {
       SettingsSection.businessSettings => const _DetailContainer(
         key: ValueKey('business_settings'),
         child: BusinessSettingsForm(),
+      ),
+      SettingsSection.documents => const _DetailContainer(
+        key: ValueKey('documents'),
+        child: DocumentsView(),
       ),
       SettingsSection.language => const _DetailContainer(
         key: ValueKey('language'),

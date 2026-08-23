@@ -3,12 +3,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:gewerber_app/application/accounting/accounting_cubit.dart';
+import 'package:gewerber_app/application/business/business_cubit.dart';
+import 'package:gewerber_app/application/documents/documents_cubit.dart';
 import 'package:gewerber_app/core/theme/app_theme.dart';
 import 'package:gewerber_app/core/utils/format.dart';
+import 'package:gewerber_app/domain/entities/document.dart';
 import 'package:gewerber_app/domain/entities/transaction.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 
-/// AccountingEntryCreateScreen — record an income or expense.
+/// AccountingEntryCreateScreen — record an income or expense, optionally
+/// with an attached receipt document (uploaded via `document.upload`).
 class AccountingEntryCreateScreen extends StatefulWidget {
   const AccountingEntryCreateScreen({super.key});
 
@@ -24,6 +28,10 @@ class _AccountingEntryCreateScreenState
   DateTime _date = DateTime.now();
   final _amountController = TextEditingController();
   final _descriptionController = TextEditingController();
+
+  /// Picked receipt, held locally until the transaction is saved. The
+  /// upload happens on save so removing the attachment needs no cleanup.
+  PickedFileAttachment? _receipt;
   bool _isSaving = false;
 
   @override
@@ -58,6 +66,20 @@ class _AccountingEntryCreateScreenState
     if (picked != null) setState(() => _date = picked);
   }
 
+  Future<void> _attachReceipt() async {
+    final l10n = AppLocalizations.of(context);
+    final file = await context.read<DocumentsCubit>().pickFile();
+    if (!mounted || file == null) return;
+    // Mirror the server-side size limit; fail before saving.
+    if (file.sizeBytes > documentMaxSizeBytes) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.receiptTooLarge)));
+      return;
+    }
+    setState(() => _receipt = file);
+  }
+
   String _categoryLabel(TransactionCategory category) {
     final l10n = AppLocalizations.of(context);
     return switch (category) {
@@ -90,6 +112,31 @@ class _AccountingEntryCreateScreenState
       return;
     }
     setState(() => _isSaving = true);
+
+    // Upload the receipt first so the transaction can reference it. A
+    // failed upload keeps the form open with the attachment intact.
+    int? receiptDocumentId;
+    final receipt = _receipt;
+    if (receipt != null) {
+      final businessId = context.read<BusinessCubit>().state.activeBusiness?.id;
+      final document = businessId == null
+          ? null
+          : await context.read<DocumentsCubit>().upload(
+              businessId: businessId,
+              file: receipt,
+              kind: DocumentKind.receipt,
+            );
+      if (!mounted) return;
+      if (document == null) {
+        setState(() => _isSaving = false);
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(l10n.receiptUploadError)));
+        return;
+      }
+      receiptDocumentId = document.id;
+    }
+
     final success = await context.read<AccountingCubit>().create(
       type: _type,
       category: _category,
@@ -98,6 +145,7 @@ class _AccountingEntryCreateScreenState
       description: _descriptionController.text.trim().isEmpty
           ? null
           : _descriptionController.text.trim(),
+      receiptDocumentId: receiptDocumentId,
     );
     if (!mounted) return;
     if (success) {
@@ -181,12 +229,78 @@ class _AccountingEntryCreateScreenState
               labelText: l10n.transactionDescriptionLabel,
             ),
           ),
+          const SizedBox(height: GewerberTokens.space16),
+          _ReceiptAttachment(
+            receipt: _receipt,
+            isBusy: _isSaving,
+            onAttach: _attachReceipt,
+            onRemove: () => setState(() => _receipt = null),
+          ),
           const SizedBox(height: GewerberTokens.space24),
           FilledButton(
             onPressed: _isSaving ? null : _submit,
             child: _isSaving
                 ? Text(l10n.invoiceSaving)
                 : Text(l10n.invoiceSave),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Attach-receipt section: shows either the "attach" action or the picked
+/// file with a remove button. The file stays local until save.
+class _ReceiptAttachment extends StatelessWidget {
+  const _ReceiptAttachment({
+    required this.receipt,
+    required this.isBusy,
+    required this.onAttach,
+    required this.onRemove,
+  });
+
+  final PickedFileAttachment? receipt;
+  final bool isBusy;
+  final VoidCallback onAttach;
+  final VoidCallback onRemove;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final colors = Theme.of(context).colorScheme;
+    final picked = receipt;
+
+    if (picked == null) {
+      return OutlinedButton.icon(
+        onPressed: isBusy ? null : onAttach,
+        icon: const Icon(Icons.attach_file_outlined),
+        label: Text(l10n.receiptAttachButton),
+      );
+    }
+
+    return InputDecorator(
+      decoration: InputDecoration(
+        labelText: l10n.receiptAttachedLabel,
+        prefixIcon: const Icon(Icons.description_outlined),
+        suffixIcon: IconButton(
+          tooltip: l10n.receiptRemove,
+          icon: const Icon(Icons.close_outlined),
+          onPressed: isBusy ? null : onRemove,
+        ),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              picked.fileName,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          const SizedBox(width: GewerberTokens.space8),
+          Text(
+            formatFileSize(picked.sizeBytes),
+            style: TextStyle(color: colors.onSurfaceVariant),
           ),
         ],
       ),

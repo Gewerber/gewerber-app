@@ -1,6 +1,7 @@
 import 'package:injectable/injectable.dart';
 
 import 'package:gewerber_app/core/config/app_environment.dart';
+import 'package:gewerber_app/domain/entities/invoice.dart';
 import 'package:gewerber_app/domain/entities/time_tracking.dart';
 import 'package:gewerber_app/domain/repositories/time_tracking_repository.dart';
 
@@ -14,6 +15,7 @@ class MockTimeTrackingRepository implements TimeTrackingRepository {
   int _nextProjectId = 1;
   int _nextTaskId = 1;
   int _nextEntryId = 1;
+  int _nextInvoiceId = 1;
 
   // ── Projects ────────────────────────────────────────────────────────────
 
@@ -257,5 +259,56 @@ class MockTimeTrackingRepository implements TimeTrackingRepository {
       roundedMinutes: totalMinutes,
       lines: lines,
     );
+  }
+
+  // ── Billing ─────────────────────────────────────────────────────────────
+
+  @override
+  Future<Invoice> createInvoice({
+    required int projectId,
+    DateTime? from,
+    DateTime? to,
+    int? customerId,
+    DateTime? issueDate,
+  }) async {
+    final billable = _entries
+        .where(
+          (entry) =>
+              entry.projectId == projectId &&
+              !entry.isRunning &&
+              entry.billable &&
+              entry.invoicedAt == null &&
+              (from == null || !entry.startedAt.isBefore(from)) &&
+              (to == null || !entry.startedAt.isAfter(to)),
+        )
+        .toList();
+    if (billable.isEmpty) {
+      throw StateError('No unbilled billable entries for project $projectId');
+    }
+
+    final now = DateTime.now();
+    final invoicedAt = now;
+    for (final entry in billable) {
+      final index = _entries.indexWhere((value) => value.id == entry.id);
+      _entries[index] = entry.copyWith(invoicedAt: invoicedAt);
+    }
+
+    final project = _projects.where((p) => p.id == projectId).firstOrNull;
+    final totalCents = billable.fold<int>(0, (sum, entry) {
+      final task = _tasks.where((t) => t.id == entry.taskId).firstOrNull;
+      final rateCents = task?.hourlyRateCents ?? project?.hourlyRateCents ?? 0;
+      return sum + ((entry.durationMinutes ?? 0) * rateCents / 60).round();
+    });
+
+    final invoice = Invoice(
+      id: _nextInvoiceId++,
+      number: 'RE-TIME-$_nextInvoiceId',
+      customerId: customerId ?? project?.customerId,
+      issueDate: issueDate ?? now,
+      subtotalCents: totalCents,
+      vatTotalCents: 0,
+      totalCents: totalCents,
+    );
+    return invoice;
   }
 }

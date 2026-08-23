@@ -1,3 +1,4 @@
+import 'package:gewerber_app/domain/entities/invoice.dart';
 import 'package:gewerber_app/domain/entities/time_tracking.dart';
 
 /// Contract for time tracking operations (projects, tasks, entries, timer).
@@ -84,4 +85,18 @@ abstract interface class TimeTrackingRepository {
 
   /// Aggregates stopped time entries of the period into a report.
   Future<TimeReport> report(DateTime from, DateTime to, {int? projectId});
+
+  // ── Billing ─────────────────────────────────────────────────────────────
+
+  /// Turns the unbilled billable time entries of [projectId] (optionally
+  /// limited to the [from]–[to] period) into a new draft invoice and marks
+  /// them as invoiced. The invoice is associated with [customerId] when
+  /// given; [issueDate] overrides the default "today".
+  Future<Invoice> createInvoice({
+    required int projectId,
+    DateTime? from,
+    DateTime? to,
+    int? customerId,
+    DateTime? issueDate,
+  });
 }

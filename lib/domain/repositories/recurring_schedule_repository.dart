@@ -32,15 +32,18 @@ abstract interface class RecurringScheduleRepository {
 
   /// Updates the settings of an existing [schedule].
   ///
-  /// Mirrors the server contract: `null` arguments keep their current
-  /// value; clearing an end date or occurrence limit is only possible by
-  /// cancelling the whole schedule.
+  /// Mirrors the server contract: `null` arguments keep their current value.
+  /// To lift an end date or occurrence limit entirely, set the matching
+  /// clear flag (`clearRecurrenceEndDate` / `clearMaxOccurrences`) — the
+  /// flag overrides whatever field value is sent alongside it.
   Future<RecurringSchedule> update(
     RecurringSchedule schedule, {
     RecurrenceInterval? interval,
     DateTime? nextRecurrenceDate,
     DateTime? recurrenceEndDate,
     int? recurrenceMaxOccurrences,
+    bool clearRecurrenceEndDate = false,
+    bool clearMaxOccurrences = false,
   });
 
   /// Cancels the schedule attached to [invoiceId] and returns the cleared

@@ -48,6 +48,12 @@ class TimeTrackingScreen extends StatelessWidget {
             subtitle: l10n.timeReportSubtitle,
             onTap: () => context.push(RouteNames.timeReport),
           ),
+          ModuleMenuTile(
+            icon: Icons.receipt_long_outlined,
+            title: l10n.timeBillingTitle,
+            subtitle: l10n.timeBillingSubtitle,
+            onTap: () => context.push(RouteNames.timeBilling),
+          ),
         ],
       ),
     );

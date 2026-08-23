@@ -46,6 +46,8 @@ class ServerpodRecurringScheduleRepository
     DateTime? nextRecurrenceDate,
     DateTime? recurrenceEndDate,
     int? recurrenceMaxOccurrences,
+    bool clearRecurrenceEndDate = false,
+    bool clearMaxOccurrences = false,
   }) => _guard(
     () => _dataSource.update(
       schedule,
@@ -53,6 +55,8 @@ class ServerpodRecurringScheduleRepository
       nextRecurrenceDate: nextRecurrenceDate,
       recurrenceEndDate: recurrenceEndDate,
       recurrenceMaxOccurrences: recurrenceMaxOccurrences,
+      clearRecurrenceEndDate: clearRecurrenceEndDate,
+      clearMaxOccurrences: clearMaxOccurrences,
     ),
   );
 

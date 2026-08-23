@@ -621,5 +621,77 @@
   "aboutLicenses": "Open-source licenses",
   "aboutWebsite": "Website",
   "aboutImprint": "Imprint",
-  "aboutPrivacy": "Privacy policy"
+  "aboutPrivacy": "Privacy policy",
+
+  "commonClear": "Clear",
+
+  "invoiceTemplateApplied": "Applying template “{name}”",
+  "@invoiceTemplateApplied": {
+    "description": "Unobtrusive notice on the new-invoice form showing that the business's default template will be applied.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Standard"
+      }
+    }
+  },
+
+  "recurringWillBeCleared": "Will be removed when saved",
+
+  "timeBillingTitle": "Invoice from time",
+  "timeBillingSubtitle": "Turn unbilled billable time into an invoice.",
+  "timeBillingFrom": "From (optional)",
+  "timeBillingTo": "To (optional)",
+  "timeBillingLoadError": "We couldn't load the time entries. Please try again.",
+  "timeBillingEntriesTitle": "Unbilled entries",
+  "timeBillingPickProject": "Select a project to preview its unbilled billable entries.",
+  "timeBillingEmpty": "No unbilled billable entries for this selection.",
+  "timeBillingTotalMinutes": "{count} minutes total",
+  "@timeBillingTotalMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "timeBillingCreateButton": "Create invoice",
+  "timeBillingSuccess": "Invoice {number} created.",
+  "@timeBillingSuccess": {
+    "placeholders": {
+      "number": {
+        "type": "String",
+        "example": "RE-12"
+      }
+    }
+  },
+
+  "receiptAttachButton": "Attach receipt",
+  "receiptAttachedLabel": "Attached receipt",
+  "receiptRemove": "Remove receipt",
+  "receiptTooLarge": "The file exceeds the 512 KB limit. Please choose a smaller file.",
+  "receiptUploadError": "We couldn't upload the receipt. Please try again.",
+
+  "paymentHistoryTitle": "Payments",
+  "paymentMethodBankTransfer": "Bank transfer",
+  "paymentMethodCash": "Cash",
+  "paymentMethodCard": "Card",
+  "paymentMethodPaypal": "PayPal",
+  "paymentMethodDirectDebit": "Direct debit",
+  "paymentMethodOther": "Other",
+
+  "documentsTitle": "Documents",
+  "documentsUploadButton": "Upload file",
+  "documentsUploaded": "Document uploaded.",
+  "documentsUploadError": "We couldn't upload the file. Please try again.",
+  "documentsFileTooLarge": "The file exceeds the 512 KB limit.",
+  "documentsDownloadButton": "Download",
+  "documentsDownloaded": "Download started.",
+  "documentsDownloadError": "We couldn't download the document. Please try again.",
+  "documentsEmpty": "No documents yet. Upload your first file.",
+  "documentsLoadError": "We couldn't load the documents. Please try again.",
+  "documentsKindInvoicePdf": "Invoice PDF",
+  "documentsKindReceipt": "Receipt",
+  "documentsKindLogo": "Logo",
+  "documentsKindAttachment": "Attachment",
+  "documentsKindOther": "Other"
 }

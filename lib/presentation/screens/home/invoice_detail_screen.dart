@@ -556,7 +556,7 @@ class _PaymentStatusCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              status.isPaid ? l10n.paymentStatusPaid : l10n.paymentStatusOpen,
+              l10n.paymentHistoryTitle,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 color: status.isPaid
                     ? colors.onPrimaryContainer
@@ -572,22 +572,67 @@ class _PaymentStatusCard extends StatelessWidget {
                 '${l10n.paymentRemainingAmount}: '
                 '${formatCents(status.remainingCents)}',
               ),
-            for (final payment in status.payments)
-              Padding(
-                padding: const EdgeInsets.only(top: GewerberTokens.space4),
-                child: Text(
-                  '${payment.paidAt == null ? '' : '${formatDate(payment.paidAt!)} · '}'
-                  '${formatCents(payment.amountCents)}'
-                  '${payment.reference == null || payment.reference!.isEmpty ? '' : ' · ${payment.reference}'}',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: colors.onSurfaceVariant,
+            // Recorded payments, newest first.
+            for (final payment
+                in status.payments.toList()..sort(
+                  (a, b) => (b.paidAt ?? DateTime(0)).compareTo(
+                    a.paidAt ?? DateTime(0),
                   ),
-                ),
+                )) ...[
+              const Divider(height: GewerberTokens.space16),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(
+                    Icons.payments_outlined,
+                    size: 18,
+                    color: status.isPaid
+                        ? colors.onPrimaryContainer
+                        : colors.onSurfaceVariant,
+                  ),
+                  const SizedBox(width: GewerberTokens.space8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(formatCents(payment.amountCents)),
+                        Text(
+                          [
+                            if (payment.paidAt != null)
+                              formatDate(payment.paidAt!),
+                            _methodLabel(l10n, payment.method),
+                          ].join(' · '),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: colors.onSurfaceVariant),
+                        ),
+                        if (payment.reference != null &&
+                            payment.reference!.isNotEmpty)
+                          Text(
+                            payment.reference!,
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(color: colors.onSurfaceVariant),
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
+            ],
           ],
         ),
       ),
     );
+  }
+
+  String _methodLabel(AppLocalizations l10n, PaymentMethod method) {
+    return switch (method) {
+      PaymentMethod.bankTransfer => l10n.paymentMethodBankTransfer,
+      PaymentMethod.cash => l10n.paymentMethodCash,
+      PaymentMethod.card => l10n.paymentMethodCard,
+      PaymentMethod.paypal => l10n.paymentMethodPaypal,
+      PaymentMethod.directDebit => l10n.paymentMethodDirectDebit,
+      PaymentMethod.other => l10n.paymentMethodOther,
+    };
   }
 }
 

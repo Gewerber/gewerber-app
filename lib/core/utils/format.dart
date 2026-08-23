@@ -61,3 +61,15 @@ String formatDateIso(DateTime date) {
 String formatTime(DateTime date, {String? locale}) {
   return DateFormat('HH:mm', _resolveLocale(locale)).format(date);
 }
+
+/// Formats a byte count in a compact human-readable form (`512 KB`,
+/// `1.2 MB`).
+String formatFileSize(int bytes) {
+  if (bytes < 1024) return '$bytes B';
+  final kb = bytes / 1024;
+  if (kb < 1024) {
+    return kb >= 100 ? '${kb.round()} KB' : '${kb.toStringAsFixed(1)} KB';
+  }
+  final mb = kb / 1024;
+  return mb >= 100 ? '${mb.round()} MB' : '${mb.toStringAsFixed(1)} MB';
+}

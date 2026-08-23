@@ -11,6 +11,7 @@ import 'package:gewerber_app/core/theme/app_theme.dart';
 import 'package:gewerber_app/core/utils/format.dart';
 import 'package:gewerber_app/domain/entities/customer.dart';
 import 'package:gewerber_app/domain/entities/invoice.dart';
+import 'package:gewerber_app/domain/entities/invoice_template.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 
 /// InvoiceCreateScreen — create a new invoice or edit a draft.
@@ -41,8 +42,10 @@ class _InvoiceCreateScreenState extends State<InvoiceCreateScreen> {
   /// the user fills in the form. Only used when creating a new invoice;
   /// editing never applies a template. The lookup is lazy and non-blocking,
   /// and a failed template load must not break invoice creation (the future
-  /// resolves to `null` instead of throwing).
-  Future<int?>? _defaultTemplateId;
+  /// resolves to `null` instead of throwing). While resolving, the form
+  /// shows an unobtrusive "applying template" indicator once a default
+  /// template was found.
+  Future<InvoiceTemplate?>? _defaultTemplate;
 
   bool get _isEditing => widget.invoice != null;
 
@@ -57,10 +60,9 @@ class _InvoiceCreateScreenState extends State<InvoiceCreateScreen> {
     _serviceFrom = invoice?.serviceDateFrom;
     _serviceTo = invoice?.serviceDateTo;
     if (!_isEditing) {
-      _defaultTemplateId = context
+      _defaultTemplate = context
           .read<InvoiceTemplateCubit>()
-          .resolveDefaultTemplate()
-          .then((template) => template?.id);
+          .resolveDefaultTemplate();
     }
     _loadItems();
   }
@@ -149,7 +151,7 @@ class _InvoiceCreateScreenState extends State<InvoiceCreateScreen> {
     // prefill); edits keep the invoice's existing association untouched.
     final templateId = _isEditing
         ? widget.invoice!.templateId
-        : await _defaultTemplateId;
+        : (await _defaultTemplate)?.id;
 
     final saved = _isEditing
         ? await invoiceCubit.update(
@@ -210,6 +212,8 @@ class _InvoiceCreateScreenState extends State<InvoiceCreateScreen> {
               child: ListView(
                 padding: const EdgeInsets.all(16),
                 children: [
+                  if (!_isEditing)
+                    _TemplatePrefillIndicator(future: _defaultTemplate),
                   _CustomerPicker(
                     selectedId: _customerId,
                     onChanged: (id) => setState(() => _customerId = id),
@@ -424,6 +428,68 @@ class _CustomerPicker extends StatelessWidget {
           ),
       ],
       onChanged: onChanged,
+    );
+  }
+}
+
+/// Unobtrusive notice shown on the new-invoice form while the business's
+/// default template was resolved and will be applied on save. Renders
+/// nothing while the lookup is running, when there is no default template,
+/// or when the lookup failed — a missing template must never block invoice
+/// creation.
+class _TemplatePrefillIndicator extends StatelessWidget {
+  const _TemplatePrefillIndicator({required this.future});
+
+  final Future<InvoiceTemplate?>? future;
+
+  @override
+  Widget build(BuildContext context) {
+    if (future == null) return const SizedBox.shrink();
+    return FutureBuilder<InvoiceTemplate?>(
+      future: future,
+      builder: (context, snapshot) {
+        final template = snapshot.data;
+        if (template == null) return const SizedBox.shrink();
+        final colors = Theme.of(context).colorScheme;
+        return Padding(
+          padding: const EdgeInsets.only(bottom: GewerberTokens.space12),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: GewerberTokens.space12,
+                vertical: 6,
+              ),
+              decoration: BoxDecoration(
+                color: colors.secondaryContainer,
+                borderRadius: BorderRadius.circular(GewerberTokens.space16),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.auto_awesome_motion_outlined,
+                    size: 16,
+                    color: colors.onSecondaryContainer,
+                  ),
+                  const SizedBox(width: GewerberTokens.space8),
+                  Flexible(
+                    child: Text(
+                      AppLocalizations.of(
+                        context,
+                      ).invoiceTemplateApplied(template.name),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: colors.onSecondaryContainer,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

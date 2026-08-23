@@ -107,6 +107,37 @@ void main() {
     expect(invoiceCubit.state.invoices.single.templateId, 2);
   });
 
+  testWidgets('new-invoice form announces the applied default template', (
+    tester,
+  ) async {
+    final templateRepository = MockInvoiceTemplateRepository();
+    await templateRepository.create(name: 'Letterhead', isDefault: true);
+    final invoiceRepository = MockInvoiceRepository();
+
+    await pumpCreateScreen(
+      tester,
+      templateRepository: templateRepository,
+      invoiceRepository: invoiceRepository,
+    );
+
+    // Unobtrusive indicator once the default template resolved.
+    expect(find.textContaining('Applying template'), findsOneWidget);
+    expect(find.textContaining('Letterhead'), findsOneWidget);
+  });
+
+  testWidgets('no indicator without a default template', (tester) async {
+    final templateRepository = MockInvoiceTemplateRepository();
+    await templateRepository.create(name: 'Standard');
+
+    await pumpCreateScreen(
+      tester,
+      templateRepository: templateRepository,
+      invoiceRepository: MockInvoiceRepository(),
+    );
+
+    expect(find.textContaining('Applying template'), findsNothing);
+  });
+
   testWidgets('creating without a default template leaves the id empty', (
     tester,
   ) async {

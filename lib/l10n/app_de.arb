@@ -500,5 +500,53 @@
   "aboutLicenses": "Open-Source-Lizenzen",
   "aboutWebsite": "Website",
   "aboutImprint": "Impressum",
-  "aboutPrivacy": "Datenschutz"
+  "aboutPrivacy": "Datenschutz",
+
+  "commonClear": "Leeren",
+
+  "invoiceTemplateApplied": "Vorlage „{name}“ wird angewendet",
+
+  "recurringWillBeCleared": "Wird beim Speichern entfernt",
+
+  "timeBillingTitle": "Rechnung aus Zeit",
+  "timeBillingSubtitle": "Abrechenbare, noch nicht abgerechnete Zeiten in eine Rechnung umwandeln.",
+  "timeBillingFrom": "Von (optional)",
+  "timeBillingTo": "Bis (optional)",
+  "timeBillingLoadError": "Wir konnten die Zeiteinträge nicht laden. Bitte versuche es erneut.",
+  "timeBillingEntriesTitle": "Nicht abgerechnete Einträge",
+  "timeBillingPickProject": "Wähle ein Projekt, um dessen offene abrechenbare Einträge zu sehen.",
+  "timeBillingEmpty": "Keine offenen abrechenbaren Einträge für diese Auswahl.",
+  "timeBillingTotalMinutes": "{count} Minuten gesamt",
+  "timeBillingCreateButton": "Rechnung erstellen",
+  "timeBillingSuccess": "Rechnung {number} erstellt.",
+
+  "receiptAttachButton": "Beleg anhängen",
+  "receiptAttachedLabel": "Angehängter Beleg",
+  "receiptRemove": "Beleg entfernen",
+  "receiptTooLarge": "Die Datei überschreitet das Limit von 512 KB. Bitte wähle eine kleinere Datei.",
+  "receiptUploadError": "Wir konnten den Beleg nicht hochladen. Bitte versuche es erneut.",
+
+  "paymentHistoryTitle": "Zahlungen",
+  "paymentMethodBankTransfer": "Überweisung",
+  "paymentMethodCash": "Barzahlung",
+  "paymentMethodCard": "Karte",
+  "paymentMethodPaypal": "PayPal",
+  "paymentMethodDirectDebit": "Lastschrift",
+  "paymentMethodOther": "Sonstige",
+
+  "documentsTitle": "Dokumente",
+  "documentsUploadButton": "Datei hochladen",
+  "documentsUploaded": "Dokument hochgeladen.",
+  "documentsUploadError": "Wir konnten die Datei nicht hochladen. Bitte versuche es erneut.",
+  "documentsFileTooLarge": "Die Datei überschreitet das Limit von 512 KB.",
+  "documentsDownloadButton": "Herunterladen",
+  "documentsDownloaded": "Download gestartet.",
+  "documentsDownloadError": "Wir konnten das Dokument nicht herunterladen. Bitte versuche es erneut.",
+  "documentsEmpty": "Noch keine Dokumente. Lade deine erste Datei hoch.",
+  "documentsLoadError": "Wir konnten die Dokumente nicht laden. Bitte versuche es erneut.",
+  "documentsKindInvoicePdf": "Rechnungs-PDF",
+  "documentsKindReceipt": "Beleg",
+  "documentsKindLogo": "Logo",
+  "documentsKindAttachment": "Anhang",
+  "documentsKindOther": "Sonstige"
 }

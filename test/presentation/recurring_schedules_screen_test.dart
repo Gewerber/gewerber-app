@@ -28,6 +28,10 @@ class _FakeScheduleRepository implements RecurringScheduleRepository {
   final Map<int, RecurringSchedule> _schedules;
   bool failSave = false;
 
+  /// Clear flags captured by the last [update] call.
+  bool lastUpdateClearedEndDate = false;
+  bool lastUpdateClearedMaxOccurrences = false;
+
   @override
   Future<List<RecurringSchedule>> list({int? limit, int? offset}) async {
     final all = _schedules.values.toList()
@@ -73,8 +77,12 @@ class _FakeScheduleRepository implements RecurringScheduleRepository {
     DateTime? nextRecurrenceDate,
     DateTime? recurrenceEndDate,
     int? recurrenceMaxOccurrences,
+    bool clearRecurrenceEndDate = false,
+    bool clearMaxOccurrences = false,
   }) async {
     if (failSave) throw const NetworkException();
+    lastUpdateClearedEndDate = clearRecurrenceEndDate;
+    lastUpdateClearedMaxOccurrences = clearMaxOccurrences;
     final current = _schedules[schedule.invoiceId]!;
     final updated = RecurringSchedule(
       invoiceId: current.invoiceId,
@@ -83,9 +91,12 @@ class _FakeScheduleRepository implements RecurringScheduleRepository {
       issueDate: current.issueDate,
       customerId: current.customerId,
       nextRecurrenceDate: nextRecurrenceDate ?? current.nextRecurrenceDate,
-      recurrenceEndDate: recurrenceEndDate ?? current.recurrenceEndDate,
-      recurrenceMaxOccurrences:
-          recurrenceMaxOccurrences ?? current.recurrenceMaxOccurrences,
+      recurrenceEndDate: clearRecurrenceEndDate
+          ? null
+          : (recurrenceEndDate ?? current.recurrenceEndDate),
+      recurrenceMaxOccurrences: clearMaxOccurrences
+          ? null
+          : (recurrenceMaxOccurrences ?? current.recurrenceMaxOccurrences),
       recurrenceOccurrencesCreated: current.recurrenceOccurrencesCreated,
     );
     _schedules[current.invoiceId] = updated;
@@ -299,5 +310,53 @@ void main() {
 
     // Back on the list — now empty.
     expect(find.textContaining('No recurring invoices yet'), findsOneWidget);
+  });
+
+  testWidgets('edit: clear buttons send the clear flags on save', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(800, 1600);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
+    final schedule = RecurringSchedule(
+      invoiceId: 5,
+      invoiceNumber: 'RE-5',
+      interval: RecurrenceInterval.monthly,
+      issueDate: DateTime(2026, 8, 1),
+      nextRecurrenceDate: DateTime(2026, 9, 1),
+      recurrenceEndDate: DateTime(2026, 12, 31),
+      recurrenceMaxOccurrences: 12,
+    );
+    final scheduleRepository = _FakeScheduleRepository(schedules: [schedule]);
+
+    await pumpScreen(
+      tester,
+      scheduleCubit: RecurringScheduleCubit(scheduleRepository),
+      invoiceCubit: InvoiceCubit(MockInvoiceRepository()),
+      customerCubit: CustomerCubit(MockCustomerRepository()),
+      navigateToEdit: true,
+      editExtra: schedule,
+    );
+
+    // Both constraints show their clear action; tapping arms the flag and
+    // empties the field ("leave as is" would keep them).
+    expect(find.byTooltip('Clear'), findsNWidgets(2));
+    await tester.tap(find.byTooltip('Clear').first);
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Clear').first);
+    await tester.pumpAndSettle();
+    expect(find.text('Will be removed when saved'), findsNWidgets(2));
+
+    await tester.ensureVisible(find.text('Save'));
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+
+    // The repository received both clear flags and the limits are gone.
+    expect(scheduleRepository.lastUpdateClearedEndDate, isTrue);
+    expect(scheduleRepository.lastUpdateClearedMaxOccurrences, isTrue);
+    // Back on the list; the constraint lines vanished from the tile.
+    expect(find.textContaining('Ends'), findsNothing);
+    expect(find.textContaining('Stops after'), findsNothing);
   });
 }

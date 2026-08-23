@@ -73,6 +73,24 @@ class InvoiceItem extends Equatable {
   ];
 }
 
+/// Payment method of a recorded payment, mirroring the server's
+/// `PaymentMethod` enum.
+enum PaymentMethod {
+  bankTransfer,
+  cash,
+  card,
+  paypal,
+  directDebit,
+  other;
+
+  static PaymentMethod fromName(String name) {
+    return PaymentMethod.values.firstWhere(
+      (value) => value.name == name,
+      orElse: () => PaymentMethod.bankTransfer,
+    );
+  }
+}
+
 /// A recorded payment for an invoice.
 class PaymentRecord extends Equatable {
   const PaymentRecord({
@@ -80,6 +98,7 @@ class PaymentRecord extends Equatable {
     required this.invoiceId,
     required this.amountCents,
     this.paidAt,
+    this.method = PaymentMethod.bankTransfer,
     this.reference,
   });
 
@@ -87,10 +106,18 @@ class PaymentRecord extends Equatable {
   final int invoiceId;
   final DateTime? paidAt;
   final int amountCents;
+  final PaymentMethod method;
   final String? reference;
 
   @override
-  List<Object?> get props => [id, invoiceId, paidAt, amountCents, reference];
+  List<Object?> get props => [
+    id,
+    invoiceId,
+    paidAt,
+    amountCents,
+    method,
+    reference,
+  ];
 }
 
 /// Payment state of a single invoice.

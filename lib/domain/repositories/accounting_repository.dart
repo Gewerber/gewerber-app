@@ -13,12 +13,16 @@ abstract interface class AccountingRepository {
   });
 
   /// Records an income or expense transaction.
+  ///
+  /// [receiptDocumentId] links a previously uploaded receipt document
+  /// (via `document.upload`) to the transaction.
   Future<AccountingTransaction> create({
     required TransactionType type,
     required TransactionCategory category,
     required DateTime occurredAt,
     required int amountCents,
     String? description,
+    int? receiptDocumentId,
   });
 
   /// Updates an existing transaction.

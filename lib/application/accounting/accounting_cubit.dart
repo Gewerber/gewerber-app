@@ -63,12 +63,15 @@ class AccountingCubit extends Cubit<AccountingState> {
   }
 
   /// Records a transaction. Returns `true` on success.
+  ///
+  /// [receiptDocumentId] references an already uploaded receipt document.
   Future<bool> create({
     required TransactionType type,
     required TransactionCategory category,
     required DateTime occurredAt,
     required int amountCents,
     String? description,
+    int? receiptDocumentId,
   }) async {
     try {
       final transaction = await _repository.create(
@@ -77,6 +80,7 @@ class AccountingCubit extends Cubit<AccountingState> {
         occurredAt: occurredAt,
         amountCents: amountCents,
         description: description,
+        receiptDocumentId: receiptDocumentId,
       );
       if (!isClosed) {
         emit(

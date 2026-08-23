@@ -30,7 +30,7 @@
       список + create/edit, роуты `/app/invoicing/templates*`; logoDocumentId проводится,
       upload-logo UI ждёт общего documents-флоу — решение владельца; 12 тестов)
       + **prefill**: дефолтный шаблон лениво подтягивается при создании счёта и передаётся
-      как `templateId` ✅ 2026-08-23
+      как `templateId` ✅ 2026-08-23 + чип «Применяется шаблон „{name}“» на новой форме ✅
 - [x] **Recurring invoices**: UI управления ✅ 2026-08-23 (полный слой
       domain→data→cubit→UI поверх `recurringSchedule.*`: список «upcoming-first»
       из раздела invoicing, attach/edit-форма с интервальным селектором,
@@ -39,12 +39,27 @@
       ConflictException/NotFoundException → понятные сообщения; live+mock
       репозитории; 12 тестов)
       SDK-эндпоинты: `recurringSchedule.create/get/list/update/cancel` ✅ бэкенд 2026-08-22
-- [ ] **Time entries → Invoice**: flow конвертации через `timeEntry.createInvoice`
-      (`billable`-флаги есть, flow не построен)
-- [ ] **Receipt upload**: file picker → `document.upload` для транзакций
-      (сейчас только passthrough `receiptDocumentId`)
-- [ ] **Payment history view** по счёту (запись платежей есть, истории нет)
-- [ ] **Documents**: общий список/загрузка документов (используется только download PDF)
+      + clear-флаги `clearRecurrenceEndDate`/`clearMaxOccurrences` в update
+      (кнопки очистки у заполненных ограничений; пустое поле без флага = «оставить
+      как есть») ✅ 2026-08-23
+- [x] **Time entries → Invoice**: flow конвертации ✅ 2026-08-23
+      (`/app/time/billing`: проект + опциональный период, превью незабилленных
+      billable-записей с суммарным временем, «Создать счёт» → переход к счёту;
+      SDK-эндпоинт билдит по проекту/периоду — поштучный выбор записей API не
+      поддерживает, поэтому список read-only превью)
+      SDK-эндпоинт: `timeEntry.createInvoice` ✅ бэкенд 2026-08-22
+- [x] **Receipt upload**: file picker → `document.upload` для транзакций ✅ 2026-08-23
+      («Приложить квитанцию» в форме создания транзакции; клиентская валидация
+      лимита 512 KB; upload kind=receipt при сохранении, полученный documentId →
+      `receiptDocumentId`; имя файла + удаление вложения до сохранения)
+- [x] **Payment history view** по счёту ✅ 2026-08-23: секция «Платежи» на экране
+      счёта из `payment.status` (дата, сумма, метод, референс; метод добавлен в
+      entity+маппер); запись платежей — без изменений
+- [x] **Documents**: общий список/загрузка/скачивание ✅ 2026-08-23
+      (`document.list/upload/download`; полный слой domain→data→cubit→UI;
+      вход из настроек — секция Documents (мастер-деталь + маршрут);
+      file_picker ^12.0.0 за сервисным интерфейсом; переиспользуется для
+      будущих логотипов шаблонов)
 
 ## Этап 2 — Качество
 

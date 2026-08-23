@@ -33,6 +33,11 @@ class _RecurringScheduleEditScreenState
   RecurrenceInterval _interval = RecurrenceInterval.monthly;
   DateTime? _nextDate;
   DateTime? _endDate;
+  // Armed by the explicit "clear" controls next to a filled end date /
+  // occurrence limit. An empty field alone keeps the stored value ("leave
+  // as is"), so lifting a limit is always an explicit act.
+  bool _clearEndDate = false;
+  bool _clearMaxOccurrences = false;
 
   bool get _isEditing => widget.schedule != null;
 
@@ -47,6 +52,12 @@ class _RecurringScheduleEditScreenState
       _maxOccurrencesController.text = schedule!.recurrenceMaxOccurrences
           .toString();
     }
+    _maxOccurrencesController.addListener(() {
+      // Typing a new limit revokes a pending clear request.
+      if (_clearMaxOccurrences && _maxOccurrencesController.text.isNotEmpty) {
+        setState(() => _clearMaxOccurrences = false);
+      }
+    });
     // Attach mode needs the invoice candidates; the invoicing module does
     // not preload them when navigating here directly.
     if (!_isEditing) {
@@ -102,15 +113,26 @@ class _RecurringScheduleEditScreenState
       _showSnack(l10n.invoiceMissingCustomer);
       return;
     }
-    if (maxOccurrences != null && maxOccurrences < 1) {
+    if (!_clearMaxOccurrences && maxOccurrences != null && maxOccurrences < 1) {
       _showSnack(l10n.recurringMaxOccurrencesInvalid);
       return;
     }
-    final endDate = _endDate;
-    if (endDate != null && !endDate.isAfter(_effectiveNextDate)) {
-      _showSnack(l10n.recurringEndDateInvalid);
-      return;
+    if (!_clearEndDate) {
+      final endDate = _endDate;
+      if (endDate != null && !endDate.isAfter(_effectiveNextDate)) {
+        _showSnack(l10n.recurringEndDateInvalid);
+        return;
+      }
     }
+
+    // Edit mode: an untouched empty field keeps the stored value; only the
+    // explicit clear controls lift a limit.
+    final endDate = _clearEndDate
+        ? null
+        : (_endDate ?? widget.schedule?.recurrenceEndDate);
+    final effectiveMaxOccurrences = _clearMaxOccurrences
+        ? null
+        : (maxOccurrences ?? widget.schedule?.recurrenceMaxOccurrences);
 
     final cubit = context.read<RecurringScheduleCubit>();
     final saved = _isEditing
@@ -119,9 +141,10 @@ class _RecurringScheduleEditScreenState
             interval: _interval,
             nextRecurrenceDate:
                 _nextDate ?? widget.schedule!.nextRecurrenceDate,
-            recurrenceEndDate: endDate ?? widget.schedule!.recurrenceEndDate,
-            recurrenceMaxOccurrences:
-                maxOccurrences ?? widget.schedule!.recurrenceMaxOccurrences,
+            recurrenceEndDate: endDate,
+            recurrenceMaxOccurrences: effectiveMaxOccurrences,
+            clearRecurrenceEndDate: _clearEndDate,
+            clearMaxOccurrences: _clearMaxOccurrences,
           )
         : await cubit.attach(
             invoiceId: _selectedInvoice!.id,
@@ -274,12 +297,26 @@ class _RecurringScheduleEditScreenState
                     label:
                         '${l10n.recurringEndDate} (${l10n.onboardingOptional})',
                     date: _endDate,
+                    isCleared: _clearEndDate,
+                    onClear:
+                        _isEditing &&
+                            widget.schedule!.recurrenceEndDate != null &&
+                            !_clearEndDate
+                        ? () => setState(() {
+                            _clearEndDate = true;
+                            _endDate = null;
+                          })
+                        : null,
                     onTap: () => _pickDate(
                       current: _endDate,
                       firstDate: _effectiveNextDate.add(
                         const Duration(days: 1),
                       ),
-                      onPicked: (date) => setState(() => _endDate = date),
+                      onPicked: (date) => setState(() {
+                        // Picking a new end date revokes a pending clear.
+                        _clearEndDate = false;
+                        _endDate = date;
+                      }),
                     ),
                   ),
                   const SizedBox(height: GewerberTokens.space16),
@@ -289,9 +326,27 @@ class _RecurringScheduleEditScreenState
                       labelText:
                           '${l10n.recurringMaxOccurrences} (${l10n.onboardingOptional})',
                       prefixIcon: const Icon(Icons.format_list_numbered),
+                      helperText: _clearMaxOccurrences
+                          ? l10n.recurringWillBeCleared
+                          : null,
+                      suffixIcon:
+                          _isEditing &&
+                              widget.schedule!.recurrenceMaxOccurrences !=
+                                  null &&
+                              !_clearMaxOccurrences
+                          ? IconButton(
+                              tooltip: l10n.commonClear,
+                              icon: const Icon(Icons.highlight_off_outlined),
+                              onPressed: () => setState(() {
+                                _clearMaxOccurrences = true;
+                                _maxOccurrencesController.clear();
+                              }),
+                            )
+                          : null,
                     ),
                     keyboardType: TextInputType.number,
                     validator: (value) {
+                      if (_clearMaxOccurrences) return null;
                       final text = value?.trim() ?? '';
                       if (text.isEmpty) return null;
                       final parsed = int.tryParse(text);
@@ -440,17 +495,24 @@ class _InvoicePicker extends StatelessWidget {
   }
 }
 
-/// Date field for optional dates; empty until picked.
+/// Date field for optional dates; empty until picked. Optionally offers a
+/// clear action that arms the matching clear flag on save.
 class _OptionalDateField extends StatelessWidget {
   const _OptionalDateField({
     required this.label,
     required this.date,
     required this.onTap,
+    this.onClear,
+    this.isCleared = false,
   });
 
   final String label;
   final DateTime? date;
   final VoidCallback onTap;
+
+  /// Shown when set and a date is displayed (or a clear is pending).
+  final VoidCallback? onClear;
+  final bool isCleared;
 
   @override
   Widget build(BuildContext context) {
@@ -462,6 +524,16 @@ class _OptionalDateField extends StatelessWidget {
         decoration: InputDecoration(
           labelText: label,
           prefixIcon: const Icon(Icons.event_outlined),
+          helperText: isCleared
+              ? AppLocalizations.of(context).recurringWillBeCleared
+              : null,
+          suffixIcon: onClear != null && (date != null || isCleared)
+              ? IconButton(
+                  tooltip: AppLocalizations.of(context).commonClear,
+                  icon: const Icon(Icons.highlight_off_outlined),
+                  onPressed: onClear,
+                )
+              : null,
         ),
         child: Text(
           date == null ? '' : formatDate(date!),

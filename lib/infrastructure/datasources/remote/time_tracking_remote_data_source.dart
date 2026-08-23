@@ -3,8 +3,10 @@ import 'package:injectable/injectable.dart';
 
 import 'package:gewerber_app/core/config/app_environment.dart';
 import 'package:gewerber_app/core/errors/exceptions.dart';
+import 'package:gewerber_app/domain/entities/invoice.dart';
 import 'package:gewerber_app/domain/entities/time_tracking.dart';
 import 'package:gewerber_app/infrastructure/core/serverpod_client_factory.dart';
+import 'package:gewerber_app/infrastructure/mappers/invoice_mapper.dart';
 import 'package:gewerber_app/infrastructure/mappers/time_tracking_mapper.dart';
 
 /// Transport-level time tracking calls against the Serverpod backend.
@@ -13,10 +15,15 @@ import 'package:gewerber_app/infrastructure/mappers/time_tracking_mapper.dart';
 /// layers stay free of transport details.
 @LazySingleton(env: [AppEnvironment.authLive])
 class TimeTrackingRemoteDataSource {
-  TimeTrackingRemoteDataSource(this._clientFactory, this._mapper);
+  TimeTrackingRemoteDataSource(
+    this._clientFactory,
+    this._mapper,
+    this._invoiceMapper,
+  );
 
   final ServerpodClientFactory _clientFactory;
   final TimeTrackingMapper _mapper;
+  final InvoiceMapper _invoiceMapper;
 
   sdk.Client get _client => _clientFactory.client;
 
@@ -262,6 +269,31 @@ class TimeTrackingRemoteDataSource {
         projectId: projectId,
       );
       return _mapper.reportFromModel(model);
+    } on sdk.ServerpodClientException {
+      throw const NetworkException();
+    }
+  }
+
+  // ── Billing ─────────────────────────────────────────────────────────────
+
+  Future<Invoice> createInvoice({
+    required int projectId,
+    DateTime? from,
+    DateTime? to,
+    int? customerId,
+    DateTime? issueDate,
+  }) async {
+    try {
+      final model = await _client.timeEntry.createInvoice(
+        sdk.CreateTimeEntriesInvoiceRequest(
+          projectId: projectId,
+          from: from,
+          to: to,
+          customerId: customerId,
+          issueDate: issueDate,
+        ),
+      );
+      return _invoiceMapper.fromModel(model);
     } on sdk.ServerpodClientException {
       throw const NetworkException();
     }

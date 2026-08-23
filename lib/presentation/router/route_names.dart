@@ -35,6 +35,7 @@ abstract final class RouteNames {
   static const String timeTimer = '/app/time/timer';
   static const String timeEntryCreate = '/app/time/new';
   static const String timeReport = '/app/time/report';
+  static const String timeBilling = '/app/time/billing';
 
   /// Accounting sub-screens.
   static const String accountingReport = '/app/accounting/reports';
@@ -50,6 +51,7 @@ abstract final class RouteNames {
   static const String settingsBusiness = '/app/settings/business';
   static const String settingsBusinessSettings =
       '/app/settings/business-settings';
+  static const String settingsDocuments = '/app/settings/documents';
   static const String settingsLanguage = '/app/settings/language';
   static const String settingsTheme = '/app/settings/theme';
   static const String settingsAbout = '/app/settings/about';
