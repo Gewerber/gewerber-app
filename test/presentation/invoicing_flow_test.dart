@@ -12,6 +12,9 @@ import 'package:gewerber_app/presentation/screens/home/invoice_create_screen.dar
 import 'package:gewerber_app/presentation/screens/home/invoice_detail_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/invoicing_screen.dart';
 import 'package:gewerber_app/presentation/screens/onboarding/onboarding_screen.dart';
+import 'package:gewerber_app/presentation/widgets/dashboard/recent_activity_card.dart';
+import 'package:gewerber_app/presentation/widgets/dashboard/receivables_card.dart';
+import 'package:gewerber_app/presentation/widgets/dashboard/trends_section_card.dart';
 import 'package:gewerber_app/presentation/widgets/forms/custom_text_field.dart';
 
 void main() {
@@ -45,6 +48,22 @@ void main() {
       await tester.pumpAndSettle();
     }
     expect(find.byType(DashboardScreen), findsOneWidget);
+
+    // The v2 sections load their mock data right after login; they sit
+    // below the fold on this viewport, so scroll down to them first.
+    await tester.scrollUntilVisible(
+      find.text('Receivables'),
+      -200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    expect(find.byType(TrendsSectionCard), findsOneWidget);
+    expect(find.byType(RecentActivityCard), findsOneWidget);
+    expect(find.byType(ReceivablesCard), findsOneWidget);
+    // Seeded demo data renders in every section.
+    expect(find.text('Last 6 months'), findsOneWidget);
+    expect(find.textContaining('RE-2026-14'), findsOneWidget);
+    expect(find.text('Müller GmbH'), findsOneWidget);
 
     // Invoicing -> customers.
     await tester.tap(find.text('Invoicing'));
