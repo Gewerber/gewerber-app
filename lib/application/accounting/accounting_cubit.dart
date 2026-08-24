@@ -63,12 +63,15 @@ class AccountingCubit extends Cubit<AccountingState> {
   }
 
   /// Records a transaction. Returns `true` on success.
+  ///
+  /// [receiptDocumentId] references an already uploaded receipt document.
   Future<bool> create({
     required TransactionType type,
     required TransactionCategory category,
     required DateTime occurredAt,
     required int amountCents,
     String? description,
+    int? receiptDocumentId,
   }) async {
     try {
       final transaction = await _repository.create(
@@ -77,10 +80,35 @@ class AccountingCubit extends Cubit<AccountingState> {
         occurredAt: occurredAt,
         amountCents: amountCents,
         description: description,
+        receiptDocumentId: receiptDocumentId,
       );
       if (!isClosed) {
         emit(
           state.copyWith(transactions: [transaction, ...state.transactions]),
+        );
+      }
+      return true;
+    } on Exception {
+      return false;
+    }
+  }
+
+  /// Persists edits to an existing transaction and replaces it in the
+  /// loaded list. Returns `true` on success.
+  ///
+  /// Passing `null` for [receiptDocumentId] clears the receipt link on the
+  /// server (the update request replaces all fields).
+  Future<bool> update(AccountingTransaction transaction) async {
+    try {
+      final updated = await _repository.update(transaction);
+      if (!isClosed) {
+        emit(
+          state.copyWith(
+            transactions: [
+              for (final current in state.transactions)
+                if (current.id == updated.id) updated else current,
+            ],
+          ),
         );
       }
       return true;

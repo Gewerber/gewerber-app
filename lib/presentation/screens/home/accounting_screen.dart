@@ -56,6 +56,12 @@ class _AccountingScreenState extends State<AccountingScreen> {
     context.read<AccountingCubit>().load(type: _filter);
   }
 
+  Future<void> _openEntryEdit(AccountingTransaction transaction) async {
+    await context.push(RouteNames.accountingEntryEdit, extra: transaction);
+    if (!mounted) return;
+    context.read<AccountingCubit>().load(type: _filter);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -104,6 +110,7 @@ class _AccountingScreenState extends State<AccountingScreen> {
                   final transaction = state.transactions[index];
                   return _TransactionTile(
                     transaction: transaction,
+                    onEdit: () => _openEntryEdit(transaction),
                     onDelete: () => _delete(transaction),
                   );
                 },
@@ -154,9 +161,14 @@ class _TypeFilter extends StatelessWidget {
 }
 
 class _TransactionTile extends StatelessWidget {
-  const _TransactionTile({required this.transaction, required this.onDelete});
+  const _TransactionTile({
+    required this.transaction,
+    required this.onEdit,
+    required this.onDelete,
+  });
 
   final AccountingTransaction transaction;
+  final VoidCallback onEdit;
   final VoidCallback onDelete;
 
   @override
@@ -197,6 +209,9 @@ class _TransactionTile extends StatelessWidget {
             fontWeight: FontWeight.w600,
           ),
         ),
+        // Opens the editor, mirroring the customers and recurring-schedule
+        // lists; delete stays on long-press.
+        onTap: onEdit,
         onLongPress: onDelete,
       ),
     );

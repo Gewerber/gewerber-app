@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:gewerber_app/application/auth/auth_state.dart';
+import 'package:gewerber_app/application/time_billing/time_billing_cubit.dart';
 import 'package:gewerber_app/di/injection.dart';
 import 'package:gewerber_app/domain/entities/customer.dart';
 import 'package:gewerber_app/domain/entities/invoice.dart';
+import 'package:gewerber_app/domain/entities/invoice_template.dart';
+import 'package:gewerber_app/domain/entities/recurring_schedule.dart';
+import 'package:gewerber_app/domain/entities/transaction.dart';
 import 'package:gewerber_app/presentation/screens/forgot_password/forgot_password_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/accounting_entry_create_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/accounting_screen.dart';
@@ -15,17 +20,24 @@ import 'package:gewerber_app/presentation/screens/home/checklist_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/customer_edit_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/customers_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/dashboard_screen.dart';
+import 'package:gewerber_app/presentation/screens/home/documents_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/guidance_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/guidance_tips_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/home_shell.dart';
 import 'package:gewerber_app/presentation/screens/home/invoice_create_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/invoice_detail_screen.dart';
+import 'package:gewerber_app/presentation/screens/home/invoice_template_edit_screen.dart';
+import 'package:gewerber_app/presentation/screens/home/invoice_templates_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/invoicing_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/language_screen.dart';
+import 'package:gewerber_app/presentation/screens/home/profile_edit_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/projects_screen.dart';
+import 'package:gewerber_app/presentation/screens/home/recurring_schedule_edit_screen.dart';
+import 'package:gewerber_app/presentation/screens/home/recurring_schedules_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/report_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/settings_master_detail.dart';
 import 'package:gewerber_app/presentation/screens/home/time_entry_create_screen.dart';
+import 'package:gewerber_app/presentation/screens/home/time_billing_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/time_report_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/time_tracking_screen.dart';
 import 'package:gewerber_app/presentation/screens/home/timer_screen.dart';
@@ -165,6 +177,34 @@ final GoRouter appRouter = GoRouter(
                 invoice: state.extra is Invoice ? state.extra as Invoice : null,
               ),
             ),
+            GoRoute(
+              path: RouteNames.invoiceTemplates,
+              builder: (context, state) => const InvoiceTemplatesScreen(),
+            ),
+            GoRoute(
+              path: RouteNames.templateNew,
+              builder: (context, state) => const InvoiceTemplateEditScreen(),
+            ),
+            GoRoute(
+              path: RouteNames.templateEdit,
+              builder: (context, state) => InvoiceTemplateEditScreen(
+                template: state.extra is InvoiceTemplate
+                    ? state.extra as InvoiceTemplate
+                    : null,
+              ),
+            ),
+            GoRoute(
+              path: RouteNames.recurringSchedules,
+              builder: (context, state) => const RecurringSchedulesScreen(),
+            ),
+            GoRoute(
+              path: RouteNames.recurringScheduleEdit,
+              builder: (context, state) => RecurringScheduleEditScreen(
+                schedule: state.extra is RecurringSchedule
+                    ? state.extra as RecurringSchedule
+                    : null,
+              ),
+            ),
           ],
         ),
         StatefulShellBranch(
@@ -189,6 +229,13 @@ final GoRouter appRouter = GoRouter(
               path: RouteNames.timeReport,
               builder: (context, state) => const TimeReportScreen(),
             ),
+            GoRoute(
+              path: RouteNames.timeBilling,
+              builder: (context, state) => BlocProvider<TimeBillingCubit>.value(
+                value: getIt<TimeBillingCubit>(),
+                child: const TimeBillingScreen(),
+              ),
+            ),
           ],
         ),
         StatefulShellBranch(
@@ -205,6 +252,14 @@ final GoRouter appRouter = GoRouter(
               path: RouteNames.accountingEntryCreate,
               builder: (context, state) => const AccountingEntryCreateScreen(),
             ),
+            GoRoute(
+              path: RouteNames.accountingEntryEdit,
+              builder: (context, state) => AccountingEntryCreateScreen(
+                transaction: state.extra is AccountingTransaction
+                    ? state.extra as AccountingTransaction
+                    : null,
+              ),
+            ),
           ],
         ),
         StatefulShellBranch(
@@ -214,12 +269,20 @@ final GoRouter appRouter = GoRouter(
               builder: (context, state) => const SettingsMasterDetail(),
             ),
             GoRoute(
+              path: RouteNames.settingsProfile,
+              builder: (context, state) => const ProfileEditScreen(),
+            ),
+            GoRoute(
               path: RouteNames.settingsBusiness,
               builder: (context, state) => const BusinessProfileScreen(),
             ),
             GoRoute(
               path: RouteNames.settingsBusinessSettings,
               builder: (context, state) => const BusinessSettingsScreen(),
+            ),
+            GoRoute(
+              path: RouteNames.settingsDocuments,
+              builder: (context, state) => const DocumentsScreen(),
             ),
             GoRoute(
               path: RouteNames.settingsLanguage,

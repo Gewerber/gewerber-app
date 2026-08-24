@@ -2,6 +2,7 @@ import 'package:injectable/injectable.dart';
 
 import 'package:gewerber_app/core/config/app_environment.dart';
 import 'package:gewerber_app/core/errors/exceptions.dart';
+import 'package:gewerber_app/domain/entities/invoice.dart';
 import 'package:gewerber_app/domain/entities/time_tracking.dart';
 import 'package:gewerber_app/domain/repositories/time_tracking_repository.dart';
 import 'package:gewerber_app/infrastructure/datasources/remote/time_tracking_remote_data_source.dart';
@@ -152,6 +153,27 @@ class ServerpodTimeTrackingRepository implements TimeTrackingRepository {
   @override
   Future<TimeReport> report(DateTime from, DateTime to, {int? projectId}) {
     return _guard(() => _dataSource.report(from, to, projectId: projectId));
+  }
+
+  @override
+  Future<Invoice> createInvoice({
+    required int projectId,
+    DateTime? from,
+    DateTime? to,
+    int? customerId,
+    DateTime? issueDate,
+    List<int>? timeEntryIds,
+  }) {
+    return _guard(
+      () => _dataSource.createInvoice(
+        projectId: projectId,
+        from: from,
+        to: to,
+        customerId: customerId,
+        issueDate: issueDate,
+        timeEntryIds: timeEntryIds,
+      ),
+    );
   }
 
   /// Runs [action] and rethrows [AppException]s, wrapping any other error as

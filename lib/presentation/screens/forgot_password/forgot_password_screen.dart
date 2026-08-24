@@ -239,7 +239,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           ),
         ],
         VerificationCodeInput(
-          length: 6,
+          length: 8,
           enabled: !state.isSubmitting,
           hasError: failure != null,
           semanticsLabel: l10n.forgotCodeStepTitle,

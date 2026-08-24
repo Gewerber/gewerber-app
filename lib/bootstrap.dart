@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
+import 'package:gewerber_app/core/utils/format.dart';
 import 'package:gewerber_app/di/injection.dart';
 import 'package:gewerber_app/presentation/app/gewerber_app.dart';
 
@@ -10,6 +12,9 @@ import 'package:gewerber_app/presentation/app/gewerber_app.dart';
 /// [AppEnvironment] and [AppConfig] can resolve the active flavor.
 Future<void> bootstrap() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // German is the primary product market; the settings cubit keeps this in
+  // sync with the user's chosen app language afterwards.
+  Intl.defaultLocale = defaultFormatLocale;
   configureDependencies();
   runApp(const GewerberApp());
 }

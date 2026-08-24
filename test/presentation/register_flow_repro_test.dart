@@ -29,7 +29,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // Step 2: code — one digit per box (each box has maxLength 1).
-    for (var i = 0; i < 6; i++) {
+    for (var i = 0; i < 8; i++) {
       await tester.enterText(find.byType(TextField).at(i), '${i + 1}');
       await tester.pump();
     }

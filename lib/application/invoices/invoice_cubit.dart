@@ -16,11 +16,18 @@ class InvoiceCubit extends Cubit<InvoiceState> {
   final InvoiceRepository _repository;
 
   /// Loads the invoices, optionally filtered by [status].
-  Future<void> load({InvoiceStatus? status}) async {
+  ///
+  /// [limit] and [offset] page through the server-side list; `null` lets the
+  /// backend apply its defaults.
+  Future<void> load({InvoiceStatus? status, int? limit, int? offset}) async {
     if (state.isLoading) return;
     emit(state.copyWith(status: InvoiceViewStatus.loading, clearFailure: true));
     try {
-      final invoices = await _repository.list(status: status);
+      final invoices = await _repository.list(
+        status: status,
+        limit: limit,
+        offset: offset,
+      );
       if (isClosed) return;
       emit(InvoiceState(status: InvoiceViewStatus.loaded, invoices: invoices));
     } on AppException catch (e) {
@@ -55,7 +62,8 @@ class InvoiceCubit extends Cubit<InvoiceState> {
 
   /// Creates a new invoice.
   ///
-  /// Returns `true` on success.
+  /// [templateId] associates a layout template with the invoice (default
+  /// template prefill). Returns `true` on success.
   Future<bool> create({
     required List<InvoiceItem> items,
     int? customerId,
@@ -64,6 +72,7 @@ class InvoiceCubit extends Cubit<InvoiceState> {
     DateTime? serviceDateFrom,
     DateTime? serviceDateTo,
     String? notes,
+    int? templateId,
   }) async {
     try {
       final invoice = await _repository.create(
@@ -74,6 +83,7 @@ class InvoiceCubit extends Cubit<InvoiceState> {
         serviceDateFrom: serviceDateFrom,
         serviceDateTo: serviceDateTo,
         notes: notes,
+        templateId: templateId,
       );
       if (!isClosed) {
         emit(

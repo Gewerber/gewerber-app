@@ -20,7 +20,11 @@ Failure mapAppException(AppException exception) {
     SocialAuthNotConfiguredException() =>
       const SocialAuthNotConfiguredFailure(),
     SocialAuthFailureException(:final message) => SocialAuthFailure(message),
+    AccountDeletedException() => const AccountDeletedFailure(),
     NetworkException() => const NetworkFailure(),
+    ValidationException(:final message) => ValidationFailure(message),
+    ConflictException() => const ConflictFailure(),
+    NotFoundException() => const NotFoundFailure(),
     AppException() => const NetworkFailure(),
   };
 }

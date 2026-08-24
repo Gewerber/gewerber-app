@@ -10,6 +10,7 @@ import 'package:gewerber_app/application/customers/customer_cubit.dart';
 import 'package:gewerber_app/application/invoices/invoice_cubit.dart';
 import 'package:gewerber_app/application/invoices/invoice_state.dart';
 import 'package:gewerber_app/core/theme/app_theme.dart';
+import 'package:gewerber_app/core/utils/format.dart';
 import 'package:gewerber_app/domain/entities/invoice.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 import 'package:gewerber_app/presentation/router/route_names.dart';
@@ -95,6 +96,16 @@ class _InvoicingScreenState extends State<InvoicingScreen> {
             tooltip: l10n.customersTitle,
             icon: const Icon(Icons.people_outline),
             onPressed: () => context.push(RouteNames.customers),
+          ),
+          IconButton(
+            tooltip: l10n.templatesTitle,
+            icon: const Icon(Icons.description_outlined),
+            onPressed: () => context.push(RouteNames.invoiceTemplates),
+          ),
+          IconButton(
+            tooltip: l10n.recurringTitle,
+            icon: const Icon(Icons.event_repeat),
+            onPressed: () => context.push(RouteNames.recurringSchedules),
           ),
         ],
       ),
@@ -196,9 +207,8 @@ class _InvoiceTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final colors = Theme.of(context).colorScheme;
-    final date = invoice.issueDate;
-    final formattedDate =
-        '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+    final subtitle =
+        '${formatDate(invoice.issueDate)} · ${_statusLabel(l10n, invoice.status)}';
 
     return Card(
       margin: EdgeInsets.zero,
@@ -207,10 +217,8 @@ class _InvoiceTile extends StatelessWidget {
           child: Icon(Icons.receipt_outlined, color: colors.onSurfaceVariant),
         ),
         title: Text(invoice.number),
-        subtitle: Text(
-          '$formattedDate · ${_statusLabel(l10n, invoice.status)}',
-        ),
-        trailing: Text(_formatCents(invoice.totalCents)),
+        subtitle: Text(subtitle),
+        trailing: Text(formatCents(invoice.totalCents)),
         onTap: onTap,
       ),
     );
@@ -225,13 +233,6 @@ class _InvoiceTile extends StatelessWidget {
       InvoiceStatus.cancelled => l10n.invoiceStatusCancelled,
     };
   }
-}
-
-String _formatCents(int cents) {
-  final euros = cents ~/ 100;
-  final rest = (cents % 100).abs().toString().padLeft(2, '0');
-  final sign = cents < 0 ? '-' : '';
-  return '$sign$euros.$rest €';
 }
 
 class _EmptyState extends StatelessWidget {

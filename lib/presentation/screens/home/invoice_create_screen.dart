@@ -5,10 +5,13 @@ import 'package:go_router/go_router.dart';
 import 'package:gewerber_app/application/business/business_cubit.dart';
 import 'package:gewerber_app/application/customers/customer_cubit.dart';
 import 'package:gewerber_app/application/customers/customer_state.dart';
+import 'package:gewerber_app/application/invoice_templates/invoice_template_cubit.dart';
 import 'package:gewerber_app/application/invoices/invoice_cubit.dart';
 import 'package:gewerber_app/core/theme/app_theme.dart';
+import 'package:gewerber_app/core/utils/format.dart';
 import 'package:gewerber_app/domain/entities/customer.dart';
 import 'package:gewerber_app/domain/entities/invoice.dart';
+import 'package:gewerber_app/domain/entities/invoice_template.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 
 /// InvoiceCreateScreen — create a new invoice or edit a draft.
@@ -31,8 +34,18 @@ class _InvoiceCreateScreenState extends State<InvoiceCreateScreen> {
   DateTime? _dueDate;
   DateTime? _serviceFrom;
   DateTime? _serviceTo;
+  InvoiceVatRate _vatRate = InvoiceVatRate.standard;
   bool _isSaving = false;
   bool _initialized = false;
+
+  /// Best-effort prefill: resolves the business's default template while
+  /// the user fills in the form. Only used when creating a new invoice;
+  /// editing never applies a template. The lookup is lazy and non-blocking,
+  /// and a failed template load must not break invoice creation (the future
+  /// resolves to `null` instead of throwing). While resolving, the form
+  /// shows an unobtrusive "applying template" indicator once a default
+  /// template was found.
+  Future<InvoiceTemplate?>? _defaultTemplate;
 
   bool get _isEditing => widget.invoice != null;
 
@@ -46,6 +59,11 @@ class _InvoiceCreateScreenState extends State<InvoiceCreateScreen> {
     _dueDate = invoice?.dueDate;
     _serviceFrom = invoice?.serviceDateFrom;
     _serviceTo = invoice?.serviceDateTo;
+    if (!_isEditing) {
+      _defaultTemplate = context
+          .read<InvoiceTemplateCubit>()
+          .resolveDefaultTemplate();
+    }
     _loadItems();
   }
 
@@ -76,6 +94,12 @@ class _InvoiceCreateScreenState extends State<InvoiceCreateScreen> {
             ),
           ),
         );
+      // Keep the VAT rate of the loaded draft so editing does not silently
+      // change it. `none` is re-derived from the business settings on save.
+      final rate = result.items.isEmpty ? null : result.items.first.vatRate;
+      if (rate == InvoiceVatRate.reduced || rate == InvoiceVatRate.standard) {
+        _vatRate = rate!;
+      }
     });
   }
 
@@ -117,12 +141,17 @@ class _InvoiceCreateScreenState extends State<InvoiceCreateScreen> {
 
     final invoiceCubit = context.read<InvoiceCubit>();
     final business = context.read<BusinessCubit>().state.activeBusiness;
-    final vatRate = (business?.isKleinunternehmer ?? false)
-        ? InvoiceVatRate.none
-        : InvoiceVatRate.standard;
+    final isKleinunternehmer = business?.isKleinunternehmer ?? false;
+    final vatRate = isKleinunternehmer ? InvoiceVatRate.none : _vatRate;
 
     setState(() => _isSaving = true);
     final itemDrafts = _items.map((item) => item.toItem(vatRate)).toList();
+
+    // New invoices carry the business's default template (best-effort
+    // prefill); edits keep the invoice's existing association untouched.
+    final templateId = _isEditing
+        ? widget.invoice!.templateId
+        : (await _defaultTemplate)?.id;
 
     final saved = _isEditing
         ? await invoiceCubit.update(
@@ -148,6 +177,7 @@ class _InvoiceCreateScreenState extends State<InvoiceCreateScreen> {
             notes: _notesController.text.trim().isEmpty
                 ? null
                 : _notesController.text.trim(),
+            templateId: templateId,
           );
 
     if (!mounted) return;
@@ -182,6 +212,8 @@ class _InvoiceCreateScreenState extends State<InvoiceCreateScreen> {
               child: ListView(
                 padding: const EdgeInsets.all(16),
                 children: [
+                  if (!_isEditing)
+                    _TemplatePrefillIndicator(future: _defaultTemplate),
                   _CustomerPicker(
                     selectedId: _customerId,
                     onChanged: (id) => setState(() => _customerId = id),
@@ -243,6 +275,18 @@ class _InvoiceCreateScreenState extends State<InvoiceCreateScreen> {
                         ),
                       ),
                     ],
+                  ),
+                  const SizedBox(height: GewerberTokens.space24),
+                  _VatRateSelector(
+                    selected: _vatRate,
+                    isKleinunternehmer:
+                        context
+                            .watch<BusinessCubit>()
+                            .state
+                            .activeBusiness
+                            ?.isKleinunternehmer ??
+                        false,
+                    onChanged: (rate) => setState(() => _vatRate = rate),
                   ),
                   const SizedBox(height: GewerberTokens.space24),
                   Text(
@@ -342,6 +386,7 @@ extension on Invoice {
       vatTotalCents: vatTotalCents,
       totalCents: totalCents,
       notes: notes,
+      templateId: templateId,
     );
   }
 }
@@ -387,6 +432,117 @@ class _CustomerPicker extends StatelessWidget {
   }
 }
 
+/// Unobtrusive notice shown on the new-invoice form while the business's
+/// default template was resolved and will be applied on save. Renders
+/// nothing while the lookup is running, when there is no default template,
+/// or when the lookup failed — a missing template must never block invoice
+/// creation.
+class _TemplatePrefillIndicator extends StatelessWidget {
+  const _TemplatePrefillIndicator({required this.future});
+
+  final Future<InvoiceTemplate?>? future;
+
+  @override
+  Widget build(BuildContext context) {
+    if (future == null) return const SizedBox.shrink();
+    return FutureBuilder<InvoiceTemplate?>(
+      future: future,
+      builder: (context, snapshot) {
+        final template = snapshot.data;
+        if (template == null) return const SizedBox.shrink();
+        final colors = Theme.of(context).colorScheme;
+        return Padding(
+          padding: const EdgeInsets.only(bottom: GewerberTokens.space12),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: GewerberTokens.space12,
+                vertical: 6,
+              ),
+              decoration: BoxDecoration(
+                color: colors.secondaryContainer,
+                borderRadius: BorderRadius.circular(GewerberTokens.space16),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.auto_awesome_motion_outlined,
+                    size: 16,
+                    color: colors.onSecondaryContainer,
+                  ),
+                  const SizedBox(width: GewerberTokens.space8),
+                  Flexible(
+                    child: Text(
+                      AppLocalizations.of(
+                        context,
+                      ).invoiceTemplateApplied(template.name),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: colors.onSecondaryContainer,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _VatRateSelector extends StatelessWidget {
+  const _VatRateSelector({
+    required this.selected,
+    required this.isKleinunternehmer,
+    required this.onChanged,
+  });
+
+  final InvoiceVatRate selected;
+  final bool isKleinunternehmer;
+  final ValueChanged<InvoiceVatRate> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
+    if (isKleinunternehmer) {
+      // § 19 UStG: no VAT may be charged — nothing to choose.
+      return InputDecorator(
+        decoration: InputDecoration(
+          labelText: l10n.invoiceVatRate,
+          prefixIcon: const Icon(Icons.percent_outlined),
+        ),
+        child: Text(l10n.invoiceVatNoneHint),
+      );
+    }
+
+    return SegmentedButton<InvoiceVatRate>(
+      segments: [
+        ButtonSegment(
+          value: InvoiceVatRate.standard,
+          icon: const Icon(Icons.percent_outlined),
+          label: Text(l10n.invoiceVatStandard),
+        ),
+        ButtonSegment(
+          value: InvoiceVatRate.reduced,
+          icon: const Icon(Icons.percent_outlined),
+          label: Text(l10n.invoiceVatReduced),
+        ),
+      ],
+      selected: {
+        selected == InvoiceVatRate.reduced
+            ? InvoiceVatRate.reduced
+            : InvoiceVatRate.standard,
+      },
+      onSelectionChanged: (selection) => onChanged(selection.first),
+    );
+  }
+}
+
 class _DateField extends StatelessWidget {
   const _DateField({
     required this.label,
@@ -401,9 +557,7 @@ class _DateField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    final dateText = date == null
-        ? null
-        : '${date!.year}-${date!.month.toString().padLeft(2, '0')}-${date!.day.toString().padLeft(2, '0')}';
+    final dateText = date == null ? null : formatDate(date!);
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),

@@ -52,9 +52,24 @@ final class PasswordPolicyViolationFailure extends Failure {
   const PasswordPolicyViolationFailure() : super('Password policy violation');
 }
 
+/// The signed-in account has been deleted on the server.
+final class AccountDeletedFailure extends Failure {
+  const AccountDeletedFailure() : super('Account has been deleted');
+}
+
 /// The backend could not be reached.
 final class NetworkFailure extends Failure {
   const NetworkFailure() : super('Network error');
+}
+
+/// The action conflicts with an existing resource.
+final class ConflictFailure extends Failure {
+  const ConflictFailure([super.message = 'Conflicting resource']);
+}
+
+/// The requested resource does not exist.
+final class NotFoundFailure extends Failure {
+  const NotFoundFailure([super.message = 'Resource not found']);
 }
 
 /// A social identity provider is not configured.

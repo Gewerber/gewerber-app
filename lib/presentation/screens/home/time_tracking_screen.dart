@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 import 'package:gewerber_app/presentation/router/route_names.dart';
-import 'package:gewerber_app/presentation/widgets/common/stub_menu_tile.dart';
+import 'package:gewerber_app/presentation/widgets/common/module_menu_tile.dart';
 
 /// Time tracking tab — index of the upcoming sub-screens.
 class TimeTrackingScreen extends StatelessWidget {
@@ -24,29 +24,35 @@ class TimeTrackingScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          StubMenuTile(
+          ModuleMenuTile(
             icon: Icons.folder_outlined,
             title: l10n.timeProjectsTitle,
             subtitle: l10n.timeProjectsSubtitle,
             onTap: () => context.push(RouteNames.timeProjects),
           ),
-          StubMenuTile(
+          ModuleMenuTile(
             icon: Icons.timer_outlined,
             title: l10n.timeTimerTitle,
             subtitle: l10n.timeTimerSubtitle,
             onTap: () => context.push(RouteNames.timeTimer),
           ),
-          StubMenuTile(
+          ModuleMenuTile(
             icon: Icons.edit_calendar_outlined,
             title: l10n.timeEntryCreateTitle,
             subtitle: l10n.timeEntryCreateSubtitle,
             onTap: () => context.push(RouteNames.timeEntryCreate),
           ),
-          StubMenuTile(
+          ModuleMenuTile(
             icon: Icons.insights_outlined,
             title: l10n.timeReportTitle,
             subtitle: l10n.timeReportSubtitle,
             onTap: () => context.push(RouteNames.timeReport),
+          ),
+          ModuleMenuTile(
+            icon: Icons.receipt_long_outlined,
+            title: l10n.timeBillingTitle,
+            subtitle: l10n.timeBillingSubtitle,
+            onTap: () => context.push(RouteNames.timeBilling),
           ),
         ],
       ),

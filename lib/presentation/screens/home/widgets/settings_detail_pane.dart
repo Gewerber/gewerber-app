@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 
+import 'package:gewerber_app/presentation/screens/home/documents_screen.dart'
+    show DocumentsView;
+import 'package:gewerber_app/presentation/screens/home/settings_master_detail.dart'
+    show SettingsSection;
 import 'package:gewerber_app/presentation/screens/home/widgets/about_content.dart';
 import 'package:gewerber_app/presentation/screens/home/widgets/business_profile_form.dart';
 import 'package:gewerber_app/presentation/screens/home/widgets/business_settings_form.dart';
 import 'package:gewerber_app/presentation/screens/home/widgets/guidance_index.dart';
 import 'package:gewerber_app/presentation/screens/home/widgets/language_selector.dart'
     show LanguageSelector;
+import 'package:gewerber_app/presentation/screens/home/widgets/profile_form.dart';
 import 'package:gewerber_app/presentation/screens/home/widgets/theme_selector.dart';
 
 /// SettingsDetailPane — detail pane for settings master-detail layout.
@@ -25,43 +30,48 @@ class SettingsDetailPane extends StatelessWidget {
   }
 
   Widget _buildDetailContent(BuildContext context) {
-    switch (selectedIndex) {
-      case 0:
-        return const _DetailContainer(
-          key: ValueKey('business_profile'),
-          child: BusinessProfileForm(),
-        );
-      case 1:
-        return const _DetailContainer(
-          key: ValueKey('business_settings'),
-          child: BusinessSettingsForm(),
-        );
-      case 2:
-        return const _DetailContainer(
-          key: ValueKey('language'),
-          child: LanguageSelector(),
-        );
-      case 3:
-        return const _DetailContainer(
-          key: ValueKey('theme'),
-          child: ThemeSelector(),
-        );
-      case 4:
-        return const _DetailContainer(
-          key: ValueKey('guides'),
-          child: GuidanceIndex(),
-        );
-      case 5:
-        return const _DetailContainer(
-          key: ValueKey('about'),
-          child: AboutContent(),
-        );
-      default:
-        return const _DetailContainer(
-          key: ValueKey('default'),
-          child: BusinessProfileForm(),
-        );
-    }
+    final section = selectedIndex < SettingsSection.values.length
+        ? SettingsSection.values[selectedIndex]
+        : null;
+    return switch (section) {
+      SettingsSection.profile => const _DetailContainer(
+        key: ValueKey('profile'),
+        child: ProfileForm(),
+      ),
+      SettingsSection.businessProfile => const _DetailContainer(
+        key: ValueKey('business_profile'),
+        child: BusinessProfileForm(),
+      ),
+      SettingsSection.businessSettings => const _DetailContainer(
+        key: ValueKey('business_settings'),
+        child: BusinessSettingsForm(),
+      ),
+      SettingsSection.documents => const _DetailContainer(
+        key: ValueKey('documents'),
+        child: DocumentsView(),
+      ),
+      SettingsSection.language => const _DetailContainer(
+        key: ValueKey('language'),
+        child: LanguageSelector(),
+      ),
+      SettingsSection.theme => const _DetailContainer(
+        key: ValueKey('theme'),
+        child: ThemeSelector(),
+      ),
+      SettingsSection.guides => const _DetailContainer(
+        key: ValueKey('guides'),
+        child: GuidanceIndex(),
+      ),
+      SettingsSection.about => const _DetailContainer(
+        key: ValueKey('about'),
+        child: AboutContent(),
+      ),
+      // Sign-out index or anything out of range.
+      null => const _DetailContainer(
+        key: ValueKey('default'),
+        child: ProfileForm(),
+      ),
+    };
   }
 }
 

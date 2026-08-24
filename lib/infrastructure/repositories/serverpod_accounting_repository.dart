@@ -41,6 +41,7 @@ class ServerpodAccountingRepository implements AccountingRepository {
     required DateTime occurredAt,
     required int amountCents,
     String? description,
+    int? receiptDocumentId,
   }) {
     return _guard(
       () => _dataSource.create(
@@ -49,6 +50,7 @@ class ServerpodAccountingRepository implements AccountingRepository {
         occurredAt: occurredAt,
         amountCents: amountCents,
         description: description,
+        receiptDocumentId: receiptDocumentId,
       ),
     );
   }

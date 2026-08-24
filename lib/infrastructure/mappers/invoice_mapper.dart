@@ -22,6 +22,7 @@ class InvoiceMapper {
       vatTotalCents: model.vatTotalCents,
       totalCents: model.totalCents,
       notes: model.notes,
+      templateId: model.templateId,
     );
   }
 
@@ -53,6 +54,7 @@ class InvoiceMapper {
       invoiceId: model.invoiceId,
       paidAt: model.paidAt,
       amountCents: model.amountCents,
+      method: PaymentMethod.fromName(model.method.name),
       reference: model.reference,
     );
   }

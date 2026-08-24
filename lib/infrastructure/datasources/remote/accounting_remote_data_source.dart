@@ -51,6 +51,7 @@ class AccountingRemoteDataSource {
     required DateTime occurredAt,
     required int amountCents,
     String? description,
+    int? receiptDocumentId,
   }) async {
     try {
       final model = await _client.accounting.create(
@@ -60,6 +61,7 @@ class AccountingRemoteDataSource {
           occurredAt: occurredAt,
           amountCents: amountCents,
           description: description,
+          receiptDocumentId: receiptDocumentId,
         ),
       );
       return _mapper.fromModel(model);

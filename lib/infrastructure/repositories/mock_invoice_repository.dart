@@ -50,6 +50,7 @@ class MockInvoiceRepository implements InvoiceRepository {
     DateTime? serviceDateFrom,
     DateTime? serviceDateTo,
     String? notes,
+    int? templateId,
   }) async {
     final invoice = Invoice(
       id: _invoices.length + 1,
@@ -60,6 +61,7 @@ class MockInvoiceRepository implements InvoiceRepository {
       serviceDateFrom: serviceDateFrom,
       serviceDateTo: serviceDateTo,
       notes: notes,
+      templateId: templateId,
     );
     _invoices.add(invoice);
     _items[invoice.id] = items;
@@ -102,6 +104,7 @@ class MockInvoiceRepository implements InvoiceRepository {
       vatTotalCents: _invoices[index].vatTotalCents,
       totalCents: _invoices[index].totalCents,
       notes: _invoices[index].notes,
+      templateId: _invoices[index].templateId,
     );
     _invoices[index] = updated;
     return updated;

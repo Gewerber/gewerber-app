@@ -89,7 +89,7 @@ void main() {
 
   test('submitCode advances to the new-password step', () async {
     await cubit.submitEmail('test@gewerber.de');
-    await cubit.submitCode('123456');
+    await cubit.submitCode('12345678');
 
     expect(cubit.state.step, ForgotPasswordStep.password);
     expect(cubit.state.isSubmitting, isFalse);
@@ -105,7 +105,7 @@ void main() {
 
   test('submitPassword completes the flow', () async {
     await cubit.submitEmail('test@gewerber.de');
-    await cubit.submitCode('123456');
+    await cubit.submitCode('12345678');
     await cubit.submitPassword('password123');
 
     expect(cubit.state.step, ForgotPasswordStep.completed);
@@ -116,7 +116,7 @@ void main() {
     'submitPassword with a short password emits a validation failure',
     () async {
       await cubit.submitEmail('test@gewerber.de');
-      await cubit.submitCode('123456');
+      await cubit.submitCode('12345678');
       await cubit.submitPassword('short');
 
       expect(cubit.state.step, ForgotPasswordStep.password);

@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 import 'package:gewerber_app/presentation/router/route_names.dart';
-import 'package:gewerber_app/presentation/widgets/common/stub_menu_tile.dart';
+import 'package:gewerber_app/presentation/widgets/common/module_menu_tile.dart';
 
 /// GuidanceIndex — index of the guidance system (checklists, tips) for master-detail.
 class GuidanceIndex extends StatelessWidget {
@@ -16,13 +16,13 @@ class GuidanceIndex extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        StubMenuTile(
+        ModuleMenuTile(
           icon: Icons.checklist_outlined,
           title: l10n.checklistTitle,
           subtitle: l10n.checklistSubtitle,
           onTap: () => context.push(RouteNames.guideChecklist),
         ),
-        StubMenuTile(
+        ModuleMenuTile(
           icon: Icons.lightbulb_outline,
           title: l10n.tipsTitle,
           subtitle: l10n.tipsSubtitle,

@@ -24,16 +24,23 @@ abstract final class RouteNames {
   static const String customers = '/app/invoicing/customers';
   static const String customerNew = '/app/invoicing/customers/new';
   static const String customerEdit = '/app/invoicing/customers/edit';
+  static const String invoiceTemplates = '/app/invoicing/templates';
+  static const String templateNew = '/app/invoicing/templates/new';
+  static const String templateEdit = '/app/invoicing/templates/edit';
+  static const String recurringSchedules = '/app/invoicing/recurring';
+  static const String recurringScheduleEdit = '/app/invoicing/recurring/edit';
 
   /// Time tracking sub-screens.
   static const String timeProjects = '/app/time/projects';
   static const String timeTimer = '/app/time/timer';
   static const String timeEntryCreate = '/app/time/new';
   static const String timeReport = '/app/time/report';
+  static const String timeBilling = '/app/time/billing';
 
   /// Accounting sub-screens.
   static const String accountingReport = '/app/accounting/reports';
   static const String accountingEntryCreate = '/app/accounting/new';
+  static const String accountingEntryEdit = '/app/accounting/edit';
 
   /// Guidance system.
   static const String guides = '/app/guides';
@@ -41,9 +48,11 @@ abstract final class RouteNames {
   static const String guideTips = '/app/guides/tips';
 
   /// Settings sub-screens.
+  static const String settingsProfile = '/app/settings/profile';
   static const String settingsBusiness = '/app/settings/business';
   static const String settingsBusinessSettings =
       '/app/settings/business-settings';
+  static const String settingsDocuments = '/app/settings/documents';
   static const String settingsLanguage = '/app/settings/language';
   static const String settingsTheme = '/app/settings/theme';
   static const String settingsAbout = '/app/settings/about';

@@ -47,7 +47,7 @@
   "registerEmailStepTitle": "Start with your email",
   "registerEmailStepSubtitle": "We'll send you a code to verify it's really you.",
   "registerCodeStepTitle": "Enter the code",
-  "registerCodeStepSubtitle": "We emailed a 6-digit code to {email}.",
+  "registerCodeStepSubtitle": "We emailed an 8-digit code to {email}.",
   "@registerCodeStepSubtitle": {
     "description": "Subtitle on the code verification step, informing the user that a code was sent to their email address.",
     "placeholders": {
@@ -79,7 +79,7 @@
   "forgotTitle": "Reset your password",
   "forgotSubtitle": "We'll email you a code so you can pick a new password.",
   "forgotCodeStepTitle": "Enter the code",
-  "forgotCodeStepSubtitle": "We emailed a 6-digit code to {email}.",
+  "forgotCodeStepSubtitle": "We emailed an 8-digit code to {email}.",
   "@forgotCodeStepSubtitle": {
     "description": "Subtitle on the password reset code step, informing the user that a code was sent to their email address.",
     "placeholders": {
@@ -106,6 +106,7 @@
   "commonOrContinueWith": "or continue with",
   "commonComingSoon": "Coming soon",
   "commonAdd": "Add",
+  "commonCancel": "Cancel",
   "commonGoogle": "Google",
   "commonApple": "Apple",
   "commonFacebook": "Facebook",
@@ -128,8 +129,6 @@
   "homeInvoicing": "Invoicing",
   "homeTimeTracking": "Time",
   "homeAccounting": "Accounting",
-  "moduleComingSoonTitle": "On it!",
-  "moduleComingSoonSubtitle": "This module is next on our roadmap and lands here soon.",
 
   "invoicesCreateTitle": "New invoice",
   "invoicesCreateSubtitle": "Invoice data and line items will be edited here.",
@@ -189,6 +188,27 @@
   "settingsGuides": "Guides",
   "settingsAbout": "About",
   "settingsSignOut": "Sign out",
+  "settingsDeleteAccount": "Delete account",
+  "accountDeleteDialogTitle": "Delete your account?",
+  "accountDeleteDialogIrreversible": "This permanently deletes your account. This action cannot be undone.",
+  "accountDeleteDialogWhatHappens": "When your account is deleted:",
+  "accountDeleteDialogBulletAccount": "Your account and login will be removed.",
+  "accountDeleteDialogBulletPersonal": "Your personal data will be anonymized.",
+  "accountDeleteDialogBulletRetention": "Business records (e.g. invoices) remain on the server for the legally required retention period.",
+  "accountDeleteConfirm": "Delete permanently",
+  "accountDeleteError": "We couldn't delete your account. Please try again.",
+  "accountDeletedTitle": "Account deleted",
+  "accountDeletedBody": "This account has been deleted and its personal data has been anonymized.",
+  "accountDeletedSignOut": "Sign out",
+  "settingsProfile": "Profile",
+  "profileTitle": "Your profile",
+  "profileDisplayName": "Display name",
+  "profileDisplayNameHint": "Shown instead of your email address.",
+  "profileEmailReadonlyHint": "Your email address cannot be changed.",
+  "profileSave": "Save",
+  "profileSaved": "Profile updated.",
+  "profileError": "We couldn't save your profile. Please try again.",
+  "profileLoadError": "We couldn't load your profile. Please try again.",
   "businessProfileTitle": "Business profile",
   "businessProfileSubtitle": "Company name, address and tax rules will be edited here.",
   "languageTitle": "Language",
@@ -200,7 +220,7 @@
   "themeLight": "Light",
   "themeDark": "Dark",
   "aboutTitle": "About Gewerber",
-  "aboutSubtitle": "Version, licenses and privacy information arrive here.",
+  "aboutSubtitle": "Invoicing, time tracking and bookkeeping for your business.",
 
   "onboardingPreferencesTitle": "Make it yours",
   "onboardingPreferencesSubtitle": "Pick how Gewerber looks and reads for you. You can change this anytime in settings.",
@@ -291,6 +311,10 @@
   "customerError": "We couldn't save the customer. Please try again.",
   "customersArchive": "Archive",
   "customersArchived": "Customer archived.",
+  "customerDeleteTitle": "Delete customer",
+  "customerDeleteConfirm": "This customer will be archived and no longer suggested for new invoices. You can restore them anytime.",
+  "customersSearchHint": "Search by name or email",
+  "customersNoResults": "No customers match your search.",
 
   "invoicesTitle": "Invoices",
   "invoicesEmpty": "No invoices yet. Create your first invoice.",
@@ -330,6 +354,10 @@
   "invoiceDeleteDraftOnly": "Only draft invoices can be deleted.",
   "invoiceMissingCustomer": "Please pick a customer.",
   "invoiceMissingItems": "Please add at least one item with a description.",
+  "invoiceVatRate": "VAT rate",
+  "invoiceVatStandard": "Standard 19%",
+  "invoiceVatReduced": "Reduced 7%",
+  "invoiceVatNoneHint": "Kleinunternehmer (§ 19 UStG) — no VAT is charged.",
   "invoiceNumber": "Invoice",
   "invoiceNumberLabel": "Number",
   "invoiceNotFound": "Invoice not found.",
@@ -365,6 +393,70 @@
       }
     }
   },
+
+  "templatesTitle": "Templates",
+  "templatesEmpty": "No templates yet. Create your first template.",
+  "templatesLoadError": "We couldn't load the templates. Please try again.",
+  "templatesAdd": "Add template",
+  "templateNewTitle": "New template",
+  "templateEditTitle": "Edit template",
+  "templateName": "Name",
+  "templateHeader": "Header text",
+  "templateFooter": "Footer text",
+  "templateIsDefault": "Set as default",
+  "templateIsDefaultHint": "Used as the default for new invoices.",
+  "templateSave": "Save",
+  "templateSaved": "Template saved.",
+  "templateSaveError": "We couldn't save the template. Please try again.",
+  "templateDefaultBadge": "Default",
+
+  "recurringTitle": "Recurring invoices",
+  "recurringEmpty": "No recurring invoices yet. Attach a schedule to one of your invoices.",
+  "recurringLoadError": "We couldn't load the recurring invoices. Please try again.",
+  "recurringAdd": "New schedule",
+  "recurringNewTitle": "New recurring invoice",
+  "recurringEditTitle": "Edit recurring invoice",
+  "recurringInvoiceLabel": "Invoice",
+  "recurringNoInvoices": "Create a regular invoice first — schedules are attached to existing invoices.",
+  "recurringInterval": "Interval",
+  "recurringIntervalDaily": "Daily",
+  "recurringIntervalWeekly": "Weekly",
+  "recurringIntervalMonthly": "Monthly",
+  "recurringIntervalQuarterly": "Quarterly",
+  "recurringIntervalYearly": "Yearly",
+  "recurringNextDate": "Next date",
+  "recurringEndDate": "End date",
+  "recurringMaxOccurrences": "Maximum number of invoices",
+  "recurringEndDateInvalid": "The end date must be after the next date.",
+  "recurringMaxOccurrencesInvalid": "Please enter a whole number greater than zero.",
+  "recurringSaved": "Schedule saved.",
+  "recurringSaveError": "We couldn't save the schedule. Please try again.",
+  "recurringConflict": "This invoice already has a recurring schedule.",
+  "recurringNotFound": "This schedule no longer exists.",
+  "recurringEndsOn": "Ends {date}",
+  "@recurringEndsOn": {
+    "description": "Constraint line on a schedule tile, showing when the recurrence stops.",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "31.12.2026"
+      }
+    }
+  },
+  "recurringStopsAfter": "Stops after {count} invoices",
+  "@recurringStopsAfter": {
+    "description": "Constraint line on a schedule tile, showing the maximum number of generated invoices.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "12"
+      }
+    }
+  },
+  "recurringCancelTitle": "Cancel schedule",
+  "recurringCancelConfirm": "Cancel this recurring schedule? No further invoices will be generated. Existing invoices will remain.",
+  "recurringCancelled": "Schedule cancelled. Existing invoices will remain.",
+  "recurringCancelError": "We couldn't cancel the schedule. Please try again.",
 
   "exportMenu": "Export",
   "exportCsv": "Export CSV",
@@ -439,6 +531,8 @@
   "transactionDescriptionLabel": "Description (optional)",
   "transactionSaved": "Transaction saved.",
   "transactionSaveError": "We couldn't save the transaction. Please try again.",
+  "accountingEntryEditTitle": "Edit entry",
+  "transactionUpdated": "Transaction updated.",
 
   "categorySalesRevenue": "Sales revenue",
   "categoryServiceRevenue": "Service revenue",
@@ -480,5 +574,129 @@
   "tipsSubtitle": "Short explanations of important concepts.",
   "tipsEmpty": "No tips available right now.",
   "tipsLoadError": "We couldn't load the tips. Please try again.",
-  "tipsDismiss": "Don't show again"
+  "tipsDismiss": "Don't show again",
+
+  "dashboardQuickActions": "Quick actions",
+  "dashboardActionNewInvoice": "New invoice",
+  "dashboardActionTimer": "Timer",
+  "dashboardActionTransaction": "Transaction",
+  "dashboardOpenInvoicesTitle": "Open invoices",
+  "dashboardOutstandingEmpty": "No open invoices. All settled!",
+  "dashboardInvoicesOpenCount": "{count} open",
+  "@dashboardInvoicesOpenCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dashboardInvoicesOverdueCount": "{count} overdue",
+  "@dashboardInvoicesOverdueCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dashboardInvoicesDraftCount": "{count} drafts",
+  "@dashboardInvoicesDraftCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dashboardMonthTitle": "This month",
+  "dashboardTrackedTimeTitle": "Tracked time",
+  "dashboardBillableOf": "{duration} billable",
+  "@dashboardBillableOf": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "dashboardLoadError": "Some data couldn't be loaded.",
+  "commonRetry": "Retry",
+
+  "aboutVersionLabel": "Version",
+  "aboutLicenses": "Open-source licenses",
+  "aboutWebsite": "Website",
+  "aboutImprint": "Imprint",
+  "aboutPrivacy": "Privacy policy",
+
+  "commonClear": "Clear",
+
+  "invoiceTemplateApplied": "Applying template “{name}”",
+  "@invoiceTemplateApplied": {
+    "description": "Unobtrusive notice on the new-invoice form showing that the business's default template will be applied.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Standard"
+      }
+    }
+  },
+
+  "recurringWillBeCleared": "Will be removed when saved",
+
+  "timeBillingTitle": "Invoice from time",
+  "timeBillingSubtitle": "Turn unbilled billable time into an invoice.",
+  "timeBillingFrom": "From (optional)",
+  "timeBillingTo": "To (optional)",
+  "timeBillingLoadError": "We couldn't load the time entries. Please try again.",
+  "timeBillingSelectionInvalid": "Some of the selected entries were billed in the meantime. The list has been refreshed — please review and try again.",
+  "timeBillingEntriesTitle": "Unbilled entries",
+  "timeBillingPickProject": "Select a project to preview its unbilled billable entries.",
+  "timeBillingEmpty": "No unbilled billable entries for this selection.",
+  "timeBillingTotalMinutes": "{count} minutes total",
+  "@timeBillingTotalMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "timeBillingCreateButton": "Create invoice",
+  "timeBillingEstimatedTotal": "Estimated total",
+  "timeBillingEstimateDisclaimer": "Estimate only — the final amount is calculated when the invoice is created.",
+  "timeBillingSuccess": "Invoice {number} created.",
+  "@timeBillingSuccess": {
+    "placeholders": {
+      "number": {
+        "type": "String",
+        "example": "RE-12"
+      }
+    }
+  },
+
+  "receiptAttachButton": "Attach receipt",
+  "receiptAttachedLabel": "Attached receipt",
+  "receiptRemove": "Remove receipt",
+  "receiptTooLarge": "The file exceeds the 512 KB limit. Please choose a smaller file.",
+  "receiptUploadError": "We couldn't upload the receipt. Please try again.",
+
+  "paymentHistoryTitle": "Payments",
+  "paymentMethodBankTransfer": "Bank transfer",
+  "paymentMethodCash": "Cash",
+  "paymentMethodCard": "Card",
+  "paymentMethodPaypal": "PayPal",
+  "paymentMethodDirectDebit": "Direct debit",
+  "paymentMethodOther": "Other",
+
+  "documentsTitle": "Documents",
+  "documentsUploadButton": "Upload file",
+  "documentsUploaded": "Document uploaded.",
+  "documentsUploadError": "We couldn't upload the file. Please try again.",
+  "documentsFileTooLarge": "The file exceeds the 512 KB limit.",
+  "documentsDownloadButton": "Download",
+  "documentsDownloaded": "Download started.",
+  "documentsDownloadError": "We couldn't download the document. Please try again.",
+  "documentsEmpty": "No documents yet. Upload your first file.",
+  "documentsLoadError": "We couldn't load the documents. Please try again.",
+  "documentsKindInvoicePdf": "Invoice PDF",
+  "documentsKindReceipt": "Receipt",
+  "documentsKindLogo": "Logo",
+  "documentsKindAttachment": "Attachment",
+  "documentsKindOther": "Other"
 }
