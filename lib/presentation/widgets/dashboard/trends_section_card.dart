@@ -7,6 +7,7 @@ import 'package:gewerber_app/application/dashboard/dashboard_state.dart';
 import 'package:gewerber_app/core/theme/gewerber_colors.dart';
 import 'package:gewerber_app/core/theme/gewerber_tokens.dart';
 import 'package:gewerber_app/domain/entities/dashboard.dart';
+import 'package:gewerber_app/domain/repositories/dashboard_repository.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 import 'package:gewerber_app/presentation/router/route_names.dart';
 import 'package:gewerber_app/presentation/widgets/common/section_card.dart';
@@ -22,9 +23,14 @@ class TrendsSectionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final state = context.watch<DashboardCubit>().state;
+    // The card title doubles as the window label: "Last 6 months" or
+    // "Last 12 months", matching the switcher inside the card.
+    final title = state.trendMonths == DashboardRepository.maxTrendMonths
+        ? l10n.dashboardTrendsTitle12
+        : l10n.dashboardTrendsTitle;
 
     return SectionCard(
-      title: l10n.dashboardTrendsTitle,
+      title: title,
       onTap: () => context.go(RouteNames.accountingReport),
       child: switch (state.trendsStatus) {
         DashboardSectionStatus.initial ||

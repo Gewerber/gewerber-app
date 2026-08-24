@@ -699,7 +699,8 @@
   "documentsKindLogo": "Logo",
   "documentsKindAttachment": "Attachment",
   "documentsKindOther": "Other",
-  "dashboardTrendsTitle": "Trends",
+  "dashboardTrendsTitle": "Last 6 months",
+  "dashboardTrendsTitle12": "Last 12 months",
   "dashboardTrendsEmpty": "No income or expenses recorded yet.",
   "dashboardChangeVsPrevious": "{change} vs. last month",
   "@dashboardChangeVsPrevious": {
