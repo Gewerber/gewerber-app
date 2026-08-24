@@ -553,5 +553,20 @@
   "documentsKindReceipt": "Fiş",
   "documentsKindLogo": "Logo",
   "documentsKindAttachment": "Ek",
-  "documentsKindOther": "Diğer"
+  "documentsKindOther": "Diğer",
+  "dashboardTrendsTitle": "Eğilimler",
+  "dashboardTrendsEmpty": "Henüz gelir veya gider kaydı yok.",
+  "dashboardChangeVsPrevious": "geçen aya göre {change}",
+  "dashboardRecentActivityTitle": "Son etkinlikler",
+  "dashboardRecentActivityEmpty": "Henüz bir şey yok.",
+  "dashboardActivityInvoiceCreated": "{number} faturası oluşturuldu",
+  "dashboardActivityTimeTracked": "{duration} kaydedildi",
+  "dashboardActivityTransaction": "İşlem kaydedildi",
+  "dashboardReceivablesTitle": "Alacaklar",
+  "dashboardReceivablesEmpty": "Açık fatura yok. Hepsı ödendi!",
+  "dashboardDebtorInvoicesCount": "{count} fatura",
+  "dashboardOverdueTitle": "Vadesi geçmiş",
+  "dashboardNoOverdue": "Vadesi geçen yok.",
+  "dashboardDueOn": "Son tarih {date}",
+  "dashboardViewAll": "Tümünü göster"
 }

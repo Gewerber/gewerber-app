@@ -553,5 +553,20 @@
   "documentsKindReceipt": "Квитанция",
   "documentsKindLogo": "Логотип",
   "documentsKindAttachment": "Вложение",
-  "documentsKindOther": "Другое"
+  "documentsKindOther": "Другое",
+  "dashboardTrendsTitle": "Тренды",
+  "dashboardTrendsEmpty": "Доходов и расходов пока нет.",
+  "dashboardChangeVsPrevious": "{change} к прошлому месяцу",
+  "dashboardRecentActivityTitle": "Последняя активность",
+  "dashboardRecentActivityEmpty": "Пока ничего не происходило.",
+  "dashboardActivityInvoiceCreated": "Создан счёт {number}",
+  "dashboardActivityTimeTracked": "Отслежено: {duration}",
+  "dashboardActivityTransaction": "Записана проводка",
+  "dashboardReceivablesTitle": "Дебиторка",
+  "dashboardReceivablesEmpty": "Открытых счетов нет. Всё оплачено!",
+  "dashboardDebtorInvoicesCount": "{count} счетов",
+  "dashboardOverdueTitle": "Просрочено",
+  "dashboardNoOverdue": "Просроченных счетов нет.",
+  "dashboardDueOn": "Оплата до {date}",
+  "dashboardViewAll": "Показать все"
 }

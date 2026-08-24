@@ -553,5 +553,20 @@
   "documentsKindReceipt": "Beleg",
   "documentsKindLogo": "Logo",
   "documentsKindAttachment": "Anhang",
-  "documentsKindOther": "Sonstige"
+  "documentsKindOther": "Sonstige",
+  "dashboardTrendsTitle": "Trends",
+  "dashboardTrendsEmpty": "Noch keine Einnahmen oder Ausgaben erfasst.",
+  "dashboardChangeVsPrevious": "{change} gegenüber dem Vormonat",
+  "dashboardRecentActivityTitle": "Letzte Aktivität",
+  "dashboardRecentActivityEmpty": "Noch nichts los.",
+  "dashboardActivityInvoiceCreated": "Rechnung {number} erstellt",
+  "dashboardActivityTimeTracked": "{duration} erfasst",
+  "dashboardActivityTransaction": "Buchung erfasst",
+  "dashboardReceivablesTitle": "Offene Forderungen",
+  "dashboardReceivablesEmpty": "Keine offenen Rechnungen. Alles bezahlt!",
+  "dashboardDebtorInvoicesCount": "{count} Rechnungen",
+  "dashboardOverdueTitle": "Überfällig",
+  "dashboardNoOverdue": "Nichts überfällig.",
+  "dashboardDueOn": "Fällig am {date}",
+  "dashboardViewAll": "Alle anzeigen"
 }

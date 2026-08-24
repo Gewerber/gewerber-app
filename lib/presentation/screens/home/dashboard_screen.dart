@@ -3,18 +3,29 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:gewerber_app/application/accounting/accounting_cubit.dart';
+import 'package:gewerber_app/application/dashboard/dashboard_cubit.dart';
 import 'package:gewerber_app/application/invoices/invoice_cubit.dart';
 import 'package:gewerber_app/application/invoices/invoice_state.dart';
 import 'package:gewerber_app/application/time_tracking/time_entries_cubit.dart';
 import 'package:gewerber_app/core/theme/app_theme.dart';
 import 'package:gewerber_app/core/utils/format.dart';
+import 'package:gewerber_app/domain/entities/dashboard.dart';
 import 'package:gewerber_app/domain/entities/invoice.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 import 'package:gewerber_app/presentation/router/route_names.dart';
 import 'package:gewerber_app/presentation/widgets/common/section_card.dart';
+import 'package:gewerber_app/presentation/widgets/dashboard/profit_change.dart';
+import 'package:gewerber_app/presentation/widgets/dashboard/recent_activity_card.dart';
+import 'package:gewerber_app/presentation/widgets/dashboard/receivables_card.dart';
+import 'package:gewerber_app/presentation/widgets/dashboard/trends_section_card.dart';
+
+/// Breakpoint at which the dashboard switches from a single column to the
+/// two-column layout.
+const double _twoColumnBreakpoint = 700;
 
 /// DashboardScreen — overview of open invoices, this month's P&L and tracked
-/// time, with quick actions into the modules.
+/// time, with quick actions into the modules, plus the v2 sections (trends,
+/// recent activity, receivables) loaded through [DashboardCubit].
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
@@ -34,6 +45,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void initState() {
     super.initState();
     _load();
+    // v2 sections load independently of the legacy cubits.
+    context.read<DashboardCubit>().loadAll();
   }
 
   Future<void> _load() async {
@@ -61,6 +74,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
   }
 
+  /// Pull-to-refresh reloads the v1 data and every dashboard section.
+  Future<void> _refreshAll() {
+    return Future.wait([_load(), context.read<DashboardCubit>().loadAll()]);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -68,49 +86,102 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Scaffold(
       appBar: AppBar(title: Text(l10n.homeDashboard)),
       body: RefreshIndicator(
-        onRefresh: _load,
-        child: ListView(
-          padding: const EdgeInsets.all(GewerberTokens.space16),
-          children: [
-            Text(
-              l10n.dashboardQuickActions,
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: GewerberTokens.space8),
-            Wrap(
-              spacing: GewerberTokens.space8,
-              runSpacing: GewerberTokens.space8,
+        onRefresh: _refreshAll,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final wide = constraints.maxWidth >= _twoColumnBreakpoint;
+            final openInvoices = _OpenInvoicesSection(onRetry: _load);
+            final monthResult = _MonthResultSection(ok: _plOk, onRetry: _load);
+            final trackedTime = _TrackedTimeSection(
+              ok: _timeOk,
+              onRetry: _load,
+            );
+            const trends = TrendsSectionCard();
+            const activity = RecentActivityCard();
+            const receivables = ReceivablesCard();
+
+            return ListView(
+              padding: const EdgeInsets.all(GewerberTokens.space16),
               children: [
-                FilledButton.icon(
-                  onPressed: () => context.push(RouteNames.invoiceCreate),
-                  icon: const Icon(Icons.receipt_long_outlined),
-                  label: Text(l10n.dashboardActionNewInvoice),
+                Text(
+                  l10n.dashboardQuickActions,
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
                 ),
-                FilledButton.tonalIcon(
-                  onPressed: () => context.push(RouteNames.timeTimer),
-                  icon: const Icon(Icons.timer_outlined),
-                  label: Text(l10n.dashboardActionTimer),
-                ),
-                FilledButton.tonalIcon(
-                  onPressed: () =>
-                      context.push(RouteNames.accountingEntryCreate),
-                  icon: const Icon(Icons.account_balance_wallet_outlined),
-                  label: Text(l10n.dashboardActionTransaction),
-                ),
+                const SizedBox(height: GewerberTokens.space8),
+                _QuickActions(),
+                const SizedBox(height: GewerberTokens.space16),
+                if (wide) ...[
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(child: openInvoices),
+                      const SizedBox(width: GewerberTokens.space12),
+                      Expanded(child: monthResult),
+                    ],
+                  ),
+                  const SizedBox(height: GewerberTokens.space12),
+                  trackedTime,
+                  const SizedBox(height: GewerberTokens.space12),
+                  trends,
+                  const SizedBox(height: GewerberTokens.space12),
+                  const Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(child: RecentActivityCard()),
+                      SizedBox(width: GewerberTokens.space12),
+                      Expanded(child: ReceivablesCard()),
+                    ],
+                  ),
+                ] else ...[
+                  openInvoices,
+                  const SizedBox(height: GewerberTokens.space12),
+                  monthResult,
+                  const SizedBox(height: GewerberTokens.space12),
+                  trackedTime,
+                  const SizedBox(height: GewerberTokens.space12),
+                  trends,
+                  const SizedBox(height: GewerberTokens.space12),
+                  activity,
+                  const SizedBox(height: GewerberTokens.space12),
+                  receivables,
+                ],
+                const SizedBox(height: GewerberTokens.space32),
               ],
-            ),
-            const SizedBox(height: GewerberTokens.space16),
-            _OpenInvoicesSection(onRetry: _load),
-            const SizedBox(height: GewerberTokens.space12),
-            _MonthResultSection(ok: _plOk, onRetry: _load),
-            const SizedBox(height: GewerberTokens.space12),
-            _TrackedTimeSection(ok: _timeOk, onRetry: _load),
-            const SizedBox(height: GewerberTokens.space32),
-          ],
+            );
+          },
         ),
       ),
+    );
+  }
+}
+
+/// Quick actions into the modules.
+class _QuickActions extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Wrap(
+      spacing: GewerberTokens.space8,
+      runSpacing: GewerberTokens.space8,
+      children: [
+        FilledButton.icon(
+          onPressed: () => context.push(RouteNames.invoiceCreate),
+          icon: const Icon(Icons.receipt_long_outlined),
+          label: Text(l10n.dashboardActionNewInvoice),
+        ),
+        FilledButton.tonalIcon(
+          onPressed: () => context.push(RouteNames.timeTimer),
+          icon: const Icon(Icons.timer_outlined),
+          label: Text(l10n.dashboardActionTimer),
+        ),
+        FilledButton.tonalIcon(
+          onPressed: () => context.push(RouteNames.accountingEntryCreate),
+          icon: const Icon(Icons.account_balance_wallet_outlined),
+          label: Text(l10n.dashboardActionTransaction),
+        ),
+      ],
     );
   }
 }
@@ -204,7 +275,7 @@ class _InvoicesBody extends StatelessWidget {
   }
 }
 
-/// This month's P&L: income, expenses and profit.
+/// This month's P&L: income, expenses, profit plus the trend delta badge.
 class _MonthResultSection extends StatelessWidget {
   const _MonthResultSection({required this.ok, required this.onRetry});
 
@@ -216,29 +287,62 @@ class _MonthResultSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final report = context.watch<AccountingCubit>().state.report;
+    final trendMonths = context.watch<DashboardCubit>().state.months;
 
     return SectionCard(
       title: l10n.dashboardMonthTitle,
       onTap: () => context.go(RouteNames.accounting),
       child: switch ((report, ok)) {
-        (final report?, _) => _AmountRow(
-          entries: [
-            (
-              l10n.reportIncome,
-              formatCents(report.incomeCents),
-              Theme.of(context).colorScheme.primary,
+        (final report?, _) => Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _AmountRow(
+              entries: [
+                (
+                  l10n.reportIncome,
+                  formatCents(report.incomeCents),
+                  Theme.of(context).colorScheme.primary,
+                ),
+                (
+                  l10n.reportExpenses,
+                  formatCents(report.expenseCents),
+                  Theme.of(context).colorScheme.error,
+                ),
+                (l10n.reportProfit, formatCents(report.profitCents), null),
+              ],
             ),
-            (
-              l10n.reportExpenses,
-              formatCents(report.expenseCents),
-              Theme.of(context).colorScheme.error,
-            ),
-            (l10n.reportProfit, formatCents(report.profitCents), null),
+            _TrendDeltaBadge(months: trendMonths),
           ],
         ),
         (null, true) => SectionCardError(onRetry: onRetry),
         (null, false) => const SectionCardLoading(),
       },
+    );
+  }
+}
+
+/// Compact Δ% badge fed by the dashboard trends section; hidden until the
+/// trend data is available.
+class _TrendDeltaBadge extends StatelessWidget {
+  const _TrendDeltaBadge({required this.months});
+
+  final List<MonthlyFinancials> months;
+
+  @override
+  Widget build(BuildContext context) {
+    final change = profitChangePercent(
+      months,
+      Localizations.localeOf(context).toString(),
+    );
+    if (change == null) return const SizedBox.shrink();
+    final positive = !change.startsWith('-');
+
+    return Padding(
+      padding: const EdgeInsets.only(top: GewerberTokens.space8),
+      child: SectionBadge(
+        label: AppLocalizations.of(context).dashboardChangeVsPrevious(change),
+        color: positive ? GewerberColors.success : GewerberColors.error,
+      ),
     );
   }
 }
@@ -324,5 +428,3 @@ class _AmountRow extends StatelessWidget {
     );
   }
 }
-
-/// Small rounded count badge used in the invoice summary.
