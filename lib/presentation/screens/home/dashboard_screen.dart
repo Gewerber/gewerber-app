@@ -11,6 +11,7 @@ import 'package:gewerber_app/core/utils/format.dart';
 import 'package:gewerber_app/domain/entities/invoice.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 import 'package:gewerber_app/presentation/router/route_names.dart';
+import 'package:gewerber_app/presentation/widgets/common/section_card.dart';
 
 /// DashboardScreen — overview of open invoices, this month's P&L and tracked
 /// time, with quick actions into the modules.
@@ -114,97 +115,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 }
 
-/// Shell for a dashboard section card with an optional tap-through target.
-class _SectionCard extends StatelessWidget {
-  const _SectionCard({required this.title, required this.child, this.onTap});
-
-  final String title;
-  final Widget child;
-
-  /// When set, the whole card navigates to the module on tap.
-  final VoidCallback? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.zero,
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(GewerberTokens.space16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      title,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                  ),
-                  if (onTap != null)
-                    Icon(
-                      Icons.chevron_right,
-                      size: 20,
-                      color: Theme.of(context).colorScheme.outline,
-                    ),
-                ],
-              ),
-              const SizedBox(height: GewerberTokens.space12),
-              child,
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// Inline loading placeholder of a section body.
-class _SectionLoading extends StatelessWidget {
-  const _SectionLoading();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: GewerberTokens.space16),
-        child: SizedBox(
-          width: 24,
-          height: 24,
-          child: CircularProgressIndicator(strokeWidth: 2.5),
-        ),
-      ),
-    );
-  }
-}
-
-/// Inline error of a section body with a retry action.
-class _SectionError extends StatelessWidget {
-  const _SectionError({required this.onRetry});
-
-  final VoidCallback onRetry;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          l10n.dashboardLoadError,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-          ),
-        ),
-        TextButton(onPressed: onRetry, child: Text(l10n.commonRetry)),
-      ],
-    );
-  }
-}
-
 /// Open invoices: outstanding total plus open/overdue/draft counts.
 class _OpenInvoicesSection extends StatelessWidget {
   const _OpenInvoicesSection({required this.onRetry});
@@ -216,13 +126,13 @@ class _OpenInvoicesSection extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final state = context.watch<InvoiceCubit>().state;
 
-    return _SectionCard(
+    return SectionCard(
       title: l10n.dashboardOpenInvoicesTitle,
       onTap: () => context.go(RouteNames.invoicing),
       child: switch (state.status) {
         InvoiceViewStatus.initial ||
-        InvoiceViewStatus.loading => const _SectionLoading(),
-        InvoiceViewStatus.failure => _SectionError(onRetry: onRetry),
+        InvoiceViewStatus.loading => const SectionCardLoading(),
+        InvoiceViewStatus.failure => SectionCardError(onRetry: onRetry),
         InvoiceViewStatus.loaded => _InvoicesBody(state: state),
       },
     );
@@ -273,17 +183,17 @@ class _InvoicesBody extends StatelessWidget {
           spacing: GewerberTokens.space8,
           runSpacing: GewerberTokens.space4,
           children: [
-            _Badge(
+            SectionBadge(
               label: l10n.dashboardInvoicesOpenCount(open.length),
               color: colors.primary,
             ),
             if (overdueCount > 0)
-              _Badge(
+              SectionBadge(
                 label: l10n.dashboardInvoicesOverdueCount(overdueCount),
                 color: colors.error,
               ),
             if (draftCount > 0)
-              _Badge(
+              SectionBadge(
                 label: l10n.dashboardInvoicesDraftCount(draftCount),
                 color: colors.onSurfaceVariant,
               ),
@@ -307,7 +217,7 @@ class _MonthResultSection extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final report = context.watch<AccountingCubit>().state.report;
 
-    return _SectionCard(
+    return SectionCard(
       title: l10n.dashboardMonthTitle,
       onTap: () => context.go(RouteNames.accounting),
       child: switch ((report, ok)) {
@@ -326,8 +236,8 @@ class _MonthResultSection extends StatelessWidget {
             (l10n.reportProfit, formatCents(report.profitCents), null),
           ],
         ),
-        (null, true) => _SectionError(onRetry: onRetry),
-        (null, false) => const _SectionLoading(),
+        (null, true) => SectionCardError(onRetry: onRetry),
+        (null, false) => const SectionCardLoading(),
       },
     );
   }
@@ -346,7 +256,7 @@ class _TrackedTimeSection extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final report = context.watch<TimeEntriesCubit>().state.report;
 
-    return _SectionCard(
+    return SectionCard(
       title: l10n.dashboardTrackedTimeTitle,
       onTap: () => context.go(RouteNames.timeTracking),
       child: switch ((report, ok)) {
@@ -360,8 +270,8 @@ class _TrackedTimeSection extends StatelessWidget {
             ),
           ],
         ),
-        (null, true) => _SectionError(onRetry: onRetry),
-        (null, false) => const _SectionLoading(),
+        (null, true) => SectionCardError(onRetry: onRetry),
+        (null, false) => const SectionCardLoading(),
         _ => Text(
           l10n.timeReportEmpty,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -416,27 +326,3 @@ class _AmountRow extends StatelessWidget {
 }
 
 /// Small rounded count badge used in the invoice summary.
-class _Badge extends StatelessWidget {
-  const _Badge({required this.label, required this.color});
-
-  final String label;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: GewerberTokens.space8,
-        vertical: GewerberTokens.space2,
-      ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(GewerberTokens.radiusChip),
-        border: Border.all(color: color.withValues(alpha: 0.5)),
-      ),
-      child: Text(
-        label,
-        style: Theme.of(context).textTheme.labelSmall?.copyWith(color: color),
-      ),
-    );
-  }
-}
