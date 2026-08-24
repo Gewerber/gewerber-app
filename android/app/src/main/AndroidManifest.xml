@@ -1,4 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Required for all builds (incl. release): the app talks to the Serverpod backend. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:label="Gewerber"
         android:name="${applicationName}"
