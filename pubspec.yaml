@@ -39,6 +39,14 @@ dependencies:
       url: https://github.com/Gewerber/gewerber-backend.git
       path: gewerber_backend_client
       ref: main
+  # Public stub of the commercial client; the generated backend client SDK
+  # embeds the module callers. Contributors with a private checkout resolve
+  # the real package via gitignored pubspec_overrides.yaml.
+  gewerber_commercial_client:
+    git:
+      url: https://github.com/Gewerber/gewerber-backend--stubs.git
+      path: gewerber_commercial_client
+      ref: main
   flutter_animate: ^4.5.2
   flutter_flavor: ^3.1.4
   file_saver: ^0.4.0
@@ -57,13 +65,6 @@ dev_dependencies:
 dependency_overrides:
   analyzer: 13.0.0
   dart_style: 3.1.9
-  # The generated client SDK references the commercial client even though it
-  # is not declared in its pubspec; resolve it from the commercial repo.
-  gewerber_commercial_client:
-    git:
-      url: https://github.com/Gewerber/gewerber-backend-commercial.git
-      path: gewerber_commercial_client
-      ref: main
 
 flutter:
   uses-material-design: true

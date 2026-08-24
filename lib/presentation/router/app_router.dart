@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:gewerber_app/application/auth/auth_state.dart';
 import 'package:gewerber_app/application/time_billing/time_billing_cubit.dart';
+import 'package:gewerber_app/core/features/app_feature.dart';
 import 'package:gewerber_app/di/injection.dart';
 import 'package:gewerber_app/domain/entities/customer.dart';
 import 'package:gewerber_app/domain/entities/invoice.dart';
@@ -67,7 +68,8 @@ const List<String> _authFlowRoutes = [
 /// the login screen, and signed-in users are kept out of the auth flow. The
 /// guard re-evaluates through [AuthRedirectController] whenever the auth
 /// state changes. Top-level finals are initialized lazily, so the auth
-/// controller is only resolved once [configureDependencies] has run.
+/// controller is only resolved once [configureDependencies] has run and
+/// [bootstrap] has registered [appFeatures].
 final GoRouter appRouter = GoRouter(
   navigatorKey: rootNavigatorKey,
   initialLocation: RouteNames.splash,
@@ -312,5 +314,9 @@ final GoRouter appRouter = GoRouter(
         ),
       ],
     ),
+    // Routes contributed by pluggable features (private distributions);
+    // mounted as top-level routes pushed over the main shell. The auth
+    // redirect guard above applies to them unchanged.
+    ...appFeatures.expand((feature) => feature.routes()),
   ],
 );
