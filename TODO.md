@@ -1,6 +1,6 @@
 # TODO — gewerber-app
 
-План по итогам аудита (2026-08). Приоритеты согласованы с `gewerber-backend-core/TODO.md`.
+План по итогам аудита (2026-08). Приоритеты согласованы с `gewerber-backend/TODO.md`.
 
 ---
 

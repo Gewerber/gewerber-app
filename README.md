@@ -14,7 +14,7 @@ Part of the [Gewerber GitHub organization](https://github.com/Gewerber).
 ## 🧱 Stack
 
 - **Flutter** — web, mobile, desktop
-- **Serverpod client SDK** — generated from `gewerber-backend-core`
+- **Serverpod client SDK** — generated from `gewerber-backend`
 
 ---
 
@@ -98,7 +98,7 @@ docker compose build && docker compose up -d   # serves build/web via nginx
 
 ## 🧭 Related
 
-- [Backend Core](https://github.com/Gewerber/gewerber-backend-core)
+- [Backend](https://github.com/Gewerber/gewerber-backend)
 - [Contributing Guide](https://github.com/Gewerber/.github/blob/main/CONTRIBUTING.md)
 - [Organization Structure](https://github.com/Gewerber/.github/blob/main/ORGANIZATION.md)
 - [Brand Book](https://github.com/Gewerber/.github/blob/main/BRAND_BOOK.md)

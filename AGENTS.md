@@ -5,7 +5,7 @@ Flutter client application for Gewerber (web, mobile, desktop). The app UI is se
 ## Stack
 
 - Flutter (single codebase for web/mobile/desktop)
-- Consumes the generated Serverpod client SDK from `gewerber-backend-core`
+- Consumes the generated Serverpod client SDK from `gewerber-backend`
 
 ## Commands
 
@@ -20,7 +20,7 @@ dart format .           # required before PR
 
 - Keep widgets small and composable; follow the org [BRAND_BOOK.md](https://github.com/Gewerber/.github/blob/main/BRAND_BOOK.md).
 - Shared UI Kit components live in this repo — reuse before adding new ones.
-- Do not put backend/business logic in the client; it belongs in `gewerber-backend-core`.
+- Do not put backend/business logic in the client; it belongs in `gewerber-backend`.
 
 ## Open-Core Boundary
 
