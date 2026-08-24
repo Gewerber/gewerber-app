@@ -29,7 +29,9 @@ class ReceivablesCard extends StatelessWidget {
 
     return SectionCard(
       title: l10n.dashboardReceivablesTitle,
-      onTap: () => context.go(RouteNames.customers),
+      // The full debtor list lives in the customers module; push it so the
+      // dashboard stays underneath.
+      onTap: () => context.push(RouteNames.customers),
       child: switch (state.receivablesStatus) {
         DashboardSectionStatus.initial ||
         DashboardSectionStatus.loading => const SectionCardLoading(),
