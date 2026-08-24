@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 
 import 'package:gewerber_app/domain/entities/invoice.dart';
-import 'package:gewerber_app/domain/entities/time_tracking.dart';
 import 'package:gewerber_app/domain/entities/transaction.dart';
 
 /// Income and expense totals of a single calendar month.

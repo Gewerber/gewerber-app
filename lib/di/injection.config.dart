@@ -17,6 +17,7 @@ import '../application/auth/auth_cubit.dart' as _i487;
 import '../application/business/business_cubit.dart' as _i139;
 import '../application/business_settings/business_settings_cubit.dart' as _i419;
 import '../application/customers/customer_cubit.dart' as _i598;
+import '../application/dashboard/dashboard_cubit.dart' as _i54;
 import '../application/documents/documents_cubit.dart' as _i975;
 import '../application/forgot_password/forgot_password_cubit.dart' as _i318;
 import '../application/guidance/checklist_cubit.dart' as _i873;
@@ -465,6 +466,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i66.RegisterCubit>(
       () =>
           _i66.RegisterCubit(gh<_i800.AuthRepository>(), gh<_i487.AuthCubit>()),
+    );
+    gh.lazySingleton<_i54.DashboardCubit>(
+      () => _i54.DashboardCubit(gh<_i525.DashboardRepository>()),
     );
     return this;
   }

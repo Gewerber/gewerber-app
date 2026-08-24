@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:gewerber_app/domain/entities/dashboard.dart';
 import 'package:gewerber_app/domain/repositories/dashboard_repository.dart';
 import 'package:gewerber_app/infrastructure/repositories/mock_dashboard_repository.dart';
 

@@ -13,10 +13,6 @@ import 'package:gewerber_app/domain/repositories/dashboard_repository.dart';
 import 'package:gewerber_app/domain/repositories/invoice_repository.dart';
 import 'package:gewerber_app/domain/repositories/time_tracking_repository.dart';
 
-/// Upper bound for the trend window; the dashboard is an overview, not a
-/// full report (use the accounting module for longer periods).
-const int maxTrendMonths = 6;
-
 /// Per-source fetch window for the activity feed before merging.
 const int _activityFetchLimit = 20;
 
@@ -45,7 +41,7 @@ class CompositeDashboardRepository implements DashboardRepository {
     DateTime? anchor,
   }) async {
     final effectiveAnchor = anchor ?? DateTime.now();
-    final count = months.clamp(1, maxTrendMonths);
+    final count = months.clamp(1, DashboardRepository.maxTrendMonths);
     final starts = lastNMonthStarts(effectiveAnchor, count);
 
     // One P&L call per month; independent, so run them concurrently.

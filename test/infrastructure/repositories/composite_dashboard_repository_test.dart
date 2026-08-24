@@ -8,6 +8,7 @@ import 'package:gewerber_app/domain/entities/time_tracking.dart';
 import 'package:gewerber_app/domain/entities/transaction.dart';
 import 'package:gewerber_app/domain/repositories/accounting_repository.dart';
 import 'package:gewerber_app/domain/repositories/customer_repository.dart';
+import 'package:gewerber_app/domain/repositories/dashboard_repository.dart';
 import 'package:gewerber_app/domain/repositories/invoice_repository.dart';
 import 'package:gewerber_app/domain/repositories/time_tracking_repository.dart';
 import 'package:gewerber_app/infrastructure/repositories/composite_dashboard_repository.dart';
@@ -356,12 +357,13 @@ void main() {
       );
 
       final months = await repo.monthlyFinancials(
-        months: 12,
+        months: 99,
         anchor: DateTime(2026, 8, 24),
       );
 
-      expect(months, hasLength(maxTrendMonths));
-      expect(months.first.monthStart, DateTime(2026, 3, 1));
+      // The window is capped at the domain limit.
+      expect(months, hasLength(DashboardRepository.maxTrendMonths));
+      expect(months.first.monthStart, DateTime(2025, 9, 1));
       expect(months.last.monthStart, DateTime(2026, 8, 1));
     });
 
