@@ -25,3 +25,15 @@ dart format .           # required before PR
 ## Open-Core Boundary
 
 This is a public OSS repository covering the open-source core UI only. Do not add closed-module (banking, tax/ELSTER, employees, subscriptions, AI assistant) logic here.
+
+## Extension Points
+
+Private features plug in through the `AppFeature` contract
+(`lib/core/features/app_feature.dart`): implementations provide routes and an
+optional DI registration hook and are passed to `bootstrap(features: [...])`
+by the private composition root
+([gewerber-app-commercial](https://github.com/Gewerber/gewerber-app-commercial),
+`apps/product`). The OSS build passes no features and must stay fully
+functional standalone. The commercial client dependency resolves against the
+public stubs (`Gewerber/gewerber-backend--stubs`); insiders override it via
+gitignored `pubspec_overrides.yaml`.
