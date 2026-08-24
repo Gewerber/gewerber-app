@@ -20,8 +20,8 @@ import 'package:gewerber_app/presentation/widgets/dashboard/receivables_card.dar
 import 'package:gewerber_app/presentation/widgets/dashboard/trends_section_card.dart';
 
 /// Breakpoint at which the dashboard switches from a single column to the
-/// two-column layout.
-const double _twoColumnBreakpoint = 700;
+/// two-column layout (tablet landscape / desktop).
+const double _twoColumnBreakpoint = 900;
 
 /// DashboardScreen — overview of open invoices, this month's P&L and tracked
 /// time, with quick actions into the modules, plus the v2 sections (trends,
