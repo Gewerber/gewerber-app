@@ -21,7 +21,8 @@ const int _activityFetchLimit = 20;
 /// No new server endpoints are required: trends come from monthly P&L
 /// reports, activity from the recent invoices/transactions/time entries and
 /// receivables from the open invoice lists plus one customer list.
-@LazySingleton(as: DashboardRepository, env: [AppEnvironment.authLive])
+@Deprecated('Replaced by server-side dashboard.getSummary; remove next release')
+@LazySingleton(env: [AppEnvironment.authLive])
 class CompositeDashboardRepository implements DashboardRepository {
   CompositeDashboardRepository(
     this._accounting,

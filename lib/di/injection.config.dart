@@ -58,6 +58,8 @@ import '../infrastructure/datasources/remote/business_settings_remote_data_sourc
     as _i334;
 import '../infrastructure/datasources/remote/customer_remote_data_source.dart'
     as _i1067;
+import '../infrastructure/datasources/remote/dashboard_remote_data_source.dart'
+    as _i807;
 import '../infrastructure/datasources/remote/document_remote_data_source.dart'
     as _i809;
 import '../infrastructure/datasources/remote/guidance_remote_data_source.dart'
@@ -78,6 +80,7 @@ import '../infrastructure/datasources/remote/user_profile_remote_data_source.dar
     as _i212;
 import '../infrastructure/mappers/business_mapper.dart' as _i457;
 import '../infrastructure/mappers/customer_mapper.dart' as _i234;
+import '../infrastructure/mappers/dashboard_mapper.dart' as _i723;
 import '../infrastructure/mappers/document_mapper.dart' as _i671;
 import '../infrastructure/mappers/guidance_mapper.dart' as _i367;
 import '../infrastructure/mappers/invoice_mapper.dart' as _i295;
@@ -117,6 +120,8 @@ import '../infrastructure/repositories/serverpod_business_settings_repository.da
     as _i63;
 import '../infrastructure/repositories/serverpod_customer_repository.dart'
     as _i720;
+import '../infrastructure/repositories/serverpod_dashboard_repository.dart'
+    as _i425;
 import '../infrastructure/repositories/serverpod_document_repository.dart'
     as _i664;
 import '../infrastructure/repositories/serverpod_guidance_repository.dart'
@@ -163,6 +168,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i401.FilePickerService>(
       () => _i401.FilePickerServiceImpl(),
     );
+    gh.factory<_i723.DashboardMapper>(
+      () => _i723.DashboardMapper(
+        gh<_i295.InvoiceMapper>(),
+        gh<_i756.TransactionMapper>(),
+      ),
+    );
     gh.lazySingleton<_i591.DocumentRepository>(
       () => _i415.MockDocumentRepository(),
       registerFor: {_auth_mock},
@@ -179,6 +190,10 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i334.BusinessSettingsRemoteDataSource(
         gh<_i661.ServerpodClientFactory>(),
       ),
+      registerFor: {_auth_live},
+    );
+    gh.lazySingleton<_i807.DashboardRemoteDataSource>(
+      () => _i807.DashboardRemoteDataSource(gh<_i661.ServerpodClientFactory>()),
       registerFor: {_auth_live},
     );
     gh.lazySingleton<_i490.InvoiceTemplateRemoteDataSource>(
@@ -396,6 +411,13 @@ extension GetItInjectableX on _i174.GetIt {
       ),
       registerFor: {_auth_live},
     );
+    gh.lazySingleton<_i525.DashboardRepository>(
+      () => _i425.ServerpodDashboardRepository(
+        gh<_i807.DashboardRemoteDataSource>(),
+        gh<_i723.DashboardMapper>(),
+      ),
+      registerFor: {_auth_live},
+    );
     gh.lazySingleton<_i184.RecurringScheduleCubit>(
       () =>
           _i184.RecurringScheduleCubit(gh<_i721.RecurringScheduleRepository>()),
@@ -405,6 +427,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1067.CustomerRemoteDataSource>(),
       ),
       registerFor: {_auth_live},
+    );
+    gh.lazySingleton<_i54.DashboardCubit>(
+      () => _i54.DashboardCubit(gh<_i525.DashboardRepository>()),
     );
     gh.lazySingleton<_i323.TimeTrackingRepository>(
       () => _i640.ServerpodTimeTrackingRepository(
@@ -418,6 +443,15 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i268.UserProfileCubit>(
       () => _i268.UserProfileCubit(gh<_i439.UserProfileRepository>()),
     );
+    gh.lazySingleton<_i592.CompositeDashboardRepository>(
+      () => _i592.CompositeDashboardRepository(
+        gh<_i188.AccountingRepository>(),
+        gh<_i778.InvoiceRepository>(),
+        gh<_i323.TimeTrackingRepository>(),
+        gh<_i907.CustomerRepository>(),
+      ),
+      registerFor: {_auth_live},
+    );
     gh.lazySingleton<_i598.CustomerCubit>(
       () => _i598.CustomerCubit(gh<_i907.CustomerRepository>()),
     );
@@ -426,15 +460,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i140.GuidanceCubit>(
       () => _i140.GuidanceCubit(gh<_i78.GuidanceRepository>()),
-    );
-    gh.lazySingleton<_i525.DashboardRepository>(
-      () => _i592.CompositeDashboardRepository(
-        gh<_i188.AccountingRepository>(),
-        gh<_i778.InvoiceRepository>(),
-        gh<_i323.TimeTrackingRepository>(),
-        gh<_i907.CustomerRepository>(),
-      ),
-      registerFor: {_auth_live},
     );
     gh.lazySingleton<_i101.UserPreferencesRepository>(
       () => _i763.ServerpodUserPreferencesRepository(
@@ -466,9 +491,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i66.RegisterCubit>(
       () =>
           _i66.RegisterCubit(gh<_i800.AuthRepository>(), gh<_i487.AuthCubit>()),
-    );
-    gh.lazySingleton<_i54.DashboardCubit>(
-      () => _i54.DashboardCubit(gh<_i525.DashboardRepository>()),
     );
     return this;
   }
