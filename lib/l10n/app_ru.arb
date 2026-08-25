@@ -570,5 +570,10 @@
   "dashboardOverdueTitle": "Просрочено",
   "dashboardNoOverdue": "Просроченных счетов нет.",
   "dashboardDueOn": "Оплата до {date}",
-  "dashboardViewAll": "Показать все"
+  "dashboardViewAll": "Показать все",
+
+  "invoiceRemoveItem": "Удалить позицию",
+  "timerNotBillable": "Не для выставления счёта",
+  "documentsUploading": "Загрузка…",
+  "settingsDangerZone": "Опасная зона"
 }

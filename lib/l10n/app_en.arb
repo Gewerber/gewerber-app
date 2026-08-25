@@ -754,5 +754,10 @@
       }
     }
   },
-  "dashboardViewAll": "View all"
+  "dashboardViewAll": "View all",
+
+  "invoiceRemoveItem": "Remove item",
+  "timerNotBillable": "Not billable",
+  "documentsUploading": "Uploading…",
+  "settingsDangerZone": "Danger zone"
 }

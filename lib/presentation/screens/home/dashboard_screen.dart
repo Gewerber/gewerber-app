@@ -407,25 +407,29 @@ class _AmountRow extends StatelessWidget {
         for (final (index, entry) in entries.indexed) ...[
           if (index > 0) const SizedBox(width: GewerberTokens.space12),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  entry.$1,
-                  style: textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+            // Label and value read as one node ("Income 1.500,00 €")
+            // instead of two unrelated texts.
+            child: MergeSemantics(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    entry.$1,
+                    style: textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: GewerberTokens.space2),
-                Text(
-                  entry.$2,
-                  style: textTheme.titleMedium?.copyWith(color: entry.$3),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
+                  const SizedBox(height: GewerberTokens.space2),
+                  Text(
+                    entry.$2,
+                    style: textTheme.titleMedium?.copyWith(color: entry.$3),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
             ),
           ),
         ],
