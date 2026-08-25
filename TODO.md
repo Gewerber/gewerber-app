@@ -71,8 +71,16 @@
 
 ## Этап 2 — Качество
 
-- [ ] E2E-тесты accounting / guidance / timer flows (сейчас только auth+invoicing)
-- [ ] Golden-тесты ключевых экранов
+- [x] E2E-тесты accounting / guidance / timer flows ✅ 2026-08-25:
+      flow-тесты через реальный app shell (mock DI, стиль `invoicing_flow_test`)
+      в `test/presentation/` — accounting (create/edit + receipt attach через
+      fake FilePickerService), timer (start/stop), guidance (checklist toggle +
+      tip dismiss); 4 теста, ветка `test/golden-and-e2e`
+- [x] Golden-тесты ключевых экранов ✅ 2026-08-25: dashboard / invoicing list /
+      invoice detail / report / documents / settings (+about) в двух размерах
+      390×844 и 900×1280; детерминизм — шрифты (allowRuntimeFetching=false) и
+      даты через DI-seams; `test/goldens/`, см. `test/goldens/README.md`;
+      ветка `test/golden-and-e2e`
 - [ ] Систематический a11y-проход (Semantics, контраст, focus)
 - [ ] Решение по social auth (единственный TODO в репо — stub бросает исключение)
 
