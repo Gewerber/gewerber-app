@@ -7,33 +7,74 @@ import 'package:intl/intl.dart';
 
 import 'package:gewerber_app/application/settings/app_settings_state.dart';
 import 'package:gewerber_app/domain/entities/user_preferences.dart';
+import 'package:gewerber_app/domain/repositories/appearance_preferences_repository.dart';
 import 'package:gewerber_app/domain/repositories/user_preferences_repository.dart';
 
 /// Owns the global UI preferences (theme mode and language).
 ///
 /// Emits a new [AppSettingsState] so the root `MaterialApp` rebuilds with the
-/// selected theme and locale. When a [UserPreferencesRepository] is provided,
-/// changes are persisted on the user's server profile and restored across
-/// devices via [syncFromServer].
+/// selected theme and locale.
+///
+/// Persistence works on two levels:
+/// * an optional device-local [AppearancePreferencesRepository] keeps the
+///   last chosen appearance across restarts (seeded synchronously in the
+///   constructor, so it applies from the first frame) and makes the choice
+///   available on the pre-auth screens;
+/// * when a [UserPreferencesRepository] is provided, changes are additionally
+///   persisted on the user's server profile and restored across devices via
+///   [syncFromServer].
 class AppSettingsCubit extends Cubit<AppSettingsState> {
-  AppSettingsCubit({this._repository}) : super(const AppSettingsState());
+  AppSettingsCubit({this.repository, this.localStore})
+    : super(localStore == null ? const AppSettingsState() : _from(localStore)) {
+    if (localStore != null) _syncFormatLocale();
+  }
 
-  final UserPreferencesRepository? _repository;
+  /// Server-side preferences store (per-account sync), when registered.
+  final UserPreferencesRepository? repository;
+
+  /// Device-local appearance store, when persistence is wired
+  /// (see `bootstrap`). Seeded synchronously at construction.
+  final AppearancePreferencesRepository? localStore;
+
+  /// Builds the initial state from the device-local store.
+  ///
+  /// Values that fail to map (e.g. written by a newer app version) are
+  /// ignored, falling back to the defaults.
+  static AppSettingsState _from(AppearancePreferencesRepository store) {
+    return AppSettingsState(
+      themeMode: switch (store.loadTheme()) {
+        null => ThemeMode.system,
+        final theme => _toThemeMode(theme),
+      },
+      locale: store.loadLocale() == null
+          ? null
+          : _toLocale(store.loadLocale()!),
+    );
+  }
 
   /// Loads the server-side preferences and applies them to the app.
   ///
   /// Best-effort: when the profile cannot be reached, the current local
-  /// settings stay in place.
+  /// settings stay in place. Applied values are also written through to the
+  /// device-local store so the next cold start matches the profile.
+  ///
+  /// Policy — **server wins while signed in**: the server always stores a
+  /// concrete language (see [_persist]), so syncing deliberately replaces
+  /// even a device "follow the system" sentinel with the profile's concrete
+  /// language, and that mirrored value survives sign-out because [reset]
+  /// re-applies the device store. The sentinel remains one [useSystemLocale]
+  /// away. Pinned by the sentinel-matrix tests.
   Future<void> syncFromServer() async {
-    final repository = _repository;
-    if (repository == null) return;
+    final serverRepository = repository;
+    if (serverRepository == null) return;
     try {
-      final preferences = await repository.getMyPreferences();
+      final preferences = await serverRepository.getMyPreferences();
       if (preferences == null || isClosed) return;
       final theme = _toThemeMode(preferences.theme);
       final locale = _toLocale(preferences.locale);
       if (theme == state.themeMode && locale == state.locale) return;
       emit(state.copyWith(themeMode: theme, locale: locale));
+      _persistLocal();
       _syncFormatLocale();
     } catch (_) {
       // Non-fatal: keep the current local settings.
@@ -45,6 +86,7 @@ class AppSettingsCubit extends Cubit<AppSettingsState> {
     if (state.themeMode == mode) return;
     emit(state.copyWith(themeMode: mode));
     _persist();
+    _persistLocal();
   }
 
   /// Forces the given app locale.
@@ -53,6 +95,7 @@ class AppSettingsCubit extends Cubit<AppSettingsState> {
     emit(state.copyWith(locale: locale));
     _syncFormatLocale();
     _persist();
+    _persistLocal();
   }
 
   /// Returns to following the system language.
@@ -61,13 +104,18 @@ class AppSettingsCubit extends Cubit<AppSettingsState> {
     emit(state.copyWith(clearLocale: true));
     _syncFormatLocale();
     _persist();
+    _persistLocal();
   }
 
-  /// Resets to the initial state (system theme, system locale).
+  /// Resets to the initial state.
   ///
-  /// Used by tests to isolate scenarios from the shared singleton.
+  /// When a device-local store is present, the persisted appearance is
+  /// re-applied instead of the plain defaults — the appearance is a device
+  /// preference that survives sign-out/sign-in. Without a store this falls
+  /// back to system theme and system locale (also used by tests to isolate
+  /// scenarios from the shared singleton).
   void reset() {
-    emit(const AppSettingsState());
+    emit(localStore == null ? const AppSettingsState() : _from(localStore!));
     _syncFormatLocale();
   }
 
@@ -76,13 +124,33 @@ class AppSettingsCubit extends Cubit<AppSettingsState> {
   /// The server always stores a concrete language, so following the system
   /// language resolves to the best-matching supported locale.
   void _persist() {
-    final repository = _repository;
-    if (repository == null) return;
+    final serverRepository = repository;
+    if (serverRepository == null) return;
     final preferences = UserPreferences(
       locale: _resolveAppLocale(state.locale),
       theme: _toAppTheme(state.themeMode),
     );
-    unawaited(_persistSafely(repository, preferences));
+    unawaited(_persistSafely(serverRepository, preferences));
+  }
+
+  /// Writes the current appearance through to the device-local store.
+  ///
+  /// Always stores both dimensions from the freshly emitted state, so
+  /// persisting one never clears the other; a `null` locale means "remove"
+  /// (follow the system). Best-effort: failures keep the local selection.
+  void _persistLocal() {
+    final store = localStore;
+    if (store == null) return;
+    try {
+      unawaited(store.saveTheme(_toAppTheme(state.themeMode)));
+      unawaited(
+        store.saveLocale(
+          state.locale == null ? null : _resolveAppLocale(state.locale),
+        ),
+      );
+    } catch (_) {
+      // Best-effort: keep the local selection.
+    }
   }
 
   /// Keeps `package:intl` formatters (currency, dates) aligned with the
@@ -104,9 +172,9 @@ class AppSettingsCubit extends Cubit<AppSettingsState> {
     }
   }
 
-  Locale? _toLocale(AppLocale locale) => Locale(locale.name);
+  static Locale _toLocale(AppLocale locale) => Locale(locale.name);
 
-  ThemeMode _toThemeMode(ThemePreference theme) {
+  static ThemeMode _toThemeMode(ThemePreference theme) {
     return switch (theme) {
       ThemePreference.light => ThemeMode.light,
       ThemePreference.dark => ThemeMode.dark,
@@ -114,7 +182,7 @@ class AppSettingsCubit extends Cubit<AppSettingsState> {
     };
   }
 
-  ThemePreference _toAppTheme(ThemeMode mode) {
+  static ThemePreference _toAppTheme(ThemeMode mode) {
     return switch (mode) {
       ThemeMode.light => ThemePreference.light,
       ThemeMode.dark => ThemePreference.dark,
@@ -122,7 +190,7 @@ class AppSettingsCubit extends Cubit<AppSettingsState> {
     };
   }
 
-  AppLocale _resolveAppLocale(Locale? locale) {
+  static AppLocale _resolveAppLocale(Locale? locale) {
     final code =
         locale?.languageCode ?? PlatformDispatcher.instance.locale.languageCode;
     return AppLocale.values.firstWhere(

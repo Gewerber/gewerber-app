@@ -580,42 +580,46 @@ class _PaymentStatusCard extends StatelessWidget {
                   ),
                 )) ...[
               const Divider(height: GewerberTokens.space16),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(
-                    Icons.payments_outlined,
-                    size: 18,
-                    color: status.isPaid
-                        ? colors.onPrimaryContainer
-                        : colors.onSurfaceVariant,
-                  ),
-                  const SizedBox(width: GewerberTokens.space8),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(formatCents(payment.amountCents)),
-                        Text(
-                          [
-                            if (payment.paidAt != null)
-                              formatDate(payment.paidAt!),
-                            _methodLabel(l10n, payment.method),
-                          ].join(' · '),
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(color: colors.onSurfaceVariant),
-                        ),
-                        if (payment.reference != null &&
-                            payment.reference!.isNotEmpty)
+              // Amount, date/method and reference read as one payment
+              // node instead of scattered texts.
+              MergeSemantics(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(
+                      Icons.payments_outlined,
+                      size: 18,
+                      color: status.isPaid
+                          ? colors.onPrimaryContainer
+                          : colors.onSurfaceVariant,
+                    ),
+                    const SizedBox(width: GewerberTokens.space8),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(formatCents(payment.amountCents)),
                           Text(
-                            payment.reference!,
+                            [
+                              if (payment.paidAt != null)
+                                formatDate(payment.paidAt!),
+                              _methodLabel(l10n, payment.method),
+                            ].join(' · '),
                             style: Theme.of(context).textTheme.bodySmall
                                 ?.copyWith(color: colors.onSurfaceVariant),
                           ),
-                      ],
+                          if (payment.reference != null &&
+                              payment.reference!.isNotEmpty)
+                            Text(
+                              payment.reference!,
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(color: colors.onSurfaceVariant),
+                            ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ],
           ],

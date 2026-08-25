@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:gewerber_app/application/settings/app_settings_cubit.dart';
 import 'package:gewerber_app/core/theme/app_theme.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 import 'package:gewerber_app/presentation/widgets/brand/brand_logo.dart';
@@ -8,12 +10,23 @@ import 'package:gewerber_app/presentation/widgets/brand/brand_logo.dart';
 /// Desktop breakpoint above which the two-column brand + form layout applies.
 const double _authBreakpoint = 900;
 
+/// Content-pane width below which the header drops the brand wordmark:
+/// back button + appearance switchers + full wordmark no longer fit side by
+/// side (~360 logical px), so the bare-logo fallback keeps the row
+/// overflow-free down to the smallest supported phones (320 px class).
+const double _narrowPaneBreakpoint = 360;
+
 /// Responsive scaffold for authentication screens.
 ///
 /// On wide windows a two-column layout is used: a calm brand panel
 /// (gradient, tagline, trust points) on the left and the [child] — usually
 /// the auth card — centered on the right. Below the breakpoint the screens
 /// stack with the brand header on top.
+///
+/// The content-pane header carries the appearance actions (language and
+/// color-scheme switchers) so every pre-auth screen offers them through one
+/// shared implementation; both act on the global [AppSettingsCubit], exactly
+/// like the post-login settings screens.
 class AuthPanelLayout extends StatelessWidget {
   const AuthPanelLayout({
     super.key,
@@ -98,16 +111,28 @@ class _ContentPane extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.all(GewerberTokens.space16),
-              child: Row(
-                children: [
-                  if (showBackButton && (onBack != null || context.canPop()))
-                    IconButton(
-                      icon: const Icon(Icons.arrow_back),
-                      tooltip: _l10n(context).commonBack,
-                      onPressed: onBack ?? () => context.pop(),
-                    ),
-                  const _BrandMark(),
-                ],
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  // Below the narrow-pane breakpoint the full wordmark no
+                  // longer fits next to the back button plus the appearance
+                  // switchers — fall back to the bare logo so the header
+                  // never overflows.
+                  final cramped = constraints.maxWidth < _narrowPaneBreakpoint;
+                  return Row(
+                    children: [
+                      if (showBackButton &&
+                          (onBack != null || context.canPop()))
+                        IconButton(
+                          icon: const Icon(Icons.arrow_back),
+                          tooltip: _l10n(context).commonBack,
+                          onPressed: onBack ?? () => context.pop(),
+                        ),
+                      _BrandMark(showName: !cramped),
+                      const Spacer(),
+                      const _AppearanceActions(),
+                    ],
+                  );
+                },
               ),
             ),
             Expanded(
@@ -217,10 +242,14 @@ class _TrustRow extends StatelessWidget {
 
 /// Small brand logo used in headers and panels.
 class _BrandMark extends StatelessWidget {
-  const _BrandMark({this.inverse = false, this.foreground});
+  const _BrandMark({this.inverse = false, this.foreground, this.showName});
 
   final bool inverse;
   final Color? foreground;
+
+  /// Whether the "Gewerber" wordmark is rendered next to the logo. Auth
+  /// headers turn it off on very narrow panes to avoid horizontal overflow.
+  final bool? showName;
 
   @override
   Widget build(BuildContext context) {
@@ -231,14 +260,188 @@ class _BrandMark extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         BrandLogo(size: 32, color: foreground),
-        const SizedBox(width: GewerberTokens.space8),
-        Text(
-          'Gewerber',
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            color: foreground ?? colors.onSurface,
-            fontWeight: FontWeight.w700,
+        if (showName ?? true) ...[
+          const SizedBox(width: GewerberTokens.space8),
+          Text(
+            'Gewerber',
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: foreground ?? colors.onSurface,
+              fontWeight: FontWeight.w700,
+            ),
           ),
+        ],
+      ],
+    );
+  }
+}
+
+/// Language and color-scheme switchers for the pre-auth screens.
+///
+/// Both menus act on the global [AppSettingsCubit] (the same state the
+/// post-login settings screens use), so a choice made before signing in is
+/// reflected everywhere and persisted.
+class _AppearanceActions extends StatelessWidget {
+  const _AppearanceActions();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = _l10n(context);
+    final state = context.watch<AppSettingsCubit>().state;
+    final activeLanguage = _LanguageChoice.of(state.locale);
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        PopupMenuButton<_LanguageChoice>(
+          tooltip: l10n.languageTitle,
+          icon: const Icon(Icons.language_outlined),
+          onSelected: (choice) => choice.locale == null
+              ? context.read<AppSettingsCubit>().useSystemLocale()
+              : context.read<AppSettingsCubit>().setLocale(choice.locale!),
+          itemBuilder: (_) => [
+            _languageItem(
+              l10n.languageSystemDefault,
+              value: _LanguageChoice.system,
+              selected: activeLanguage == _LanguageChoice.system,
+            ),
+            const PopupMenuDivider(),
+            _languageItem(
+              'English',
+              value: _LanguageChoice.english,
+              selected: activeLanguage == _LanguageChoice.english,
+            ),
+            _languageItem(
+              'Deutsch',
+              value: _LanguageChoice.german,
+              selected: activeLanguage == _LanguageChoice.german,
+            ),
+            _languageItem(
+              'Русский',
+              value: _LanguageChoice.russian,
+              selected: activeLanguage == _LanguageChoice.russian,
+            ),
+            _languageItem(
+              'Türkçe',
+              value: _LanguageChoice.turkish,
+              selected: activeLanguage == _LanguageChoice.turkish,
+            ),
+          ],
         ),
+        PopupMenuButton<ThemeMode>(
+          tooltip: l10n.themeTitle,
+          icon: Icon(switch (state.themeMode) {
+            ThemeMode.system => Icons.brightness_auto_outlined,
+            ThemeMode.light => Icons.light_mode_outlined,
+            ThemeMode.dark => Icons.dark_mode_outlined,
+          }),
+          onSelected: (mode) =>
+              context.read<AppSettingsCubit>().setThemeMode(mode),
+          itemBuilder: (_) => [
+            _themeItem(
+              context,
+              mode: ThemeMode.system,
+              icon: Icons.brightness_auto_outlined,
+              title: l10n.themeSystem,
+              selected: state.isSystemTheme,
+            ),
+            _themeItem(
+              context,
+              mode: ThemeMode.light,
+              icon: Icons.light_mode_outlined,
+              title: l10n.themeLight,
+              selected: state.isLightTheme,
+            ),
+            _themeItem(
+              context,
+              mode: ThemeMode.dark,
+              icon: Icons.dark_mode_outlined,
+              title: l10n.themeDark,
+              selected: state.isDarkTheme,
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  PopupMenuItem<_LanguageChoice> _languageItem(
+    String title, {
+    required _LanguageChoice value,
+    required bool selected,
+  }) {
+    return PopupMenuItem<_LanguageChoice>(
+      value: value,
+      child: _MenuEntry(title: title, selected: selected),
+    );
+  }
+
+  PopupMenuItem<ThemeMode> _themeItem(
+    BuildContext context, {
+    required ThemeMode mode,
+    required IconData icon,
+    required String title,
+    required bool selected,
+  }) {
+    return PopupMenuItem<ThemeMode>(
+      value: mode,
+      child: _MenuEntry(title: title, icon: icon, selected: selected),
+    );
+  }
+}
+
+/// Language choices offered on the pre-auth screens.
+///
+/// [system] cannot be expressed as a plain `Locale?` menu value because
+/// `PopupMenuButton` swallows null selections, so every choice gets its own
+/// non-null value and maps back to the cubit API.
+enum _LanguageChoice {
+  system,
+  english,
+  german,
+  russian,
+  turkish;
+
+  Locale? get locale => switch (this) {
+    system => null,
+    english => const Locale('en'),
+    german => const Locale('de'),
+    russian => const Locale('ru'),
+    turkish => const Locale('tr'),
+  };
+
+  static _LanguageChoice of(Locale? locale) =>
+      _LanguageChoice.values.firstWhere(
+        (choice) => choice.locale == locale,
+        orElse: () => _LanguageChoice.system,
+      );
+}
+
+/// One selectable row inside an appearance menu (icon + label + check mark).
+class _MenuEntry extends StatelessWidget {
+  const _MenuEntry({required this.title, required this.selected, this.icon});
+
+  final String title;
+  final IconData? icon;
+  final bool selected;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    return Row(
+      children: [
+        if (icon != null) ...[
+          Icon(
+            icon,
+            size: 20,
+            color: selected ? colors.primary : colors.onSurfaceVariant,
+          ),
+          const SizedBox(width: GewerberTokens.space12),
+        ],
+        Expanded(child: Text(title)),
+        if (selected)
+          Icon(Icons.check, size: 20, color: colors.primary)
+        else
+          Icon(Icons.radio_button_unchecked, size: 20, color: colors.outline),
       ],
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:gewerber_app/core/features/app_feature.dart';
 import 'package:gewerber_app/core/utils/format.dart';
@@ -21,7 +22,12 @@ Future<void> bootstrap({List<AppFeature> features = const []}) async {
   // German is the primary product market; the settings cubit keeps this in
   // sync with the user's chosen app language afterwards.
   Intl.defaultLocale = defaultFormatLocale;
-  configureDependencies();
+  // Warm the shared-preferences cache before DI setup so the settings cubit
+  // reads the persisted appearance (theme/language, also chosen on the
+  // pre-auth screens) synchronously at construction — it applies to the very
+  // first frame without a flash of default styling.
+  final sharedPreferences = await SharedPreferences.getInstance();
+  configureDependencies(sharedPreferences: sharedPreferences);
   for (final feature in features) {
     feature.register();
   }

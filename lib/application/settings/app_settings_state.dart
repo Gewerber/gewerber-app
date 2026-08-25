@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 
 /// Global UI preferences: theme and language.
 ///
-/// Not persisted yet; [locale] stays `null` to follow the system language
-/// until the user explicitly picks one.
+/// Changes are written through to the device-local appearance store (see
+/// [AppSettingsCubit.localStore]) so they survive restarts, and — when signed
+/// in — mirrored to the user's server profile. `locale` stays `null` to
+/// follow the system language until the user explicitly picks one.
 class AppSettingsState extends Equatable {
   const AppSettingsState({this.themeMode = ThemeMode.system, this.locale});
 

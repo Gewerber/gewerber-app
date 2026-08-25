@@ -570,5 +570,10 @@
   "dashboardOverdueTitle": "Vadesi geçmiş",
   "dashboardNoOverdue": "Vadesi geçen yok.",
   "dashboardDueOn": "Son tarih {date}",
-  "dashboardViewAll": "Tümünü göster"
+  "dashboardViewAll": "Tümünü göster",
+
+  "invoiceRemoveItem": "Kalem kaldır",
+  "timerNotBillable": "Faturalandırılamaz",
+  "documentsUploading": "Yükleniyor…",
+  "settingsDangerZone": "Tehlikeli bölge"
 }

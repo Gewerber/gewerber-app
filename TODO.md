@@ -81,13 +81,38 @@
       390×844 и 900×1280; детерминизм — шрифты (allowRuntimeFetching=false) и
       даты через DI-seams; `test/goldens/`, см. `test/goldens/README.md`;
       ветка `test/golden-and-e2e`
-- [ ] Систематический a11y-проход (Semantics, контраст, focus)
+- [x] Систематический a11y-проход (Semantics, контраст, focus) ✅ 2026-08-25,
+      ветка `feat/a11y-pass`: исправлено — заголовки секций (Semantics header),
+      тултипы NavigationBar, merged-узлы «значение+тренд/строка» (дашборд,
+      отчёт P&L, платежи, должники), текстовые эквиваленты статусов
+      (billable в таймере, danger zone в настройках, прогресс загрузки
+      документов), точный тултип «удалить позицию»; 4 новых arb-ключа ×4
+      языка; 10 widget-тестов на семантику. Flag-only: контраст брендовых
+      цветов (см. Заметки), long-press-only удаления, фокус-обход.
 - [ ] Решение по social auth (единственный TODO в репо — stub бросает исключение)
 
 ## Этап 3 — Офлайн (совместно с бэкендом, квартал 2)
 
 - [ ] Локальная БД (drift) + sync по курсорам `updatedAt` (эндпоинты — см. backend TODO этап 3)
 - [ ] Очередь мутаций офлайн (создание записей времени без сети — критично для выездных работ)
+
+## Бэклог (добавлено 2026-08-25)
+
+- [x] **Выбор языка и цветовой схемы до регистрации** ✅ 2026-08-25:
+      переключатели языка (system/en/de/ru/tr) и темы (system/light/dark)
+      в общем хедере `presentation/widgets/layout/auth_panel_layout.dart`
+      (одна реализация покрывает login/register/forgot-password); действуют на
+      глобальный `AppSettingsCubit` — тот же state, что и пост-логин настройки.
+      Персистирование: `AppearancePreferencesRepository` поверх
+      shared_preferences, кубит сеется синхронно при конструировании
+      (bootstrap прогревает SharedPreferences до DI → выбор применяется с
+      первого кадра, без вспышки дефолтной темы); все мутации кубита пишутся
+      в девайс-стор, `syncFromServer` зеркалит серверные предпочтения,
+      sign-out сохраняет девайс-выбор. Строки переиспользованы из arb
+      (languageTitle/themeTitle/themeSystem/Light/Dark/languageSystemDefault),
+      новых ключей нет — l10n-guard зелёный; одинаково в authMock/authLive.
+      15 тестов (unit roundtrip + pre-auth widget + persistence через app shell).
+      Ветка `feat/pre-auth-appearance`.
 
 ---
 
@@ -96,3 +121,6 @@
 - Web-сборка: рассмотреть `--wasm` после стабилизации зависимостей.
 - (2026-08-22) Даты в UI теперь локале-зависимые (de → `22.08.2026`); ISO оставлен только в именах файлов экспорта.
 - (2026-08-22) CI на fork-PR: секрет `COMMERCIAL_REPO_TOKEN` недоступен — `pub get` приватной зависимости упадёт by design.
+- (2026-08-25, a11y-pass, flag-only) Контраст vs белый фон (WCAG AA 4.5:1 текст / 3:1 крупный текст и UI): `GewerberColors.success #3BB273` = 2.69 (тренд-бейджи «+x %»), `accentDark #2DB387` = 2.66 (расходные бары графика), `textMuted #9AA5B1` = 2.50, `warning #F5A623` = 2.03; `error #E54848` = 3.92 (проходит только как крупный/UI) — есть тёмные варианты (`errorDark` 5.23, `successDark`, `primary` 4.86 ✓). Нужен продуктовый редизайн палитры, не трогал.
+- (2026-08-25, a11y-pass, flag-only) Удаление транзакций и time-записей доступно только через long-press (`onLongPress`) — нет видимого действия; нужна архитектурная доработка (swipe/dispose menu), не трогал.
+- (2026-08-25, a11y-pass, flag-only) Закрывающий IconButton в `auth_error_banner.dart` без tooltip (auth-зона вне скоупа пост-логин прохода); focus traversal порядок не проверялся глубоко — требует отдельного прохода с реальным screen reader.
