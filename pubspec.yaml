@@ -61,6 +61,10 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  # End-to-end smoke test (integration_test/app_smoke_test.dart); runs on a
+  # real device target: flutter test integration_test -d linux|chrome|<device>
+  integration_test:
+    sdk: flutter
   flutter_lints: ^6.0.0
   build_runner: 2.15.1
   injectable_generator: ^3.1.3
