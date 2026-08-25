@@ -335,13 +335,18 @@ class _TrendDeltaBadge extends StatelessWidget {
       Localizations.localeOf(context).toString(),
     );
     if (change == null) return const SizedBox.shrink();
-    final positive = !change.startsWith('-');
+    final tone = changeTone(change);
 
     return Padding(
       padding: const EdgeInsets.only(top: GewerberTokens.space8),
       child: SectionBadge(
         label: AppLocalizations.of(context).dashboardChangeVsPrevious(change),
-        color: positive ? GewerberColors.success : GewerberColors.error,
+        color: switch (tone) {
+          ChangeTone.positive => GewerberColors.success,
+          ChangeTone.negative => GewerberColors.error,
+          // A flat month is neither up nor down; render it muted.
+          ChangeTone.neutral => Theme.of(context).colorScheme.onSurfaceVariant,
+        },
       ),
     );
   }

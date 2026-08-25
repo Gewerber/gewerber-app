@@ -16,6 +16,19 @@ import 'package:gewerber_app/domain/repositories/time_tracking_repository.dart';
 /// Per-source fetch window for the activity feed before merging.
 const int _activityFetchLimit = 20;
 
+/// Orders debtors largest-first. Ties are broken deterministically — by
+/// customer id ascending with the anonymous "no customer" bucket last, then
+/// by display name — because [List.sort] is not stable and equal-amount rows
+/// must not shuffle between refreshes.
+int _compareDebtors(DebtorLine a, DebtorLine b) {
+  final byAmount = b.outstandingCents.compareTo(a.outstandingCents);
+  if (byAmount != 0) return byAmount;
+  final (aId, bId) = (a.customerId, b.customerId);
+  if (aId != null && bId != null && aId != bId) return aId.compareTo(bId);
+  if ((aId == null) != (bId == null)) return aId == null ? 1 : -1;
+  return a.displayName.compareTo(b.displayName);
+}
+
 /// [DashboardRepository] that composes the existing module repositories.
 ///
 /// No new server endpoints are required: trends come from monthly P&L
@@ -124,10 +137,8 @@ class CompositeDashboardRepository implements DashboardRepository {
       );
     }
 
-    final debtorEntries = totals.entries.toList()
-      ..sort((a, b) => b.value.cents.compareTo(a.value.cents));
     final debtors = [
-      for (final entry in debtorEntries)
+      for (final entry in totals.entries)
         DebtorLine(
           customerId: entry.key,
           displayName: entry.key == null
@@ -136,7 +147,7 @@ class CompositeDashboardRepository implements DashboardRepository {
           outstandingCents: entry.value.cents,
           invoiceCount: entry.value.count,
         ),
-    ];
+    ]..sort(_compareDebtors);
 
     // Most urgent first; invoices without a due date fall back to the issue
     // date so they never drop out of the ordering.
