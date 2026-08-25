@@ -90,9 +90,12 @@ bash deploy/deploy.sh test ghcr.io/gewerber/gewerber-app:test-latest
 ### Local build & preview
 
 ```bash
-flutter build web --release
-docker compose build && docker compose up -d   # serves build/web via nginx
+docker compose build && docker compose up -d   # serves the app via nginx
 ```
+
+The image build is multi-stage: `flutter build web` runs inside the
+container and nginx serves the resulting static build with SPA fallback,
+so no host-side build is required.
 
 ---
 
