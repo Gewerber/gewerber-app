@@ -88,6 +88,24 @@
 - [ ] Локальная БД (drift) + sync по курсорам `updatedAt` (эндпоинты — см. backend TODO этап 3)
 - [ ] Очередь мутаций офлайн (создание записей времени без сети — критично для выездных работ)
 
+## Бэклог (добавлено 2026-08-25)
+
+- [x] **Выбор языка и цветовой схемы до регистрации** ✅ 2026-08-25:
+      переключатели языка (system/en/de/ru/tr) и темы (system/light/dark)
+      в общем хедере `presentation/widgets/layout/auth_panel_layout.dart`
+      (одна реализация покрывает login/register/forgot-password); действуют на
+      глобальный `AppSettingsCubit` — тот же state, что и пост-логин настройки.
+      Персистирование: `AppearancePreferencesRepository` поверх
+      shared_preferences, кубит сеется синхронно при конструировании
+      (bootstrap прогревает SharedPreferences до DI → выбор применяется с
+      первого кадра, без вспышки дефолтной темы); все мутации кубита пишутся
+      в девайс-стор, `syncFromServer` зеркалит серверные предпочтения,
+      sign-out сохраняет девайс-выбор. Строки переиспользованы из arb
+      (languageTitle/themeTitle/themeSystem/Light/Dark/languageSystemDefault),
+      новых ключей нет — l10n-guard зелёный; одинаково в authMock/authLive.
+      15 тестов (unit roundtrip + pre-auth widget + persistence через app shell).
+      Ветка `feat/pre-auth-appearance`.
+
 ---
 
 ## Заметки
