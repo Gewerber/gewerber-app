@@ -647,7 +647,8 @@ class _ItemEditor extends StatelessWidget {
                 ),
                 IconButton(
                   icon: const Icon(Icons.delete_outline),
-                  tooltip: l10n.invoiceDelete,
+                  // Distinguishable from deleting the whole invoice.
+                  tooltip: l10n.invoiceRemoveItem,
                   onPressed: onRemove,
                 ),
               ],

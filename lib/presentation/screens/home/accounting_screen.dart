@@ -189,6 +189,11 @@ class _TransactionTile extends StatelessWidget {
             color: isIncome
                 ? colors.onPrimaryContainer
                 : colors.onErrorContainer,
+            // Announce the direction ("Income"/"Expense") instead of an
+            // unlabeled arrow glyph.
+            semanticLabel: isIncome
+                ? l10n.transactionTypeIncome
+                : l10n.transactionTypeExpense,
           ),
         ),
         title: Text(

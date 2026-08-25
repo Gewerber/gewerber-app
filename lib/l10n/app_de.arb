@@ -570,5 +570,10 @@
   "dashboardOverdueTitle": "Überfällig",
   "dashboardNoOverdue": "Nichts überfällig.",
   "dashboardDueOn": "Fällig am {date}",
-  "dashboardViewAll": "Alle anzeigen"
+  "dashboardViewAll": "Alle anzeigen",
+
+  "invoiceRemoveItem": "Position entfernen",
+  "timerNotBillable": "Nicht abrechenbar",
+  "documentsUploading": "Wird hochgeladen …",
+  "settingsDangerZone": "Gefahrenzone"
 }

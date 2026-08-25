@@ -237,10 +237,15 @@ class _RunningTimerCard extends StatelessWidget {
         padding: const EdgeInsets.all(GewerberTokens.space16),
         child: Column(
           children: [
-            Text(
-              l10n.timerRunningTitle,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: colors.onPrimaryContainer,
+            // The visible title carries the running state ("Timer
+            // running") — perceivable without the container color alone.
+            Semantics(
+              header: true,
+              child: Text(
+                l10n.timerRunningTitle,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: colors.onPrimaryContainer,
+                ),
               ),
             ),
             const SizedBox(height: GewerberTokens.space8),
@@ -304,6 +309,7 @@ class _EntryTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final colors = Theme.of(context).colorScheme;
     final project = projects.where((p) => p.id == entry.projectId).firstOrNull;
     final title = [
@@ -315,9 +321,15 @@ class _EntryTile extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 2),
       child: ListTile(
         dense: true,
-        leading: Icon(
-          entry.billable ? Icons.attach_money : Icons.money_off,
-          color: entry.billable ? colors.primary : colors.outline,
+        // The billable state is otherwise conveyed by icon color alone.
+        leading: Semantics(
+          label: entry.billable
+              ? l10n.timerBillableLabel
+              : l10n.timerNotBillable,
+          child: Icon(
+            entry.billable ? Icons.attach_money : Icons.money_off,
+            color: entry.billable ? colors.primary : colors.outline,
+          ),
         ),
         title: Text(
           title.isEmpty ? '–' : title,

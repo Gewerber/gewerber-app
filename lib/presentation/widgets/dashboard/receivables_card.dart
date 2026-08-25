@@ -129,28 +129,31 @@ class _DebtorRow extends StatelessWidget {
     // or a nameless one) render a localized fallback.
     final name = debtor.displayName ?? l10n.dashboardDebtorUnknownCustomer;
 
-    return Row(
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(name, maxLines: 1, overflow: TextOverflow.ellipsis),
-              const SizedBox(height: 2),
-              Text(
-                l10n.dashboardDebtorInvoicesCount(debtor.invoiceCount),
-                style: textTheme.bodySmall?.copyWith(
-                  color: colors.onSurfaceVariant,
+    // Name, invoice count and outstanding amount read as one row node.
+    return MergeSemantics(
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(name, maxLines: 1, overflow: TextOverflow.ellipsis),
+                const SizedBox(height: 2),
+                Text(
+                  l10n.dashboardDebtorInvoicesCount(debtor.invoiceCount),
+                  style: textTheme.bodySmall?.copyWith(
+                    color: colors.onSurfaceVariant,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        Text(
-          formatCents(debtor.outstandingCents),
-          style: textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
-        ),
-      ],
+          Text(
+            formatCents(debtor.outstandingCents),
+            style: textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -170,40 +173,44 @@ class _OverdueRow extends StatelessWidget {
     return InkWell(
       borderRadius: BorderRadius.circular(GewerberTokens.radiusButton),
       onTap: () => context.push(RouteNames.invoiceDetail, extra: invoice),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: GewerberTokens.space2),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    invoice.number,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
+      // Number, due date, amount and the overdue badge read as one
+      // tappable node.
+      child: MergeSemantics(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: GewerberTokens.space2),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      invoice.number,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    l10n.dashboardDueOn(invoice.dueDate ?? invoice.issueDate),
-                    style: textTheme.bodySmall?.copyWith(
-                      color: colors.onSurfaceVariant,
+                    const SizedBox(height: 2),
+                    Text(
+                      l10n.dashboardDueOn(invoice.dueDate ?? invoice.issueDate),
+                      style: textTheme.bodySmall?.copyWith(
+                        color: colors.onSurfaceVariant,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(width: GewerberTokens.space8),
-            Text(formatCents(invoice.totalCents)),
-            const SizedBox(width: GewerberTokens.space8),
-            SectionBadge(
-              label: l10n.dashboardOverdueTitle,
-              color: colors.error,
-            ),
-          ],
+              const SizedBox(width: GewerberTokens.space8),
+              Text(formatCents(invoice.totalCents)),
+              const SizedBox(width: GewerberTokens.space8),
+              SectionBadge(
+                label: l10n.dashboardOverdueTitle,
+                color: colors.error,
+              ),
+            ],
+          ),
         ),
       ),
     );

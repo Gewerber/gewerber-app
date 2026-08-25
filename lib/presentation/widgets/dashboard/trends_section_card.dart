@@ -98,21 +98,25 @@ class _ChangeLine extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.only(top: GewerberTokens.space8),
-      child: Row(
-        children: [
-          Icon(icon, size: 16, color: color),
-          const SizedBox(width: GewerberTokens.space4),
-          Expanded(
-            child: Text(
-              AppLocalizations.of(context).dashboardChangeVsPrevious(change),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
+      // Trend icon and the textual change ("+71 % vs. last month") form
+      // a single semantic node.
+      child: MergeSemantics(
+        child: Row(
+          children: [
+            Icon(icon, size: 16, color: color),
+            const SizedBox(width: GewerberTokens.space4),
+            Expanded(
+              child: Text(
+                AppLocalizations.of(context).dashboardChangeVsPrevious(change),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

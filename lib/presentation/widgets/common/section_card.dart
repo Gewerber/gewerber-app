@@ -34,9 +34,14 @@ class SectionCard extends StatelessWidget {
               Row(
                 children: [
                   Expanded(
-                    child: Text(
-                      title,
-                      style: Theme.of(context).textTheme.titleMedium,
+                    // Announced as a heading so screen reader users can
+                    // jump between the dashboard sections.
+                    child: Semantics(
+                      header: true,
+                      child: Text(
+                        title,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
                     ),
                   ),
                   if (onTap != null)
