@@ -533,6 +533,69 @@ void main() {
       expect(summary.outstandingTotalCents, 15000);
     });
 
+    test('breaks ties between equal amounts deterministically', () async {
+      final repo = CompositeDashboardRepository(
+        _FakeAccountingRepository(),
+        _FakeInvoiceRepository(
+          invoices: [
+            // Insertion order deliberately differs from the expected order.
+            invoice(
+              1,
+              'RE-1',
+              InvoiceStatus.sent,
+              issueDate: DateTime(2026, 7, 1),
+              totalCents: 5000,
+            ),
+            invoice(
+              2,
+              'RE-2',
+              InvoiceStatus.sent,
+              customerId: 3,
+              issueDate: DateTime(2026, 7, 2),
+              totalCents: 5000,
+            ),
+            invoice(
+              3,
+              'RE-3',
+              InvoiceStatus.overdue,
+              customerId: 2,
+              issueDate: DateTime(2026, 7, 3),
+              dueDate: DateTime(2026, 7, 20),
+              totalCents: 5000,
+            ),
+            invoice(
+              4,
+              'RE-4',
+              InvoiceStatus.sent,
+              customerId: 1,
+              issueDate: DateTime(2026, 7, 4),
+              totalCents: 9000,
+            ),
+          ],
+        ),
+        _FakeTimeTrackingRepository(),
+        _FakeCustomerRepository(
+          customers: const [
+            Customer(id: 1, name: 'A'),
+            Customer(id: 2, name: 'B'),
+            Customer(id: 3, name: 'C'),
+          ],
+        ),
+      );
+
+      final summary = await repo.receivables();
+
+      // Amount first (9000 > 5000); the three tied buckets follow by
+      // customer id ascending with the "no customer" bucket last — a stable
+      // order across refreshes despite List.sort being unstable.
+      expect(summary.debtors.map((debtor) => debtor.customerId), [
+        1,
+        2,
+        3,
+        null,
+      ]);
+    });
+
     test('sorts debtors by outstanding amount descending', () async {
       final repo = CompositeDashboardRepository(
         _FakeAccountingRepository(),
