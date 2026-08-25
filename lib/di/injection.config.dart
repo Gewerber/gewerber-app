@@ -17,6 +17,7 @@ import '../application/auth/auth_cubit.dart' as _i487;
 import '../application/business/business_cubit.dart' as _i139;
 import '../application/business_settings/business_settings_cubit.dart' as _i419;
 import '../application/customers/customer_cubit.dart' as _i598;
+import '../application/dashboard/dashboard_cubit.dart' as _i54;
 import '../application/documents/documents_cubit.dart' as _i975;
 import '../application/forgot_password/forgot_password_cubit.dart' as _i318;
 import '../application/guidance/checklist_cubit.dart' as _i873;
@@ -36,6 +37,7 @@ import '../domain/repositories/auth_repository.dart' as _i800;
 import '../domain/repositories/business_repository.dart' as _i93;
 import '../domain/repositories/business_settings_repository.dart' as _i743;
 import '../domain/repositories/customer_repository.dart' as _i907;
+import '../domain/repositories/dashboard_repository.dart' as _i525;
 import '../domain/repositories/document_repository.dart' as _i591;
 import '../domain/repositories/guidance_repository.dart' as _i78;
 import '../domain/repositories/invoice_repository.dart' as _i778;
@@ -83,6 +85,8 @@ import '../infrastructure/mappers/time_tracking_mapper.dart' as _i42;
 import '../infrastructure/mappers/transaction_mapper.dart' as _i756;
 import '../infrastructure/mappers/user_mapper.dart' as _i980;
 import '../infrastructure/mappers/user_preferences_mapper.dart' as _i53;
+import '../infrastructure/repositories/composite_dashboard_repository.dart'
+    as _i592;
 import '../infrastructure/repositories/mock_accounting_repository.dart'
     as _i254;
 import '../infrastructure/repositories/mock_auth_repository.dart' as _i338;
@@ -90,6 +94,7 @@ import '../infrastructure/repositories/mock_business_repository.dart' as _i869;
 import '../infrastructure/repositories/mock_business_settings_repository.dart'
     as _i587;
 import '../infrastructure/repositories/mock_customer_repository.dart' as _i569;
+import '../infrastructure/repositories/mock_dashboard_repository.dart' as _i575;
 import '../infrastructure/repositories/mock_document_repository.dart' as _i415;
 import '../infrastructure/repositories/mock_guidance_repository.dart' as _i420;
 import '../infrastructure/repositories/mock_invoice_repository.dart' as _i555;
@@ -195,6 +200,10 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i778.InvoiceRepository>(
       () => _i555.MockInvoiceRepository(),
+      registerFor: {_auth_mock},
+    );
+    gh.lazySingleton<_i525.DashboardRepository>(
+      () => _i575.MockDashboardRepository(),
       registerFor: {_auth_mock},
     );
     gh.lazySingleton<_i309.InvoiceTemplateRepository>(
@@ -418,6 +427,15 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i140.GuidanceCubit>(
       () => _i140.GuidanceCubit(gh<_i78.GuidanceRepository>()),
     );
+    gh.lazySingleton<_i525.DashboardRepository>(
+      () => _i592.CompositeDashboardRepository(
+        gh<_i188.AccountingRepository>(),
+        gh<_i778.InvoiceRepository>(),
+        gh<_i323.TimeTrackingRepository>(),
+        gh<_i907.CustomerRepository>(),
+      ),
+      registerFor: {_auth_live},
+    );
     gh.lazySingleton<_i101.UserPreferencesRepository>(
       () => _i763.ServerpodUserPreferencesRepository(
         gh<_i984.UserPreferencesRemoteDataSource>(),
@@ -448,6 +466,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i66.RegisterCubit>(
       () =>
           _i66.RegisterCubit(gh<_i800.AuthRepository>(), gh<_i487.AuthCubit>()),
+    );
+    gh.lazySingleton<_i54.DashboardCubit>(
+      () => _i54.DashboardCubit(gh<_i525.DashboardRepository>()),
     );
     return this;
   }

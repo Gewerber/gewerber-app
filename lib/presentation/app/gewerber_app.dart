@@ -8,6 +8,7 @@ import 'package:gewerber_app/application/auth/auth_state.dart';
 import 'package:gewerber_app/application/business/business_cubit.dart';
 import 'package:gewerber_app/application/business_settings/business_settings_cubit.dart';
 import 'package:gewerber_app/application/customers/customer_cubit.dart';
+import 'package:gewerber_app/application/dashboard/dashboard_cubit.dart';
 import 'package:gewerber_app/application/documents/documents_cubit.dart';
 import 'package:gewerber_app/application/guidance/checklist_cubit.dart';
 import 'package:gewerber_app/application/guidance/guidance_cubit.dart';
@@ -60,6 +61,7 @@ class GewerberApp extends StatelessWidget {
           ),
           BlocProvider<DocumentsCubit>.value(value: getIt<DocumentsCubit>()),
           BlocProvider<AccountingCubit>.value(value: getIt<AccountingCubit>()),
+          BlocProvider<DashboardCubit>.value(value: getIt<DashboardCubit>()),
           BlocProvider<UserProfileCubit>.value(
             value: getIt<UserProfileCubit>(),
           ),

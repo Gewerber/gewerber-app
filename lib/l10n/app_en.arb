@@ -698,5 +698,60 @@
   "documentsKindReceipt": "Receipt",
   "documentsKindLogo": "Logo",
   "documentsKindAttachment": "Attachment",
-  "documentsKindOther": "Other"
+  "documentsKindOther": "Other",
+  "dashboardTrendsTitle": "Last 6 months",
+  "dashboardTrendsTitle12": "Last 12 months",
+  "dashboardTrendsEmpty": "No income or expenses recorded yet.",
+  "dashboardChangeVsPrevious": "{change} vs. last month",
+  "@dashboardChangeVsPrevious": {
+    "placeholders": {
+      "change": {
+        "type": "String",
+        "example": "+12 %"
+      }
+    }
+  },
+  "dashboardRecentActivityTitle": "Recent activity",
+  "dashboardRecentActivityEmpty": "Nothing going on yet.",
+  "dashboardActivityInvoiceCreated": "Invoice {number} created",
+  "@dashboardActivityInvoiceCreated": {
+    "placeholders": {
+      "number": {
+        "type": "String",
+        "example": "RE-12"
+      }
+    }
+  },
+  "dashboardActivityTimeTracked": "{duration} tracked",
+  "@dashboardActivityTimeTracked": {
+    "placeholders": {
+      "duration": {
+        "type": "String",
+        "example": "2h 05m"
+      }
+    }
+  },
+  "dashboardActivityTransaction": "Transaction booked",
+  "dashboardReceivablesTitle": "Receivables",
+  "dashboardReceivablesEmpty": "No open invoices. All settled!",
+  "dashboardDebtorInvoicesCount": "{count} invoices",
+  "@dashboardDebtorInvoicesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dashboardOverdueTitle": "Overdue",
+  "dashboardNoOverdue": "Nothing overdue.",
+  "dashboardDueOn": "Due {date}",
+  "@dashboardDueOn": {
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "yMd"
+      }
+    }
+  },
+  "dashboardViewAll": "View all"
 }
