@@ -144,6 +144,18 @@ class _DocumentsViewState extends State<DocumentsView> {
                   label: Text(l10n.documentsUploadButton),
                 ),
               ),
+              // Upload progress is announced as visible text, not only
+              // through the disabled button and its spinner.
+              if (state.isUploading)
+                Padding(
+                  padding: const EdgeInsets.only(top: GewerberTokens.space8),
+                  child: Text(
+                    l10n.documentsUploading,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ),
               const SizedBox(height: GewerberTokens.space16),
               if (state.documents.isEmpty)
                 Padding(

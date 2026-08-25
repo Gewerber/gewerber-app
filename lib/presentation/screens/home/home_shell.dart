@@ -71,11 +71,14 @@ class HomeShell extends StatelessWidget {
             selectedIndex: navigationShell.currentIndex,
             onDestinationSelected: (index) => _selectBranch(context, index),
             destinations: [
+              // Explicit tooltip: doubles as the semantic label of the
+              // icon-only destination on narrow screens.
               for (final (:icon, :selectedIcon, :label) in destinations)
                 NavigationDestination(
                   icon: Icon(icon),
                   selectedIcon: Icon(selectedIcon),
                   label: label,
+                  tooltip: label,
                 ),
             ],
           ),
@@ -124,6 +127,10 @@ class HomeShell extends StatelessWidget {
 
 /// Side navigation for wide screens. Extends to show labels beside the icons
 /// when there is plenty of room, otherwise labels sit below the icons.
+///
+/// Both modes keep every destination's text label permanently visible, so —
+/// unlike the bottom [NavigationBar] — no additional tooltip is required for
+/// assistive technologies.
 class _Rail extends StatelessWidget {
   const _Rail({
     required this.destinations,

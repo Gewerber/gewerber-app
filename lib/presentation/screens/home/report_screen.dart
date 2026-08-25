@@ -259,27 +259,30 @@ class _SummaryCard extends StatelessWidget {
           : colors.surfaceContainerHighest,
       child: Padding(
         padding: const EdgeInsets.all(GewerberTokens.space16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              label,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: emphasized
-                    ? colors.onPrimaryContainer
-                    : colors.onSurfaceVariant,
+        // Label and value ("Profit 1.200,00 €") read as one node.
+        child: MergeSemantics(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: emphasized
+                      ? colors.onPrimaryContainer
+                      : colors.onSurfaceVariant,
+                ),
               ),
-            ),
-            const SizedBox(height: GewerberTokens.space4),
-            Text(
-              value,
-              style:
-                  (emphasized
-                          ? Theme.of(context).textTheme.headlineSmall
-                          : Theme.of(context).textTheme.titleLarge)
-                      ?.copyWith(color: color),
-            ),
-          ],
+              const SizedBox(height: GewerberTokens.space4),
+              Text(
+                value,
+                style:
+                    (emphasized
+                            ? Theme.of(context).textTheme.headlineSmall
+                            : Theme.of(context).textTheme.titleLarge)
+                        ?.copyWith(color: color),
+              ),
+            ],
+          ),
         ),
       ),
     );
