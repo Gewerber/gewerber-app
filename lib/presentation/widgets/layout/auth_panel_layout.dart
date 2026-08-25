@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:gewerber_app/application/settings/app_settings_cubit.dart';
 import 'package:gewerber_app/core/theme/app_theme.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 import 'package:gewerber_app/presentation/widgets/brand/brand_logo.dart';
@@ -14,6 +16,11 @@ const double _authBreakpoint = 900;
 /// (gradient, tagline, trust points) on the left and the [child] — usually
 /// the auth card — centered on the right. Below the breakpoint the screens
 /// stack with the brand header on top.
+///
+/// The content-pane header carries the appearance actions (language and
+/// color-scheme switchers) so every pre-auth screen offers them through one
+/// shared implementation; both act on the global [AppSettingsCubit], exactly
+/// like the post-login settings screens.
 class AuthPanelLayout extends StatelessWidget {
   const AuthPanelLayout({
     super.key,
@@ -107,6 +114,8 @@ class _ContentPane extends StatelessWidget {
                       onPressed: onBack ?? () => context.pop(),
                     ),
                   const _BrandMark(),
+                  const Spacer(),
+                  const _AppearanceActions(),
                 ],
               ),
             ),
@@ -239,6 +248,144 @@ class _BrandMark extends StatelessWidget {
             fontWeight: FontWeight.w700,
           ),
         ),
+      ],
+    );
+  }
+}
+
+/// Language and color-scheme switchers for the pre-auth screens.
+///
+/// Both menus act on the global [AppSettingsCubit] (the same state the
+/// post-login settings screens use), so a choice made before signing in is
+/// reflected everywhere and persisted.
+class _AppearanceActions extends StatelessWidget {
+  const _AppearanceActions();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = _l10n(context);
+    final state = context.watch<AppSettingsCubit>().state;
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        PopupMenuButton<Locale?>(
+          tooltip: l10n.languageTitle,
+          icon: const Icon(Icons.language_outlined),
+          onSelected: (locale) => locale == null
+              ? context.read<AppSettingsCubit>().useSystemLocale()
+              : context.read<AppSettingsCubit>().setLocale(locale),
+          itemBuilder: (_) => [
+            _languageItem(
+              context,
+              value: null,
+              title: l10n.languageSystemDefault,
+              selected: state.isActiveLocale(null),
+            ),
+            const PopupMenuDivider(),
+            for (final (locale, name) in const [
+              (Locale('en'), 'English'),
+              (Locale('de'), 'Deutsch'),
+              (Locale('ru'), 'Русский'),
+              (Locale('tr'), 'Türkçe'),
+            ])
+              _languageItem(
+                context,
+                value: locale,
+                title: name,
+                selected: state.isActiveLocale(locale),
+              ),
+          ],
+        ),
+        PopupMenuButton<ThemeMode>(
+          tooltip: l10n.themeTitle,
+          icon: Icon(switch (state.themeMode) {
+            ThemeMode.system => Icons.brightness_auto_outlined,
+            ThemeMode.light => Icons.light_mode_outlined,
+            ThemeMode.dark => Icons.dark_mode_outlined,
+          }),
+          onSelected: (mode) =>
+              context.read<AppSettingsCubit>().setThemeMode(mode),
+          itemBuilder: (_) => [
+            _themeItem(
+              context,
+              mode: ThemeMode.system,
+              icon: Icons.brightness_auto_outlined,
+              title: l10n.themeSystem,
+              selected: state.isSystemTheme,
+            ),
+            _themeItem(
+              context,
+              mode: ThemeMode.light,
+              icon: Icons.light_mode_outlined,
+              title: l10n.themeLight,
+              selected: state.isLightTheme,
+            ),
+            _themeItem(
+              context,
+              mode: ThemeMode.dark,
+              icon: Icons.dark_mode_outlined,
+              title: l10n.themeDark,
+              selected: state.isDarkTheme,
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  PopupMenuItem<Locale?> _languageItem(
+    BuildContext context, {
+    required Locale? value,
+    required String title,
+    required bool selected,
+  }) {
+    return PopupMenuItem<Locale?>(
+      value: value,
+      child: _MenuEntry(title: title, selected: selected),
+    );
+  }
+
+  PopupMenuItem<ThemeMode> _themeItem(
+    BuildContext context, {
+    required ThemeMode mode,
+    required IconData icon,
+    required String title,
+    required bool selected,
+  }) {
+    return PopupMenuItem<ThemeMode>(
+      value: mode,
+      child: _MenuEntry(title: title, icon: icon, selected: selected),
+    );
+  }
+}
+
+/// One selectable row inside an appearance menu (icon + label + check mark).
+class _MenuEntry extends StatelessWidget {
+  const _MenuEntry({required this.title, required this.selected, this.icon});
+
+  final String title;
+  final IconData? icon;
+  final bool selected;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    return Row(
+      children: [
+        if (icon != null) ...[
+          Icon(
+            icon,
+            size: 20,
+            color: selected ? colors.primary : colors.onSurfaceVariant,
+          ),
+          const SizedBox(width: GewerberTokens.space12),
+        ],
+        Expanded(child: Text(title)),
+        if (selected)
+          Icon(Icons.check, size: 20, color: colors.primary)
+        else
+          Icon(Icons.radio_button_unchecked, size: 20, color: colors.outline),
       ],
     );
   }
