@@ -105,18 +105,27 @@ class _ContentPane extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.all(GewerberTokens.space16),
-              child: Row(
-                children: [
-                  if (showBackButton && (onBack != null || context.canPop()))
-                    IconButton(
-                      icon: const Icon(Icons.arrow_back),
-                      tooltip: _l10n(context).commonBack,
-                      onPressed: onBack ?? () => context.pop(),
-                    ),
-                  const _BrandMark(),
-                  const Spacer(),
-                  const _AppearanceActions(),
-                ],
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  // Below ~360 logical px the full wordmark no longer fits
+                  // next to the back button plus the appearance switchers —
+                  // fall back to the bare logo so the header never overflows.
+                  final cramped = constraints.maxWidth < 360;
+                  return Row(
+                    children: [
+                      if (showBackButton &&
+                          (onBack != null || context.canPop()))
+                        IconButton(
+                          icon: const Icon(Icons.arrow_back),
+                          tooltip: _l10n(context).commonBack,
+                          onPressed: onBack ?? () => context.pop(),
+                        ),
+                      _BrandMark(showName: !cramped),
+                      const Spacer(),
+                      const _AppearanceActions(),
+                    ],
+                  );
+                },
               ),
             ),
             Expanded(
@@ -226,10 +235,14 @@ class _TrustRow extends StatelessWidget {
 
 /// Small brand logo used in headers and panels.
 class _BrandMark extends StatelessWidget {
-  const _BrandMark({this.inverse = false, this.foreground});
+  const _BrandMark({this.inverse = false, this.foreground, this.showName});
 
   final bool inverse;
   final Color? foreground;
+
+  /// Whether the "Gewerber" wordmark is rendered next to the logo. Auth
+  /// headers turn it off on very narrow panes to avoid horizontal overflow.
+  final bool? showName;
 
   @override
   Widget build(BuildContext context) {
@@ -240,14 +253,16 @@ class _BrandMark extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         BrandLogo(size: 32, color: foreground),
-        const SizedBox(width: GewerberTokens.space8),
-        Text(
-          'Gewerber',
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            color: foreground ?? colors.onSurface,
-            fontWeight: FontWeight.w700,
+        if (showName ?? true) ...[
+          const SizedBox(width: GewerberTokens.space8),
+          Text(
+            'Gewerber',
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: foreground ?? colors.onSurface,
+              fontWeight: FontWeight.w700,
+            ),
           ),
-        ),
+        ],
       ],
     );
   }
