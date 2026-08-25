@@ -57,6 +57,13 @@ class AppSettingsCubit extends Cubit<AppSettingsState> {
   /// Best-effort: when the profile cannot be reached, the current local
   /// settings stay in place. Applied values are also written through to the
   /// device-local store so the next cold start matches the profile.
+  ///
+  /// Policy — **server wins while signed in**: the server always stores a
+  /// concrete language (see [_persist]), so syncing deliberately replaces
+  /// even a device "follow the system" sentinel with the profile's concrete
+  /// language, and that mirrored value survives sign-out because [reset]
+  /// re-applies the device store. The sentinel remains one [useSystemLocale]
+  /// away. Pinned by the sentinel-matrix tests.
   Future<void> syncFromServer() async {
     final serverRepository = repository;
     if (serverRepository == null) return;
