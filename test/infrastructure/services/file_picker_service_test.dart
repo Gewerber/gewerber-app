@@ -18,6 +18,31 @@ void main() {
       );
     });
 
+    test('resolves extensions regardless of letter case', () {
+      // package:mime lowercases the extension before table lookup.
+      expect(
+        FilePickerServiceImpl.mimeTypeFromNameAndPath(name: 'RECEIPT.PDF'),
+        'application/pdf',
+      );
+    });
+
+    test('resolves the extension after multiple dots in the name', () {
+      // Only the segment after the last dot is treated as the extension.
+      expect(
+        FilePickerServiceImpl.mimeTypeFromNameAndPath(name: 'a.b.v2.pdf'),
+        'application/pdf',
+      );
+    });
+
+    test('falls back to the path when the name is omitted', () {
+      expect(
+        FilePickerServiceImpl.mimeTypeFromNameAndPath(
+          path: '/tmp/receipts/invoice.pdf',
+        ),
+        'application/pdf',
+      );
+    });
+
     test('falls back to the path when the name yields no match', () {
       expect(
         FilePickerServiceImpl.mimeTypeFromNameAndPath(
