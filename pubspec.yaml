@@ -53,6 +53,9 @@ dependencies:
   # Receipt upload + documents screen: native/web file selection
   # (web, Android, iOS, desktop; wasm-ready).
   file_picker: ^12.0.0
+  # MIME detection for picked files on non-web platforms
+  # (see FilePickerService).
+  mime: ^2.0.0
   url_launcher: ^6.3.0
 
 dev_dependencies:
