@@ -127,7 +127,7 @@ class MockDashboardRepository implements DashboardRepository {
         ),
         DebtorLine(
           customerId: null,
-          displayName: '',
+          displayName: null,
           outstandingCents: 74000,
           invoiceCount: 1,
         ),

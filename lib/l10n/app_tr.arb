@@ -566,6 +566,7 @@
   "dashboardReceivablesTitle": "Alacaklar",
   "dashboardReceivablesEmpty": "Açık fatura yok. Hepsı ödendi!",
   "dashboardDebtorInvoicesCount": "{count} fatura",
+  "dashboardDebtorUnknownCustomer": "Müşteri yok",
   "dashboardOverdueTitle": "Vadesi geçmiş",
   "dashboardNoOverdue": "Vadesi geçen yok.",
   "dashboardDueOn": "Son tarih {date}",

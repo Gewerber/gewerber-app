@@ -742,6 +742,7 @@
       }
     }
   },
+  "dashboardDebtorUnknownCustomer": "No customer",
   "dashboardOverdueTitle": "Overdue",
   "dashboardNoOverdue": "Nothing overdue.",
   "dashboardDueOn": "Due {date}",

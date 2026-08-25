@@ -78,8 +78,9 @@ class TransactionActivity extends RecentActivityItem {
 
 /// One aggregation line of outstanding receivables per customer.
 ///
-/// Lines without a customer ([customerId] is `null`) carry an empty
-/// [displayName]; the UI renders a localized "no customer" label for them.
+/// Lines without a displayable customer ([displayName] is `null`) — no
+/// customer assigned, a detached customer row or a nameless one — render a
+/// localized "no customer" label in the UI.
 class DebtorLine extends Equatable {
   const DebtorLine({
     required this.customerId,
@@ -93,8 +94,8 @@ class DebtorLine extends Equatable {
   final int? customerId;
 
   /// Display name of the customer (company name if present, otherwise the
-  /// contact name); empty when [customerId] is `null`.
-  final String displayName;
+  /// contact name); `null` when there is no displayable name.
+  final String? displayName;
 
   /// Sum of open invoice totals.
   final int outstandingCents;

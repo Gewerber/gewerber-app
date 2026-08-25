@@ -661,7 +661,7 @@ void main() {
 
       final anonymous = summary.debtors.single;
       expect(anonymous.customerId, isNull);
-      expect(anonymous.displayName, '');
+      expect(anonymous.displayName, isNull);
       expect(anonymous.outstandingCents, 2000);
       expect(anonymous.invoiceCount, 1);
     });

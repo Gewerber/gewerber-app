@@ -566,6 +566,7 @@
   "dashboardReceivablesTitle": "Дебиторка",
   "dashboardReceivablesEmpty": "Открытых счетов нет. Всё оплачено!",
   "dashboardDebtorInvoicesCount": "{count} счетов",
+  "dashboardDebtorUnknownCustomer": "Без клиента",
   "dashboardOverdueTitle": "Просрочено",
   "dashboardNoOverdue": "Просроченных счетов нет.",
   "dashboardDueOn": "Оплата до {date}",

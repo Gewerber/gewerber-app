@@ -18,15 +18,20 @@ const int _activityFetchLimit = 20;
 
 /// Orders debtors largest-first. Ties are broken deterministically — by
 /// customer id ascending with the anonymous "no customer" bucket last, then
-/// by display name — because [List.sort] is not stable and equal-amount rows
-/// must not shuffle between refreshes.
+/// by display name ascending with nameless rows last — because [List.sort]
+/// is not stable and equal-amount rows must not shuffle between refreshes.
 int _compareDebtors(DebtorLine a, DebtorLine b) {
   final byAmount = b.outstandingCents.compareTo(a.outstandingCents);
   if (byAmount != 0) return byAmount;
   final (aId, bId) = (a.customerId, b.customerId);
   if (aId != null && bId != null && aId != bId) return aId.compareTo(bId);
   if ((aId == null) != (bId == null)) return aId == null ? 1 : -1;
-  return a.displayName.compareTo(b.displayName);
+  final (aName, bName) = (a.displayName, b.displayName);
+  if (aName != null && bName != null && aName != bName) {
+    return aName.compareTo(bName);
+  }
+  if ((aName == null) != (bName == null)) return aName == null ? 1 : -1;
+  return 0;
 }
 
 /// [DashboardRepository] that composes the existing module repositories.
@@ -34,7 +39,8 @@ int _compareDebtors(DebtorLine a, DebtorLine b) {
 /// No new server endpoints are required: trends come from monthly P&L
 /// reports, activity from the recent invoices/transactions/time entries and
 /// receivables from the open invoice lists plus one customer list.
-@LazySingleton(as: DashboardRepository, env: [AppEnvironment.authLive])
+@Deprecated('Replaced by server-side dashboard.getSummary; remove next release')
+@LazySingleton(env: [AppEnvironment.authLive])
 class CompositeDashboardRepository implements DashboardRepository {
   CompositeDashboardRepository(
     this._accounting,
@@ -141,9 +147,7 @@ class CompositeDashboardRepository implements DashboardRepository {
       for (final entry in totals.entries)
         DebtorLine(
           customerId: entry.key,
-          displayName: entry.key == null
-              ? ''
-              : (names[entry.key]?.displayName ?? ''),
+          displayName: entry.key == null ? null : names[entry.key]?.displayName,
           outstandingCents: entry.value.cents,
           invoiceCount: entry.value.count,
         ),

@@ -566,6 +566,7 @@
   "dashboardReceivablesTitle": "Offene Forderungen",
   "dashboardReceivablesEmpty": "Keine offenen Rechnungen. Alles bezahlt!",
   "dashboardDebtorInvoicesCount": "{count} Rechnungen",
+  "dashboardDebtorUnknownCustomer": "Ohne Kunde",
   "dashboardOverdueTitle": "Überfällig",
   "dashboardNoOverdue": "Nichts überfällig.",
   "dashboardDueOn": "Fällig am {date}",
