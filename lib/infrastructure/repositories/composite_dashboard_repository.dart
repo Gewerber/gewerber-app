@@ -124,19 +124,15 @@ class CompositeDashboardRepository implements DashboardRepository {
       );
     }
 
-    final debtorEntries = totals.entries.toList()
-      ..sort((a, b) => b.value.cents.compareTo(a.value.cents));
     final debtors = [
-      for (final entry in debtorEntries)
+      for (final entry in totals.entries)
         DebtorLine(
           customerId: entry.key,
-          displayName: entry.key == null
-              ? ''
-              : (names[entry.key]?.displayName ?? ''),
+          displayName: entry.key == null ? null : names[entry.key]?.displayName,
           outstandingCents: entry.value.cents,
           invoiceCount: entry.value.count,
         ),
-    ];
+    ]..sort((a, b) => b.outstandingCents.compareTo(a.outstandingCents));
 
     // Most urgent first; invoices without a due date fall back to the issue
     // date so they never drop out of the ordering.

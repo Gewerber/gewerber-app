@@ -125,10 +125,9 @@ class _DebtorRow extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final colors = Theme.of(context).colorScheme;
 
-    // Invoices without a customer assignment render a localized fallback.
-    final name = debtor.displayName.isEmpty
-        ? l10n.invoiceNoCustomer
-        : debtor.displayName;
+    // Debtors without a displayable customer (no assignment, detached row
+    // or a nameless one) render a localized fallback.
+    final name = debtor.displayName ?? l10n.dashboardDebtorUnknownCustomer;
 
     return Row(
       children: [

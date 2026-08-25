@@ -132,7 +132,7 @@ ReceivablesSummary _receivables() => ReceivablesSummary(
     ),
     DebtorLine(
       customerId: null,
-      displayName: '',
+      displayName: null,
       outstandingCents: 80000,
       invoiceCount: 1,
     ),
@@ -337,7 +337,8 @@ void main() {
       expect(find.textContaining('3.200,00'), findsOneWidget);
       expect(find.text('Alpha GmbH'), findsOneWidget);
       expect(find.text('2 invoices'), findsOneWidget);
-      // Only the "no customer" bucket renders the localized fallback name.
+      // Only the debtor without a displayable customer renders the
+      // localized fallback name.
       expect(find.text('No customer'), findsOneWidget);
       // A fourth debtor exists but only three are shown, hence the hint.
       expect(find.text('Gamma OHG'), findsNothing);
@@ -381,7 +382,7 @@ void main() {
           debtors: const [
             DebtorLine(
               customerId: null,
-              displayName: '',
+              displayName: null,
               outstandingCents: 250000,
               invoiceCount: 1,
             ),
@@ -434,6 +435,30 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(InvoiceDetailScreen), findsOneWidget);
+    });
+
+    testWidgets('renders the localized fallback for a nameless debtor', (
+      tester,
+    ) async {
+      final fake = _FakeDashboardRepository()
+        ..receivablesValue = ReceivablesSummary(
+          outstandingTotalCents: 60000,
+          // A detached customer row or a nameless one reaches the client as
+          // a `null` display name (never an empty string).
+          debtors: const [
+            DebtorLine(
+              customerId: 9,
+              displayName: null,
+              outstandingCents: 60000,
+              invoiceCount: 2,
+            ),
+          ],
+          overdueInvoices: const [],
+        );
+      await pumpSection(tester, fake: fake, section: const ReceivablesCard());
+
+      expect(find.text('No customer'), findsOneWidget);
+      expect(find.text('2 invoices'), findsOneWidget);
     });
 
     testWidgets('shows the empty state when nobody owes anything', (
