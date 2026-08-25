@@ -1,6 +1,7 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
+import 'package:mime/mime.dart';
 
 import 'package:gewerber_app/domain/entities/document.dart';
 
@@ -33,14 +34,35 @@ class FilePickerServiceImpl implements FilePickerService {
     );
   }
 
-  /// Best-effort MIME type from the picked file; the web implementation
-  /// exposes it through the underlying XFile.
+  /// Best-effort MIME type from the picked file.
+  ///
+  /// On web the underlying XFile carries the MIME type reported by the
+  /// browser; on all other platforms it is derived from the file name
+  /// (falling back to the full path) via `package:mime`.
   String? _mimeTypeOf(PlatformFile file) {
-    if (!kIsWeb) return null;
-    try {
-      return file.xFile.mimeType;
-    } catch (_) {
-      return null;
+    if (kIsWeb) {
+      try {
+        return file.xFile.mimeType;
+      } catch (_) {
+        return null;
+      }
     }
+    return mimeTypeFromNameAndPath(name: file.name, path: file.path);
+  }
+
+  /// Pure MIME lookup for non-web platforms: resolves the type from the
+  /// file name first, then from the path as a fallback. Exposed for unit
+  /// testing — the platform-conditional in [_mimeTypeOf] cannot be tested
+  /// without the platform channel.
+  @visibleForTesting
+  static String? mimeTypeFromNameAndPath({String? name, String? path}) {
+    if (name != null && name.isNotEmpty) {
+      final fromName = lookupMimeType(name);
+      if (fromName != null) return fromName;
+    }
+    if (path != null && path.isNotEmpty) {
+      return lookupMimeType(path);
+    }
+    return null;
   }
 }
