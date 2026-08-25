@@ -86,17 +86,21 @@ class _ChangeLine extends StatelessWidget {
       Localizations.localeOf(context).toString(),
     );
     if (change == null) return const SizedBox.shrink();
-    final positive = !change.startsWith('-');
+    final (icon, color) = switch (changeTone(change)) {
+      ChangeTone.positive => (Icons.trending_up, GewerberColors.success),
+      ChangeTone.negative => (Icons.trending_down, GewerberColors.error),
+      // A flat month is neither up nor down; render it muted.
+      ChangeTone.neutral => (
+        Icons.trending_flat,
+        Theme.of(context).colorScheme.onSurfaceVariant,
+      ),
+    };
 
     return Padding(
       padding: const EdgeInsets.only(top: GewerberTokens.space8),
       child: Row(
         children: [
-          Icon(
-            positive ? Icons.trending_up : Icons.trending_down,
-            size: 16,
-            color: positive ? GewerberColors.success : GewerberColors.error,
-          ),
+          Icon(icon, size: 16, color: color),
           const SizedBox(width: GewerberTokens.space4),
           Expanded(
             child: Text(

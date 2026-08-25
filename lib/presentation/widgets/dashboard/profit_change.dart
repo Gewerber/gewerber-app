@@ -5,6 +5,9 @@ import 'package:gewerber_app/domain/entities/dashboard.dart';
 /// Signed month-over-month change of the profit (e.g. `+12 %`, `-5 %`),
 /// or `null` when it cannot be computed (fewer than two months or a zero
 /// base month).
+///
+/// A zero change renders unsigned (`0 %`): it is neither an improvement nor
+/// a decline and is classified as [ChangeTone.neutral] by [changeTone].
 String? profitChangePercent(List<MonthlyFinancials> months, String locale) {
   if (months.length < 2) return null;
   final previous = months[months.length - 2].profitCents;
@@ -13,6 +16,17 @@ String? profitChangePercent(List<MonthlyFinancials> months, String locale) {
   if (previous == 0) return null;
 
   final ratio = (current - previous) / previous.abs();
-  final sign = ratio >= 0 ? '+' : '';
+  // Zero stays unsigned so it can render as a neutral "0 %".
+  final sign = ratio > 0 ? '+' : '';
   return '$sign${NumberFormat.percentPattern(locale).format(ratio)}';
 }
+
+/// Visual tone of a [profitChangePercent] result.
+enum ChangeTone { positive, negative, neutral }
+
+/// Classifies a formatted change string returned by [profitChangePercent].
+ChangeTone changeTone(String change) => change.startsWith('-')
+    ? ChangeTone.negative
+    : change.startsWith('+')
+    ? ChangeTone.positive
+    : ChangeTone.neutral;

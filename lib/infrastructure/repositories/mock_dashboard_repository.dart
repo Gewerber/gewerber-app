@@ -21,7 +21,10 @@ class MockDashboardRepository implements DashboardRepository {
     DateTime? anchor,
   }) async {
     final effectiveAnchor = anchor ?? DateTime.now();
-    final starts = lastNMonthStarts(effectiveAnchor, months);
+    // Same clamp as CompositeDashboardRepository so both implementations
+    // honour the repository contract on their own.
+    final count = months.clamp(1, DashboardRepository.maxTrendMonths);
+    final starts = lastNMonthStarts(effectiveAnchor, count);
     return [
       // Deterministic pseudo-series: stable per index, independent of the
       // absolute calendar month.

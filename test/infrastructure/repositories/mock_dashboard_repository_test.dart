@@ -31,6 +31,18 @@ void main() {
     expect(january.first.monthStart, DateTime(2025, 12, 1));
   });
 
+  test('caps the trend window like the composite repository', () async {
+    final months = await repository.monthlyFinancials(
+      months: 99,
+      anchor: DateTime(2026, 8, 24),
+    );
+
+    // The window is capped at the domain limit.
+    expect(months, hasLength(DashboardRepository.maxTrendMonths));
+    expect(months.first.monthStart, DateTime(2025, 9, 1));
+    expect(months.last.monthStart, DateTime(2026, 8, 1));
+  });
+
   test(
     'activity feed is sorted newest first and capped by the limit',
     () async {
