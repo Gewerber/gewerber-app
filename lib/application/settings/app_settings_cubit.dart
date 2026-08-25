@@ -67,7 +67,7 @@ class AppSettingsCubit extends Cubit<AppSettingsState> {
       final locale = _toLocale(preferences.locale);
       if (theme == state.themeMode && locale == state.locale) return;
       emit(state.copyWith(themeMode: theme, locale: locale));
-      _persistLocal(themeMode: theme, locale: locale);
+      _persistLocal();
       _syncFormatLocale();
     } catch (_) {
       // Non-fatal: keep the current local settings.
@@ -79,7 +79,7 @@ class AppSettingsCubit extends Cubit<AppSettingsState> {
     if (state.themeMode == mode) return;
     emit(state.copyWith(themeMode: mode));
     _persist();
-    _persistLocal(themeMode: mode);
+    _persistLocal();
   }
 
   /// Forces the given app locale.
@@ -88,7 +88,7 @@ class AppSettingsCubit extends Cubit<AppSettingsState> {
     emit(state.copyWith(locale: locale));
     _syncFormatLocale();
     _persist();
-    _persistLocal(locale: locale);
+    _persistLocal();
   }
 
   /// Returns to following the system language.
@@ -97,7 +97,7 @@ class AppSettingsCubit extends Cubit<AppSettingsState> {
     emit(state.copyWith(clearLocale: true));
     _syncFormatLocale();
     _persist();
-    _persistLocal(locale: null);
+    _persistLocal();
   }
 
   /// Resets to the initial state.
@@ -126,19 +126,20 @@ class AppSettingsCubit extends Cubit<AppSettingsState> {
     unawaited(_persistSafely(serverRepository, preferences));
   }
 
-  /// Writes [themeMode]/[locale] through to the device-local store.
+  /// Writes the current appearance through to the device-local store.
   ///
-  /// Only the given dimension is touched; `null` values mean "remove"
+  /// Always stores both dimensions from the freshly emitted state, so
+  /// persisting one never clears the other; a `null` locale means "remove"
   /// (follow the system). Best-effort: failures keep the local selection.
-  void _persistLocal({ThemeMode? themeMode, Locale? locale}) {
+  void _persistLocal() {
     final store = localStore;
     if (store == null) return;
     try {
-      if (themeMode != null) {
-        unawaited(store.saveTheme(_toAppTheme(themeMode)));
-      }
+      unawaited(store.saveTheme(_toAppTheme(state.themeMode)));
       unawaited(
-        store.saveLocale(locale == null ? null : _resolveAppLocale(locale)),
+        store.saveLocale(
+          state.locale == null ? null : _resolveAppLocale(state.locale),
+        ),
       );
     } catch (_) {
       // Best-effort: keep the local selection.
