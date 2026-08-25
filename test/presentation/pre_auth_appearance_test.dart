@@ -153,4 +153,39 @@ void main() {
     expect(currentMode(), ThemeMode.system);
     expect(screenBrightness(), Brightness.light);
   });
+
+  testWidgets(
+    'the auth header falls back to the bare logo below the narrow-pane '
+    'breakpoint and never overflows at 320px',
+    (tester) async {
+      tester.view.physicalSize = const Size(320, 568);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.reset);
+
+      await pumpApp(tester);
+
+      expect(find.byType(LoginScreen), findsOneWidget);
+      // Wordmark replaced by the bare logo…
+      expect(find.text('Gewerber'), findsNothing);
+      // …while both appearance switchers keep their place in the header.
+      expect(find.byTooltip('Language'), findsOneWidget);
+      expect(find.byTooltip('Theme'), findsOneWidget);
+      expect(
+        tester.takeException(),
+        isNull,
+        reason: 'auth header overflow at 320px',
+      );
+    },
+  );
+
+  testWidgets(
+    'the auth header shows the wordmark above the narrow-pane breakpoint',
+    (tester) async {
+      // Default 800×600 test surface: stacked layout, pane ≥ breakpoint.
+      await pumpApp(tester);
+
+      expect(find.byType(LoginScreen), findsOneWidget);
+      expect(find.text('Gewerber'), findsOneWidget);
+    },
+  );
 }

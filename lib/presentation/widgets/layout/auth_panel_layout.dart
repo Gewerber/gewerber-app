@@ -10,6 +10,12 @@ import 'package:gewerber_app/presentation/widgets/brand/brand_logo.dart';
 /// Desktop breakpoint above which the two-column brand + form layout applies.
 const double _authBreakpoint = 900;
 
+/// Content-pane width below which the header drops the brand wordmark:
+/// back button + appearance switchers + full wordmark no longer fit side by
+/// side (~360 logical px), so the bare-logo fallback keeps the row
+/// overflow-free down to the smallest supported phones (320 px class).
+const double _narrowPaneBreakpoint = 360;
+
 /// Responsive scaffold for authentication screens.
 ///
 /// On wide windows a two-column layout is used: a calm brand panel
@@ -107,10 +113,11 @@ class _ContentPane extends StatelessWidget {
               padding: const EdgeInsets.all(GewerberTokens.space16),
               child: LayoutBuilder(
                 builder: (context, constraints) {
-                  // Below ~360 logical px the full wordmark no longer fits
-                  // next to the back button plus the appearance switchers —
-                  // fall back to the bare logo so the header never overflows.
-                  final cramped = constraints.maxWidth < 360;
+                  // Below the narrow-pane breakpoint the full wordmark no
+                  // longer fits next to the back button plus the appearance
+                  // switchers — fall back to the bare logo so the header
+                  // never overflows.
+                  final cramped = constraints.maxWidth < _narrowPaneBreakpoint;
                   return Row(
                     children: [
                       if (showBackButton &&
