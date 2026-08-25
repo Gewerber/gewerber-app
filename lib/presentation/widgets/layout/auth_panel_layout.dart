@@ -280,36 +280,44 @@ class _AppearanceActions extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = _l10n(context);
     final state = context.watch<AppSettingsCubit>().state;
+    final activeLanguage = _LanguageChoice.of(state.locale);
 
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        PopupMenuButton<Locale?>(
+        PopupMenuButton<_LanguageChoice>(
           tooltip: l10n.languageTitle,
           icon: const Icon(Icons.language_outlined),
-          onSelected: (locale) => locale == null
+          onSelected: (choice) => choice.locale == null
               ? context.read<AppSettingsCubit>().useSystemLocale()
-              : context.read<AppSettingsCubit>().setLocale(locale),
+              : context.read<AppSettingsCubit>().setLocale(choice.locale!),
           itemBuilder: (_) => [
             _languageItem(
-              context,
-              value: null,
-              title: l10n.languageSystemDefault,
-              selected: state.isActiveLocale(null),
+              l10n.languageSystemDefault,
+              value: _LanguageChoice.system,
+              selected: activeLanguage == _LanguageChoice.system,
             ),
             const PopupMenuDivider(),
-            for (final (locale, name) in const [
-              (Locale('en'), 'English'),
-              (Locale('de'), 'Deutsch'),
-              (Locale('ru'), 'Русский'),
-              (Locale('tr'), 'Türkçe'),
-            ])
-              _languageItem(
-                context,
-                value: locale,
-                title: name,
-                selected: state.isActiveLocale(locale),
-              ),
+            _languageItem(
+              'English',
+              value: _LanguageChoice.english,
+              selected: activeLanguage == _LanguageChoice.english,
+            ),
+            _languageItem(
+              'Deutsch',
+              value: _LanguageChoice.german,
+              selected: activeLanguage == _LanguageChoice.german,
+            ),
+            _languageItem(
+              'Русский',
+              value: _LanguageChoice.russian,
+              selected: activeLanguage == _LanguageChoice.russian,
+            ),
+            _languageItem(
+              'Türkçe',
+              value: _LanguageChoice.turkish,
+              selected: activeLanguage == _LanguageChoice.turkish,
+            ),
           ],
         ),
         PopupMenuButton<ThemeMode>(
@@ -349,13 +357,12 @@ class _AppearanceActions extends StatelessWidget {
     );
   }
 
-  PopupMenuItem<Locale?> _languageItem(
-    BuildContext context, {
-    required Locale? value,
-    required String title,
+  PopupMenuItem<_LanguageChoice> _languageItem(
+    String title, {
+    required _LanguageChoice value,
     required bool selected,
   }) {
-    return PopupMenuItem<Locale?>(
+    return PopupMenuItem<_LanguageChoice>(
       value: value,
       child: _MenuEntry(title: title, selected: selected),
     );
@@ -373,6 +380,33 @@ class _AppearanceActions extends StatelessWidget {
       child: _MenuEntry(title: title, icon: icon, selected: selected),
     );
   }
+}
+
+/// Language choices offered on the pre-auth screens.
+///
+/// [system] cannot be expressed as a plain `Locale?` menu value because
+/// `PopupMenuButton` swallows null selections, so every choice gets its own
+/// non-null value and maps back to the cubit API.
+enum _LanguageChoice {
+  system,
+  english,
+  german,
+  russian,
+  turkish;
+
+  Locale? get locale => switch (this) {
+    system => null,
+    english => const Locale('en'),
+    german => const Locale('de'),
+    russian => const Locale('ru'),
+    turkish => const Locale('tr'),
+  };
+
+  static _LanguageChoice of(Locale? locale) =>
+      _LanguageChoice.values.firstWhere(
+        (choice) => choice.locale == locale,
+        orElse: () => _LanguageChoice.system,
+      );
 }
 
 /// One selectable row inside an appearance menu (icon + label + check mark).
