@@ -17,8 +17,9 @@ abstract final class AppConstants {
   static const int minPasswordLength = 8;
 
   /// Length of the email verification code used during registration
-  /// and password reset.
-  static const int verificationCodeLength = 6;
+  /// and password reset. Must match the backend generator
+  /// (`_verificationCodeLength` in `server.dart`).
+  static const int verificationCodeLength = 8;
 
   /// Time (in seconds) before a verification code can be requested again.
   static const int resendCodeCooldownSeconds = 30;

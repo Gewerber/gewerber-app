@@ -16,6 +16,7 @@ import 'package:gewerber_app/presentation/widgets/auth/auth_primary_button.dart'
 import 'package:gewerber_app/presentation/widgets/auth/auth_step_indicator.dart';
 import 'package:gewerber_app/presentation/widgets/auth/auth_success_view.dart';
 import 'package:gewerber_app/presentation/widgets/auth/password_strength_meter.dart';
+import 'package:gewerber_app/core/utils/constants.dart';
 import 'package:gewerber_app/presentation/widgets/auth/verification_code_input.dart';
 import 'package:gewerber_app/presentation/widgets/forms/custom_text_field.dart';
 import 'package:gewerber_app/presentation/widgets/layout/auth_panel_layout.dart';
@@ -266,7 +267,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
         ],
         VerificationCodeInput(
-          length: 8,
+          length: AppConstants.verificationCodeLength,
           enabled: !state.isSubmitting,
           hasError: failure != null,
           semanticsLabel: l10n.registerCodeStepTitle,
