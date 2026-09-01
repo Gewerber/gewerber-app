@@ -16,6 +16,7 @@ import 'package:gewerber_app/domain/entities/invoice.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 import 'package:gewerber_app/presentation/router/route_names.dart';
 import 'package:gewerber_app/presentation/widgets/common/section_card.dart';
+import 'package:gewerber_app/presentation/widgets/common/shimmer_loader.dart';
 
 /// InvoicingScreen — list of the active business's invoices.
 class InvoicingScreen extends StatefulWidget {
@@ -128,7 +129,7 @@ class _InvoicingScreenState extends State<InvoicingScreen> {
           Expanded(
             child: switch (state.status) {
               InvoiceViewStatus.initial || InvoiceViewStatus.loading =>
-                const Center(child: CircularProgressIndicator()),
+                const Center(child: ShimmerLoader(lines: 5, height: 16)),
               InvoiceViewStatus.failure => Center(
                 child: Text(l10n.invoiceError),
               ),

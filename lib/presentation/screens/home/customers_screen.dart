@@ -8,6 +8,7 @@ import 'package:gewerber_app/core/theme/app_theme.dart';
 import 'package:gewerber_app/domain/entities/customer.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 import 'package:gewerber_app/presentation/router/route_names.dart';
+import 'package:gewerber_app/presentation/widgets/common/shimmer_loader.dart';
 
 /// CustomersScreen — searchable list of the active business's customers.
 class CustomersScreen extends StatefulWidget {
@@ -91,7 +92,7 @@ class _CustomersScreenState extends State<CustomersScreen> {
       ),
       body: switch (state.status) {
         CustomerViewStatus.initial || CustomerViewStatus.loading =>
-          const Center(child: CircularProgressIndicator()),
+          const Center(child: ShimmerLoader(lines: 5, height: 16)),
         CustomerViewStatus.failure => Center(child: Text(l10n.customerError)),
         CustomerViewStatus.loaded when state.customers.isEmpty => _EmptyState(
           icon: Icons.people_outline,

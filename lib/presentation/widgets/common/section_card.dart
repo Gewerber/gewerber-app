@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:gewerber_app/core/theme/gewerber_tokens.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
+import 'package:gewerber_app/presentation/widgets/common/shimmer_loader.dart';
 
 /// Shell for a dashboard-style section card with an optional tap-through
 /// target.
@@ -35,8 +36,7 @@ class SectionCard extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            if (accentColor != null)
-              Container(width: 3, color: accentColor),
+            if (accentColor != null) Container(width: 3, color: accentColor),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(GewerberTokens.space16),
@@ -83,15 +83,9 @@ class SectionCardLoading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: GewerberTokens.space16),
-        child: SizedBox(
-          width: 24,
-          height: 24,
-          child: CircularProgressIndicator(strokeWidth: 2.5),
-        ),
-      ),
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: GewerberTokens.space8),
+      child: ShimmerLoader(lines: 2, height: 14),
     );
   }
 }
