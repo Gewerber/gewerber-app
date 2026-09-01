@@ -10,10 +10,12 @@ import 'package:gewerber_app/application/customers/customer_cubit.dart';
 import 'package:gewerber_app/application/invoices/invoice_cubit.dart';
 import 'package:gewerber_app/application/invoices/invoice_state.dart';
 import 'package:gewerber_app/core/theme/app_theme.dart';
+import 'package:gewerber_app/core/theme/gewerber_colors.dart';
 import 'package:gewerber_app/core/utils/format.dart';
 import 'package:gewerber_app/domain/entities/invoice.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 import 'package:gewerber_app/presentation/router/route_names.dart';
+import 'package:gewerber_app/presentation/widgets/common/section_card.dart';
 
 /// InvoicingScreen — list of the active business's invoices.
 class InvoicingScreen extends StatefulWidget {
@@ -207,8 +209,7 @@ class _InvoiceTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final colors = Theme.of(context).colorScheme;
-    final subtitle =
-        '${formatDate(invoice.issueDate)} · ${_statusLabel(l10n, invoice.status)}';
+    final subtitle = formatDate(invoice.issueDate);
 
     return Card(
       margin: EdgeInsets.zero,
@@ -218,10 +219,31 @@ class _InvoiceTile extends StatelessWidget {
         ),
         title: Text(invoice.number),
         subtitle: Text(subtitle),
-        trailing: Text(formatCents(invoice.totalCents)),
+        trailing: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(formatCents(invoice.totalCents)),
+            const SizedBox(height: 4),
+            SectionBadge(
+              label: _statusLabel(l10n, invoice.status),
+              color: _statusColor(colors, invoice.status),
+            ),
+          ],
+        ),
         onTap: onTap,
       ),
     );
+  }
+
+  Color _statusColor(ColorScheme colors, InvoiceStatus status) {
+    return switch (status) {
+      InvoiceStatus.draft => colors.onSurfaceVariant,
+      InvoiceStatus.sent => colors.primary,
+      InvoiceStatus.paid => GewerberColors.success,
+      InvoiceStatus.overdue => colors.error,
+      InvoiceStatus.cancelled => colors.outline,
+    };
   }
 
   String _statusLabel(AppLocalizations l10n, InvoiceStatus status) {
