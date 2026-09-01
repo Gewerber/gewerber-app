@@ -415,7 +415,7 @@ class _AmountRow extends StatelessWidget {
                   ? Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: GewerberTokens.space8,
-                        vertical: GewerberTokens.space6,
+                        vertical: GewerberTokens.space4,
                       ),
                       decoration: BoxDecoration(
                         color: entry.$3!.withValues(alpha: 0.08),

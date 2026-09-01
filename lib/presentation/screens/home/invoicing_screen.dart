@@ -10,7 +10,6 @@ import 'package:gewerber_app/application/customers/customer_cubit.dart';
 import 'package:gewerber_app/application/invoices/invoice_cubit.dart';
 import 'package:gewerber_app/application/invoices/invoice_state.dart';
 import 'package:gewerber_app/core/theme/app_theme.dart';
-import 'package:gewerber_app/core/theme/gewerber_colors.dart';
 import 'package:gewerber_app/core/utils/format.dart';
 import 'package:gewerber_app/domain/entities/invoice.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
