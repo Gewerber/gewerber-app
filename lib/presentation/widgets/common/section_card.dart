@@ -11,6 +11,7 @@ class SectionCard extends StatelessWidget {
     required this.title,
     required this.child,
     this.onTap,
+    this.accentColor,
   });
 
   final String title;
@@ -19,6 +20,11 @@ class SectionCard extends StatelessWidget {
   /// When set, the whole card navigates to the module on tap.
   final VoidCallback? onTap;
 
+  /// Optional left accent stripe color. When non-null a 3 px vertical bar is
+  /// rendered inside the card along the leading edge, vertically rounded to
+  /// match the card's [GewerberTokens.radiusCard] corners.
+  final Color? accentColor;
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -26,36 +32,45 @@ class SectionCard extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(GewerberTokens.space16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    // Announced as a heading so screen reader users can
-                    // jump between the dashboard sections.
-                    child: Semantics(
-                      header: true,
-                      child: Text(
-                        title,
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (accentColor != null)
+              Container(width: 3, color: accentColor),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(GewerberTokens.space16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          // Announced as a heading so screen reader users can
+                          // jump between the dashboard sections.
+                          child: Semantics(
+                            header: true,
+                            child: Text(
+                              title,
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                          ),
+                        ),
+                        if (onTap != null)
+                          Icon(
+                            Icons.chevron_right,
+                            size: 20,
+                            color: Theme.of(context).colorScheme.outline,
+                          ),
+                      ],
                     ),
-                  ),
-                  if (onTap != null)
-                    Icon(
-                      Icons.chevron_right,
-                      size: 20,
-                      color: Theme.of(context).colorScheme.outline,
-                    ),
-                ],
+                    const SizedBox(height: GewerberTokens.space12),
+                    child,
+                  ],
+                ),
               ),
-              const SizedBox(height: GewerberTokens.space12),
-              child,
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

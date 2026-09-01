@@ -200,6 +200,7 @@ class _OpenInvoicesSection extends StatelessWidget {
     return SectionCard(
       title: l10n.dashboardOpenInvoicesTitle,
       onTap: () => context.go(RouteNames.invoicing),
+      accentColor: Theme.of(context).colorScheme.primary,
       child: switch (state.status) {
         InvoiceViewStatus.initial ||
         InvoiceViewStatus.loading => const SectionCardLoading(),
@@ -292,6 +293,7 @@ class _MonthResultSection extends StatelessWidget {
     return SectionCard(
       title: l10n.dashboardMonthTitle,
       onTap: () => context.go(RouteNames.accounting),
+      accentColor: GewerberColors.accent,
       child: switch ((report, ok)) {
         (final report?, _) => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -368,6 +370,7 @@ class _TrackedTimeSection extends StatelessWidget {
     return SectionCard(
       title: l10n.dashboardTrackedTimeTitle,
       onTap: () => context.go(RouteNames.timeTracking),
+      accentColor: GewerberColors.accentDark,
       child: switch ((report, ok)) {
         (final report?, _) when report.totalMinutes > 0 => _AmountRow(
           entries: [
