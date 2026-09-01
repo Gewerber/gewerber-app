@@ -1,13 +1,18 @@
 import 'package:equatable/equatable.dart';
 
+import 'package:gewerber_app/core/utils/constants.dart';
+
 /// A one-time verification code sent by e-mail.
 ///
-/// Accepts the 8-digit codes the backend issues. Throws [FormatException]
-/// when the value does not match that shape.
+/// Accepts codes whose length matches [AppConstants.verificationCodeLength].
+/// Throws [FormatException] when the value does not match that shape.
 class VerificationCode extends Equatable {
   VerificationCode(String value) : value = value.trim() {
-    if (!RegExp(r'^\d{8}$').hasMatch(this.value)) {
-      throw const FormatException('Verification code must be 8 digits');
+    final pattern = '^\\d{${AppConstants.verificationCodeLength}}\$';
+    if (!RegExp(pattern).hasMatch(this.value)) {
+      throw FormatException(
+        'Verification code must be ${AppConstants.verificationCodeLength} digits',
+      );
     }
   }
 
