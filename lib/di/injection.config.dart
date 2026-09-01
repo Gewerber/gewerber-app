@@ -443,15 +443,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i268.UserProfileCubit>(
       () => _i268.UserProfileCubit(gh<_i439.UserProfileRepository>()),
     );
-    gh.lazySingleton<_i592.CompositeDashboardRepository>(
-      () => _i592.CompositeDashboardRepository(
-        gh<_i188.AccountingRepository>(),
-        gh<_i778.InvoiceRepository>(),
-        gh<_i323.TimeTrackingRepository>(),
-        gh<_i907.CustomerRepository>(),
-      ),
-      registerFor: {_auth_live},
-    );
     gh.lazySingleton<_i598.CustomerCubit>(
       () => _i598.CustomerCubit(gh<_i907.CustomerRepository>()),
     );
