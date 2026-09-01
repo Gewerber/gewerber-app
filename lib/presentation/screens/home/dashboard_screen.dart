@@ -410,29 +410,66 @@ class _AmountRow extends StatelessWidget {
         for (final (index, entry) in entries.indexed) ...[
           if (index > 0) const SizedBox(width: GewerberTokens.space12),
           Expanded(
-            // Label and value read as one node ("Income 1.500,00 €")
-            // instead of two unrelated texts.
             child: MergeSemantics(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    entry.$1,
-                    style: textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+              child: entry.$3 != null
+                  ? Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: GewerberTokens.space8,
+                        vertical: GewerberTokens.space6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: entry.$3!.withValues(alpha: 0.08),
+                        borderRadius: BorderRadius.circular(
+                          GewerberTokens.radiusButton,
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            entry.$1,
+                            style: textTheme.bodySmall?.copyWith(
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSurfaceVariant,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: GewerberTokens.space2),
+                          Text(
+                            entry.$2,
+                            style: textTheme.titleMedium?.copyWith(
+                              color: entry.$3,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    )
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          entry.$1,
+                          style: textTheme.bodySmall?.copyWith(
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurfaceVariant,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: GewerberTokens.space2),
+                        Text(
+                          entry.$2,
+                          style: textTheme.titleMedium,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: GewerberTokens.space2),
-                  Text(
-                    entry.$2,
-                    style: textTheme.titleMedium?.copyWith(color: entry.$3),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
             ),
           ),
         ],
