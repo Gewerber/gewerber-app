@@ -37,7 +37,7 @@ import 'package:gewerber_app/presentation/widgets/common/module_menu_tile.dart';
 import 'package:gewerber_app/presentation/widgets/common/section_card.dart';
 import 'package:gewerber_app/presentation/widgets/dashboard/month_bar_chart.dart';
 
-/// Widget tests for the systematic accessibility pass (TODO Этап 2).
+/// Widget tests for the systematic accessibility pass (Etap 2).
 ///
 /// Each test asserts one semantics guarantee added by the pass:
 /// header flags on section titles, tooltips/labels on navigation
