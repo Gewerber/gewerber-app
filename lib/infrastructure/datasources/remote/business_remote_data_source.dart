@@ -30,6 +30,18 @@ class BusinessRemoteDataSource {
     }
   }
 
+  /// Returns a single business by its ID.
+  Future<Business> getBusiness(int businessId) async {
+    try {
+      final model = await _client.business.get(businessId: businessId);
+      return _mapper.fromModel(model);
+    } on sdk.NotFoundException {
+      throw const NotFoundException();
+    } on sdk.ServerpodClientException {
+      throw const NetworkException();
+    }
+  }
+
   /// Creates a business on behalf of the signed-in user.
   Future<Business> create({
     required String name,

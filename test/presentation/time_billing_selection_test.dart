@@ -139,6 +139,20 @@ class _RecordingTimeTrackingRepository implements TimeTrackingRepository {
   @override
   Future<TimeReport> report(DateTime from, DateTime to, {int? projectId}) =>
       throw UnimplementedError();
+
+  @override
+  Future<Project> getProject(int projectId) => throw UnimplementedError();
+
+  @override
+  Future<TimeEntry> getTimeEntry(int timeEntryId) => throw UnimplementedError();
+
+  @override
+  Future<List<Task>> listAllTasks({
+    int? projectId,
+    TaskStatus? status,
+    int? limit,
+    int? offset,
+  }) => throw UnimplementedError();
 }
 
 void main() {

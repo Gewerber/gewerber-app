@@ -276,4 +276,7 @@ class _FixedCreatedAtDocumentRepository implements DocumentRepository {
   Future<DownloadedDocument> download(BusinessDocument document) {
     return _inner.download(document);
   }
+
+  @override
+  Future<void> delete(int documentId) => throw UnimplementedError();
 }

@@ -174,4 +174,7 @@ class _FailingRepository implements DocumentRepository {
   @override
   Future<DownloadedDocument> download(BusinessDocument document) =>
       throw UnimplementedError();
+
+  @override
+  Future<void> delete(int documentId) => throw UnimplementedError();
 }

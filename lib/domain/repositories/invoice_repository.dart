@@ -1,9 +1,24 @@
 import 'package:gewerber_app/domain/entities/invoice.dart';
+import 'package:gewerber_app/domain/entities/invoice_list_page.dart';
 
 /// Contract for invoice operations used by the application layer.
 abstract interface class InvoiceRepository {
   /// Lists the business's invoices, optionally filtered by [status].
   Future<List<Invoice>> list({InvoiceStatus? status, int? limit, int? offset});
+
+  /// Offset-based paginated listing of invoices.
+  Future<InvoiceListPage> listPage({
+    InvoiceStatus? status,
+    int? limit,
+    int? offset,
+  });
+
+  /// Cursor-based paginated listing of invoices.
+  Future<InvoiceCursorPage> listCursorPage({
+    InvoiceStatus? status,
+    int? limit,
+    String? cursor,
+  });
 
   /// Loads a single invoice together with its line items.
   Future<({Invoice invoice, List<InvoiceItem> items})> get(int invoiceId);
