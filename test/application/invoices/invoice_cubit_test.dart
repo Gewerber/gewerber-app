@@ -5,6 +5,7 @@ import 'package:gewerber_app/application/invoices/invoice_state.dart';
 import 'package:gewerber_app/core/errors/exceptions.dart';
 import 'package:gewerber_app/core/errors/failures.dart';
 import 'package:gewerber_app/domain/entities/invoice.dart';
+import 'package:gewerber_app/domain/entities/invoice_list_page.dart';
 import 'package:gewerber_app/domain/repositories/invoice_repository.dart';
 
 class _FakeInvoiceRepository implements InvoiceRepository {
@@ -146,6 +147,20 @@ class _FakeInvoiceRepository implements InvoiceRepository {
   Future<InvoiceReminder> sendReminder(int invoiceId) async {
     return InvoiceReminder(id: 1, invoiceId: invoiceId, level: 1);
   }
+
+  @override
+  Future<InvoiceCursorPage> listCursorPage({
+    InvoiceStatus? status,
+    int? limit,
+    String? cursor,
+  }) => throw UnimplementedError();
+
+  @override
+  Future<InvoiceListPage> listPage({
+    InvoiceStatus? status,
+    int? limit,
+    int? offset,
+  }) => throw UnimplementedError();
 }
 
 void main() {

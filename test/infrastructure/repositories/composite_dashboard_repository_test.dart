@@ -5,6 +5,7 @@ import 'package:gewerber_app/domain/entities/customer.dart';
 import 'package:gewerber_app/domain/entities/customer_list_page.dart';
 import 'package:gewerber_app/domain/entities/dashboard.dart';
 import 'package:gewerber_app/domain/entities/invoice.dart';
+import 'package:gewerber_app/domain/entities/invoice_list_page.dart';
 import 'package:gewerber_app/domain/entities/time_tracking.dart';
 import 'package:gewerber_app/domain/entities/transaction.dart';
 import 'package:gewerber_app/domain/repositories/accounting_repository.dart';
@@ -91,6 +92,10 @@ class _FakeAccountingRepository implements AccountingRepository {
   @override
   Future<AccountingTransaction> update(AccountingTransaction transaction) =>
       throw UnimplementedError();
+
+  @override
+  Future<AccountingTransaction> getAccountingTransaction(int transactionId) =>
+      throw UnimplementedError();
 }
 
 class _FakeInvoiceRepository implements InvoiceRepository {
@@ -175,6 +180,20 @@ class _FakeInvoiceRepository implements InvoiceRepository {
   @override
   Future<Invoice> update(Invoice invoice, {required List<InvoiceItem> items}) =>
       throw UnimplementedError();
+
+  @override
+  Future<InvoiceCursorPage> listCursorPage({
+    InvoiceStatus? status,
+    int? limit,
+    String? cursor,
+  }) => throw UnimplementedError();
+
+  @override
+  Future<InvoiceListPage> listPage({
+    InvoiceStatus? status,
+    int? limit,
+    int? offset,
+  }) => throw UnimplementedError();
 }
 
 class _FakeTimeTrackingRepository implements TimeTrackingRepository {
@@ -281,6 +300,20 @@ class _FakeTimeTrackingRepository implements TimeTrackingRepository {
 
   @override
   Future<List<Task>> listTasks(int projectId) => throw UnimplementedError();
+
+  @override
+  Future<Project> getProject(int projectId) => throw UnimplementedError();
+
+  @override
+  Future<TimeEntry> getTimeEntry(int timeEntryId) => throw UnimplementedError();
+
+  @override
+  Future<List<Task>> listAllTasks({
+    int? projectId,
+    TaskStatus? status,
+    int? limit,
+    int? offset,
+  }) => throw UnimplementedError();
 }
 
 class _FakeCustomerRepository implements CustomerRepository {

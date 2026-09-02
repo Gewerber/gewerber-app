@@ -34,4 +34,7 @@ abstract interface class DocumentRepository {
 
   /// Downloads the bytes of the document.
   Future<DownloadedDocument> download(BusinessDocument document);
+
+  /// Deletes the document identified by [documentId].
+  Future<void> delete(int documentId);
 }

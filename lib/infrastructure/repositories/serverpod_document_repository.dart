@@ -57,6 +57,10 @@ class ServerpodDocumentRepository implements DocumentRepository {
   }
 
   @override
+  Future<void> delete(int documentId) =>
+      _guard(() => _dataSource.delete(documentId));
+
+  @override
   Future<DownloadedDocument> download(BusinessDocument document) {
     return _guard(() => _dataSource.download(document));
   }

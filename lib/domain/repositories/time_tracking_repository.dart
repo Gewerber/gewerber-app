@@ -22,10 +22,21 @@ abstract interface class TimeTrackingRepository {
   /// Deletes a project and its tasks.
   Future<void> deleteProject(int projectId);
 
+  /// Retrieves a single project by its ID.
+  Future<Project> getProject(int projectId);
+
   // ── Tasks ───────────────────────────────────────────────────────────────
 
   /// Lists the tasks of a project.
   Future<List<Task>> listTasks(int projectId);
+
+  /// Lists all tasks across projects, optionally filtered.
+  Future<List<Task>> listAllTasks({
+    int? projectId,
+    TaskStatus? status,
+    int? limit,
+    int? offset,
+  });
 
   /// Creates a task within a project.
   Future<Task> createTask({
@@ -38,6 +49,9 @@ abstract interface class TimeTrackingRepository {
   Future<Task> updateTask(Task task);
 
   // ── Time entries ────────────────────────────────────────────────────────
+
+  /// Retrieves a single time entry by its ID.
+  Future<TimeEntry> getTimeEntry(int timeEntryId);
 
   /// Lists time entries with optional filters.
   Future<List<TimeEntry>> listEntries({
