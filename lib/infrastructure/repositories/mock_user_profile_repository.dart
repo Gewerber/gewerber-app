@@ -2,6 +2,7 @@ import 'package:injectable/injectable.dart';
 
 import 'package:gewerber_app/core/config/app_environment.dart';
 import 'package:gewerber_app/core/errors/exceptions.dart';
+import 'package:gewerber_app/domain/entities/my_identity.dart';
 import 'package:gewerber_app/domain/entities/user_profile.dart';
 import 'package:gewerber_app/domain/repositories/user_profile_repository.dart';
 
@@ -28,10 +29,25 @@ class MockUserProfileRepository implements UserProfileRepository {
   }
 
   @override
+  Future<MyIdentity> me() async {
+    if (_deleted) throw const AccountDeletedException();
+    return const MyIdentity(
+      userId: 'mock-user',
+      memberships: [],
+    );
+  }
+
+  @override
   Future<UserProfile> updateDisplayName(String? displayName) async {
     if (_deleted) throw const AccountDeletedException();
     _profile = UserProfile(userId: _profile.userId, displayName: displayName);
     return _profile;
+  }
+
+  @override
+  Future<List<int>> exportMyData() async {
+    if (_deleted) throw const AccountDeletedException();
+    return [];
   }
 
   @override

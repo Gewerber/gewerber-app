@@ -12,6 +12,9 @@ abstract interface class AccountingRepository {
     int? offset,
   });
 
+  /// Retrieves a single transaction by its ID.
+  Future<AccountingTransaction> getAccountingTransaction(int transactionId);
+
   /// Records an income or expense transaction.
   ///
   /// [receiptDocumentId] links a previously uploaded receipt document

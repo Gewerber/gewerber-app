@@ -58,6 +58,10 @@ class _FakeAccountingRepository implements AccountingRepository {
     DateTime? from,
     DateTime? to,
   }) => throw UnimplementedError();
+
+  @override
+  Future<AccountingTransaction> getAccountingTransaction(int transactionId) =>
+      throw UnimplementedError();
 }
 
 AccountingTransaction transaction(int id, {int amountCents = 1000}) {

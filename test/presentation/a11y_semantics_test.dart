@@ -82,6 +82,9 @@ class _PendingUploadDocumentRepository implements DocumentRepository {
   Future<DownloadedDocument> download(BusinessDocument document) {
     throw UnimplementedError();
   }
+
+  @override
+  Future<void> delete(int documentId) => throw UnimplementedError();
 }
 
 class _StubPickerService implements FilePickerService {

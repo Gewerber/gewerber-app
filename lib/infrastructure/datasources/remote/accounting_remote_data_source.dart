@@ -45,6 +45,19 @@ class AccountingRemoteDataSource {
     }
   }
 
+  Future<AccountingTransaction> getAccountingTransaction(
+    int transactionId,
+  ) async {
+    try {
+      final model = await _client.accounting.get(transactionId);
+      return _mapper.fromModel(model);
+    } on sdk.NotFoundException {
+      throw const NotFoundException();
+    } on sdk.ServerpodClientException {
+      throw const NetworkException();
+    }
+  }
+
   Future<AccountingTransaction> create({
     required TransactionType type,
     required TransactionCategory category,
