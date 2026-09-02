@@ -6,7 +6,10 @@ import 'package:gewerber_app/presentation/widgets/common/shimmer_loader.dart';
 
 /// Shell for a dashboard-style section card with an optional tap-through
 /// target.
-class SectionCard extends StatelessWidget {
+///
+/// When [onTap] is provided the card gains subtle hover elevation and a brief
+/// press-to-scale feedback animation.
+class SectionCard extends StatefulWidget {
   const SectionCard({
     super.key,
     required this.title,
@@ -27,16 +30,31 @@ class SectionCard extends StatelessWidget {
   final Color? accentColor;
 
   @override
+  State<SectionCard> createState() => _SectionCardState();
+}
+
+class _SectionCardState extends State<SectionCard> {
+  bool _isHovered = false;
+  bool _isPressed = false;
+
+  @override
   Widget build(BuildContext context) {
-    return Card(
+    final hasInteraction = widget.onTap != null;
+
+    Widget card = Card(
       margin: EdgeInsets.zero,
       clipBehavior: Clip.antiAlias,
+      elevation: _isHovered && hasInteraction ? 2 : 0,
       child: InkWell(
-        onTap: onTap,
+        onTap: widget.onTap,
+        onTapDown: hasInteraction ? (_) => setState(() => _isPressed = true) : null,
+        onTapUp: hasInteraction ? (_) => setState(() => _isPressed = false) : null,
+        onTapCancel: hasInteraction ? () => setState(() => _isPressed = false) : null,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            if (accentColor != null) Container(width: 3, color: accentColor),
+            if (widget.accentColor != null)
+              Container(width: 3, color: widget.accentColor),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(GewerberTokens.space16),
@@ -51,12 +69,12 @@ class SectionCard extends StatelessWidget {
                           child: Semantics(
                             header: true,
                             child: Text(
-                              title,
+                              widget.title,
                               style: Theme.of(context).textTheme.titleMedium,
                             ),
                           ),
                         ),
-                        if (onTap != null)
+                        if (widget.onTap != null)
                           Icon(
                             Icons.chevron_right,
                             size: 20,
@@ -65,7 +83,7 @@ class SectionCard extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: GewerberTokens.space12),
-                    child,
+                    widget.child,
                   ],
                 ),
               ),
@@ -74,6 +92,22 @@ class SectionCard extends StatelessWidget {
         ),
       ),
     );
+
+    if (hasInteraction) {
+      card = AnimatedScale(
+        scale: _isPressed ? 0.98 : 1.0,
+        duration: const Duration(milliseconds: 120),
+        curve: Curves.easeOutCubic,
+        child: MouseRegion(
+          onEnter: (_) => setState(() => _isHovered = true),
+          onExit: (_) => setState(() => _isHovered = false),
+          cursor: SystemMouseCursors.click,
+          child: card,
+        ),
+      );
+    }
+
+    return card;
   }
 }
 
