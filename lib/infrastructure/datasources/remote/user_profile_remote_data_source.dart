@@ -3,6 +3,7 @@ import 'package:injectable/injectable.dart';
 
 import 'package:gewerber_app/core/config/app_environment.dart';
 import 'package:gewerber_app/core/errors/exceptions.dart';
+import 'package:gewerber_app/domain/entities/my_identity.dart' as domain;
 import 'package:gewerber_app/domain/entities/user_profile.dart';
 import 'package:gewerber_app/infrastructure/core/serverpod_client_factory.dart';
 
@@ -26,6 +27,30 @@ class UserProfileRemoteDataSource {
     } on sdk.NotFoundException {
       // The backend answers NotFound for every profile request of a deleted
       // account.
+      throw const AccountDeletedException();
+    } on sdk.ServerpodClientException {
+      throw const NetworkException();
+    }
+  }
+
+  /// Returns the authenticated caller's own identity.
+  Future<domain.MyIdentity> me() async {
+    try {
+      final identity = await _client.userProfile.me();
+      return _fromIdentityModel(identity);
+    } on sdk.NotFoundException {
+      throw const AccountDeletedException();
+    } on sdk.ServerpodClientException {
+      throw const NetworkException();
+    }
+  }
+
+  /// Exports all data of the signed-in user as a ZIP archive (GDPR Art. 20).
+  Future<List<int>> exportMyData() async {
+    try {
+      final byteData = await _client.userProfile.exportMyData();
+      return byteData.buffer.asUint8List().toList();
+    } on sdk.NotFoundException {
       throw const AccountDeletedException();
     } on sdk.ServerpodClientException {
       throw const NetworkException();
@@ -74,6 +99,24 @@ class UserProfileRemoteDataSource {
     return UserProfile(
       userId: model.userId.toString(),
       displayName: model.displayName,
+    );
+  }
+
+  domain.MyIdentity _fromIdentityModel(sdk.MyIdentity model) {
+    return domain.MyIdentity(
+      userId: model.userId.toString(),
+      globalRole: model.globalRole != null
+          ? domain.AdminRole.fromName(model.globalRole!.toJson())
+          : null,
+      memberships: model.memberships
+          .map(
+            (m) => domain.MyMembershipInfo(
+              businessId: m.businessId,
+              businessName: m.businessName,
+              role: domain.MembershipRole.fromName(m.role.toJson()),
+            ),
+          )
+          .toList(),
     );
   }
 }

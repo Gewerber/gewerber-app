@@ -1,6 +1,7 @@
 import 'package:injectable/injectable.dart';
 
 import 'package:gewerber_app/core/config/app_environment.dart';
+import 'package:gewerber_app/core/errors/exceptions.dart';
 import 'package:gewerber_app/domain/entities/invoice.dart';
 import 'package:gewerber_app/domain/entities/time_tracking.dart';
 import 'package:gewerber_app/domain/repositories/time_tracking_repository.dart';
@@ -58,11 +59,38 @@ class MockTimeTrackingRepository implements TimeTrackingRepository {
     _tasks.removeWhere((value) => value.projectId == projectId);
   }
 
+  @override
+  Future<Project> getProject(int projectId) async {
+    final project = _projects.where((p) => p.id == projectId).firstOrNull;
+    if (project == null) throw const NotFoundException();
+    return project;
+  }
+
   // ── Tasks ───────────────────────────────────────────────────────────────
 
   @override
   Future<List<Task>> listTasks(int projectId) async {
     return _tasks.where((task) => task.projectId == projectId).toList();
+  }
+
+  @override
+  Future<List<Task>> listAllTasks({
+    int? projectId,
+    TaskStatus? status,
+    int? limit,
+    int? offset,
+  }) async {
+    final result = _tasks
+        .where(
+          (task) =>
+              (projectId == null || task.projectId == projectId) &&
+              (status == null || task.status == status),
+        )
+        .toList();
+    final start = offset ?? 0;
+    return limit == null
+        ? result.skip(start).toList()
+        : result.skip(start).take(limit).toList();
   }
 
   @override
@@ -90,6 +118,13 @@ class MockTimeTrackingRepository implements TimeTrackingRepository {
   }
 
   // ── Time entries ────────────────────────────────────────────────────────
+
+  @override
+  Future<TimeEntry> getTimeEntry(int timeEntryId) async {
+    final entry = _entries.where((e) => e.id == timeEntryId).firstOrNull;
+    if (entry == null) throw const NotFoundException();
+    return entry;
+  }
 
   @override
   Future<List<TimeEntry>> listEntries({

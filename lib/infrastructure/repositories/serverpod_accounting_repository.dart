@@ -35,6 +35,11 @@ class ServerpodAccountingRepository implements AccountingRepository {
   }
 
   @override
+  Future<AccountingTransaction> getAccountingTransaction(int transactionId) {
+    return _guard(() => _dataSource.getAccountingTransaction(transactionId));
+  }
+
+  @override
   Future<AccountingTransaction> create({
     required TransactionType type,
     required TransactionCategory category,
