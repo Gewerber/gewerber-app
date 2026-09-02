@@ -42,10 +42,10 @@ dependencies:
   # Public stub of the commercial client; the generated backend client SDK
   # embeds the module callers. Contributors with a private checkout resolve
   # the real package via gitignored pubspec_overrides.yaml.
-  gewerber_commercial_client:
+  gewerber_backend_commercial_client:
     git:
-      url: https://github.com/Gewerber/gewerber-backend--stubs.git
-      path: gewerber_commercial_client
+      url: https://github.com/Gewerber/gewerber-backend-stubs.git
+      path: gewerber_backend_commercial_client
       ref: main
   flutter_animate: ^4.5.2
   flutter_flavor: ^3.1.4
