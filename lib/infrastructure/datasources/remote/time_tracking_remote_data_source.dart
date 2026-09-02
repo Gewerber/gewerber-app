@@ -87,11 +87,41 @@ class TimeTrackingRemoteDataSource {
     }
   }
 
+  Future<Project> getProject(int projectId) async {
+    try {
+      final model = await _client.project.get(projectId);
+      return _mapper.projectFromModel(model);
+    } on sdk.NotFoundException {
+      throw const NotFoundException();
+    } on sdk.ServerpodClientException {
+      throw const NetworkException();
+    }
+  }
+
   // ── Tasks ───────────────────────────────────────────────────────────────
 
   Future<List<Task>> listTasks(int projectId) async {
     try {
       final models = await _client.project.getTasks(projectId);
+      return models.map(_mapper.taskFromModel).toList();
+    } on sdk.ServerpodClientException {
+      throw const NetworkException();
+    }
+  }
+
+  Future<List<Task>> listAllTasks({
+    int? projectId,
+    TaskStatus? status,
+    int? limit,
+    int? offset,
+  }) async {
+    try {
+      final models = await _client.task.list(
+        projectId: projectId,
+        status: status == null ? null : _mapper.toProtocolTaskStatus(status),
+        limit: limit,
+        offset: offset,
+      );
       return models.map(_mapper.taskFromModel).toList();
     } on sdk.ServerpodClientException {
       throw const NetworkException();
@@ -134,6 +164,17 @@ class TimeTrackingRemoteDataSource {
   }
 
   // ── Time entries ────────────────────────────────────────────────────────
+
+  Future<TimeEntry> getTimeEntry(int timeEntryId) async {
+    try {
+      final model = await _client.timeEntry.get(timeEntryId);
+      return _mapper.entryFromModel(model);
+    } on sdk.NotFoundException {
+      throw const NotFoundException();
+    } on sdk.ServerpodClientException {
+      throw const NetworkException();
+    }
+  }
 
   Future<List<TimeEntry>> listEntries({
     int? projectId,

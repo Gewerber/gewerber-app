@@ -86,6 +86,12 @@ class MockDocumentRepository implements DocumentRepository {
   }
 
   @override
+  Future<void> delete(int documentId) async {
+    _documents.removeWhere((d) => d.id == documentId);
+    _bytesById.remove(documentId);
+  }
+
+  @override
   Future<DownloadedDocument> download(BusinessDocument document) async {
     final bytes = _bytesById[document.id];
     if (bytes == null) throw StateError('Unknown document ${document.id}');
