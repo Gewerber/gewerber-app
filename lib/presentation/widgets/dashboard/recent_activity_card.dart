@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:gewerber_app/application/dashboard/dashboard_cubit.dart';
 import 'package:gewerber_app/application/dashboard/dashboard_state.dart';
+import 'package:gewerber_app/core/theme/gewerber_colors.dart';
 import 'package:gewerber_app/core/theme/gewerber_tokens.dart';
 import 'package:gewerber_app/core/utils/format.dart';
 import 'package:gewerber_app/domain/entities/dashboard.dart';
@@ -24,6 +25,7 @@ class RecentActivityCard extends StatelessWidget {
 
     return SectionCard(
       title: l10n.dashboardRecentActivityTitle,
+      accentColor: GewerberColors.accentDark,
       child: switch (state.activityStatus) {
         DashboardSectionStatus.initial ||
         DashboardSectionStatus.loading => const SectionCardLoading(),

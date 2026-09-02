@@ -8,6 +8,8 @@ import 'package:gewerber_app/core/theme/app_theme.dart';
 import 'package:gewerber_app/domain/entities/customer.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 import 'package:gewerber_app/presentation/router/route_names.dart';
+import 'package:gewerber_app/presentation/widgets/common/shimmer_loader.dart';
+import 'package:gewerber_app/presentation/widgets/common/staggered_list_item.dart';
 
 /// CustomersScreen — searchable list of the active business's customers.
 class CustomersScreen extends StatefulWidget {
@@ -91,7 +93,7 @@ class _CustomersScreenState extends State<CustomersScreen> {
       ),
       body: switch (state.status) {
         CustomerViewStatus.initial || CustomerViewStatus.loading =>
-          const Center(child: CircularProgressIndicator()),
+          const Center(child: ShimmerLoader(lines: 5, height: 16)),
         CustomerViewStatus.failure => Center(child: Text(l10n.customerError)),
         CustomerViewStatus.loaded when state.customers.isEmpty => _EmptyState(
           icon: Icons.people_outline,
@@ -147,12 +149,15 @@ class _CustomersScreenState extends State<CustomersScreen> {
       separatorBuilder: (_, _) => const SizedBox(height: 8),
       itemBuilder: (context, index) {
         final customer = customers[index];
-        return _CustomerTile(
-          customer: customer,
-          onTap: () => context.push(RouteNames.customerEdit, extra: customer),
-          onDelete: customer.status == CustomerStatus.active
-              ? () => _confirmDelete(customer)
-              : null,
+        return StaggeredListItem(
+          index: index,
+          child: _CustomerTile(
+            customer: customer,
+            onTap: () => context.push(RouteNames.customerEdit, extra: customer),
+            onDelete: customer.status == CustomerStatus.active
+                ? () => _confirmDelete(customer)
+                : null,
+          ),
         );
       },
     );

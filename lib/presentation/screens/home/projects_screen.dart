@@ -8,6 +8,7 @@ import 'package:gewerber_app/core/theme/app_theme.dart';
 import 'package:gewerber_app/core/utils/format.dart';
 import 'package:gewerber_app/domain/entities/time_tracking.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
+import 'package:gewerber_app/presentation/widgets/common/shimmer_loader.dart';
 
 /// ProjectsScreen — projects and their tasks.
 class ProjectsScreen extends StatefulWidget {
@@ -156,7 +157,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
       ),
       body: switch (state.status) {
         ProjectsViewStatus.initial || ProjectsViewStatus.loading =>
-          const Center(child: CircularProgressIndicator()),
+          const Center(child: ShimmerLoader(lines: 5, height: 16)),
         ProjectsViewStatus.failure => Center(
           child: Text(l10n.projectLoadError),
         ),

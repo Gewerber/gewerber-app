@@ -11,6 +11,7 @@ import 'package:gewerber_app/domain/entities/customer.dart';
 import 'package:gewerber_app/domain/entities/recurring_schedule.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 import 'package:gewerber_app/presentation/router/route_names.dart';
+import 'package:gewerber_app/presentation/widgets/common/shimmer_loader.dart';
 
 /// RecurringSchedulesScreen — list of the active business's recurring
 /// invoice schedules, upcoming next issue first.
@@ -51,7 +52,7 @@ class _RecurringSchedulesScreenState extends State<RecurringSchedulesScreen> {
       body: switch (state.status) {
         RecurringScheduleViewStatus.initial ||
         RecurringScheduleViewStatus.loading => const Center(
-          child: CircularProgressIndicator(),
+          child: ShimmerLoader(lines: 5, height: 16),
         ),
         RecurringScheduleViewStatus.failure => Center(
           child: Text(l10n.recurringLoadError),

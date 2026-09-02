@@ -2,15 +2,20 @@ import 'package:flutter/material.dart';
 
 import 'package:gewerber_app/core/theme/gewerber_tokens.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
+import 'package:gewerber_app/presentation/widgets/common/shimmer_loader.dart';
 
 /// Shell for a dashboard-style section card with an optional tap-through
 /// target.
-class SectionCard extends StatelessWidget {
+///
+/// When [onTap] is provided the card gains subtle hover elevation and a brief
+/// press-to-scale feedback animation.
+class SectionCard extends StatefulWidget {
   const SectionCard({
     super.key,
     required this.title,
     required this.child,
     this.onTap,
+    this.accentColor,
   });
 
   final String title;
@@ -19,46 +24,96 @@ class SectionCard extends StatelessWidget {
   /// When set, the whole card navigates to the module on tap.
   final VoidCallback? onTap;
 
+  /// Optional left accent stripe color. When non-null a 3 px vertical bar is
+  /// rendered inside the card along the leading edge, vertically rounded to
+  /// match the card's [GewerberTokens.radiusCard] corners.
+  final Color? accentColor;
+
+  @override
+  State<SectionCard> createState() => _SectionCardState();
+}
+
+class _SectionCardState extends State<SectionCard> {
+  bool _isHovered = false;
+  bool _isPressed = false;
+
   @override
   Widget build(BuildContext context) {
-    return Card(
+    final hasInteraction = widget.onTap != null;
+
+    Widget card = Card(
       margin: EdgeInsets.zero,
       clipBehavior: Clip.antiAlias,
+      elevation: _isHovered && hasInteraction ? 2 : 0,
       child: InkWell(
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(GewerberTokens.space16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    // Announced as a heading so screen reader users can
-                    // jump between the dashboard sections.
-                    child: Semantics(
-                      header: true,
-                      child: Text(
-                        title,
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
+        onTap: widget.onTap,
+        onTapDown: hasInteraction
+            ? (_) => setState(() => _isPressed = true)
+            : null,
+        onTapUp: hasInteraction
+            ? (_) => setState(() => _isPressed = false)
+            : null,
+        onTapCancel: hasInteraction
+            ? () => setState(() => _isPressed = false)
+            : null,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (widget.accentColor != null)
+              Container(width: 3, color: widget.accentColor),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(GewerberTokens.space16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          // Announced as a heading so screen reader users can
+                          // jump between the dashboard sections.
+                          child: Semantics(
+                            header: true,
+                            child: Text(
+                              widget.title,
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                          ),
+                        ),
+                        if (widget.onTap != null)
+                          Icon(
+                            Icons.chevron_right,
+                            size: 20,
+                            color: Theme.of(context).colorScheme.outline,
+                          ),
+                      ],
                     ),
-                  ),
-                  if (onTap != null)
-                    Icon(
-                      Icons.chevron_right,
-                      size: 20,
-                      color: Theme.of(context).colorScheme.outline,
-                    ),
-                ],
+                    const SizedBox(height: GewerberTokens.space12),
+                    widget.child,
+                  ],
+                ),
               ),
-              const SizedBox(height: GewerberTokens.space12),
-              child,
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
+
+    if (hasInteraction) {
+      card = AnimatedScale(
+        scale: _isPressed ? 0.98 : 1.0,
+        duration: const Duration(milliseconds: 120),
+        curve: Curves.easeOutCubic,
+        child: MouseRegion(
+          onEnter: (_) => setState(() => _isHovered = true),
+          onExit: (_) => setState(() => _isHovered = false),
+          cursor: SystemMouseCursors.click,
+          child: card,
+        ),
+      );
+    }
+
+    return card;
   }
 }
 
@@ -68,15 +123,9 @@ class SectionCardLoading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: GewerberTokens.space16),
-        child: SizedBox(
-          width: 24,
-          height: 24,
-          child: CircularProgressIndicator(strokeWidth: 2.5),
-        ),
-      ),
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: GewerberTokens.space8),
+      child: ShimmerLoader(lines: 2, height: 14),
     );
   }
 }

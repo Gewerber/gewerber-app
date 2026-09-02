@@ -14,6 +14,9 @@ import 'package:gewerber_app/core/utils/format.dart';
 import 'package:gewerber_app/domain/entities/invoice.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 import 'package:gewerber_app/presentation/router/route_names.dart';
+import 'package:gewerber_app/presentation/widgets/common/section_card.dart';
+import 'package:gewerber_app/presentation/widgets/common/shimmer_loader.dart';
+import 'package:gewerber_app/presentation/widgets/common/staggered_list_item.dart';
 
 /// InvoicingScreen — list of the active business's invoices.
 class InvoicingScreen extends StatefulWidget {
@@ -126,7 +129,7 @@ class _InvoicingScreenState extends State<InvoicingScreen> {
           Expanded(
             child: switch (state.status) {
               InvoiceViewStatus.initial || InvoiceViewStatus.loading =>
-                const Center(child: CircularProgressIndicator()),
+                const Center(child: ShimmerLoader(lines: 5, height: 16)),
               InvoiceViewStatus.failure => Center(
                 child: Text(l10n.invoiceError),
               ),
@@ -138,10 +141,15 @@ class _InvoicingScreenState extends State<InvoicingScreen> {
                 separatorBuilder: (_, _) => const SizedBox(height: 8),
                 itemBuilder: (context, index) {
                   final invoice = state.invoices[index];
-                  return _InvoiceTile(
-                    invoice: invoice,
-                    onTap: () =>
-                        context.push(RouteNames.invoiceDetail, extra: invoice),
+                  return StaggeredListItem(
+                    index: index,
+                    child: _InvoiceTile(
+                      invoice: invoice,
+                      onTap: () => context.push(
+                        RouteNames.invoiceDetail,
+                        extra: invoice,
+                      ),
+                    ),
                   );
                 },
               ),
@@ -207,8 +215,7 @@ class _InvoiceTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final colors = Theme.of(context).colorScheme;
-    final subtitle =
-        '${formatDate(invoice.issueDate)} · ${_statusLabel(l10n, invoice.status)}';
+    final subtitle = formatDate(invoice.issueDate);
 
     return Card(
       margin: EdgeInsets.zero,
@@ -218,10 +225,31 @@ class _InvoiceTile extends StatelessWidget {
         ),
         title: Text(invoice.number),
         subtitle: Text(subtitle),
-        trailing: Text(formatCents(invoice.totalCents)),
+        trailing: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(formatCents(invoice.totalCents)),
+            const SizedBox(height: 4),
+            SectionBadge(
+              label: _statusLabel(l10n, invoice.status),
+              color: _statusColor(colors, invoice.status),
+            ),
+          ],
+        ),
         onTap: onTap,
       ),
     );
+  }
+
+  Color _statusColor(ColorScheme colors, InvoiceStatus status) {
+    return switch (status) {
+      InvoiceStatus.draft => colors.onSurfaceVariant,
+      InvoiceStatus.sent => colors.primary,
+      InvoiceStatus.paid => GewerberColors.success,
+      InvoiceStatus.overdue => colors.error,
+      InvoiceStatus.cancelled => colors.outline,
+    };
   }
 
   String _statusLabel(AppLocalizations l10n, InvoiceStatus status) {
