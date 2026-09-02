@@ -153,8 +153,7 @@ class _CustomersScreenState extends State<CustomersScreen> {
           index: index,
           child: _CustomerTile(
             customer: customer,
-            onTap: () =>
-                context.push(RouteNames.customerEdit, extra: customer),
+            onTap: () => context.push(RouteNames.customerEdit, extra: customer),
             onDelete: customer.status == CustomerStatus.active
                 ? () => _confirmDelete(customer)
                 : null,

@@ -47,9 +47,15 @@ class _SectionCardState extends State<SectionCard> {
       elevation: _isHovered && hasInteraction ? 2 : 0,
       child: InkWell(
         onTap: widget.onTap,
-        onTapDown: hasInteraction ? (_) => setState(() => _isPressed = true) : null,
-        onTapUp: hasInteraction ? (_) => setState(() => _isPressed = false) : null,
-        onTapCancel: hasInteraction ? () => setState(() => _isPressed = false) : null,
+        onTapDown: hasInteraction
+            ? (_) => setState(() => _isPressed = true)
+            : null,
+        onTapUp: hasInteraction
+            ? (_) => setState(() => _isPressed = false)
+            : null,
+        onTapCancel: hasInteraction
+            ? () => setState(() => _isPressed = false)
+            : null,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [

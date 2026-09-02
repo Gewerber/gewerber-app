@@ -145,8 +145,10 @@ class _InvoicingScreenState extends State<InvoicingScreen> {
                     index: index,
                     child: _InvoiceTile(
                       invoice: invoice,
-                      onTap: () =>
-                          context.push(RouteNames.invoiceDetail, extra: invoice),
+                      onTap: () => context.push(
+                        RouteNames.invoiceDetail,
+                        extra: invoice,
+                      ),
                     ),
                   );
                 },
