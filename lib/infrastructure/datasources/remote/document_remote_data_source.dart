@@ -79,6 +79,17 @@ class DocumentRemoteDataSource {
     }
   }
 
+  Future<void> delete(int documentId) async {
+    try {
+      await _client.document.delete(documentId);
+    } on sdk.NotFoundException {
+      // Already deleted — treat as success.
+      return;
+    } on sdk.ServerpodClientException {
+      throw const NetworkException();
+    }
+  }
+
   Future<DownloadedDocument> download(BusinessDocument document) async {
     try {
       final data = await _client.document.download(document.id);
