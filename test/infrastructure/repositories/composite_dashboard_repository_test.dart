@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:gewerber_app/domain/entities/business.dart';
 import 'package:gewerber_app/domain/entities/customer.dart';
+import 'package:gewerber_app/domain/entities/customer_list_page.dart';
 import 'package:gewerber_app/domain/entities/dashboard.dart';
 import 'package:gewerber_app/domain/entities/invoice.dart';
 import 'package:gewerber_app/domain/entities/time_tracking.dart';
@@ -295,6 +296,20 @@ class _FakeCustomerRepository implements CustomerRepository {
   }) async => customers;
 
   // ── Unused members ──────────────────────────────────────────────────────
+
+  @override
+  Future<CustomerListPage> listPage({
+    CustomerStatus? status,
+    int? limit,
+    int? offset,
+  }) => throw UnimplementedError();
+
+  @override
+  Future<CustomerCursorPage> listCursorPage({
+    CustomerStatus? status,
+    int? limit,
+    String? cursor,
+  }) => throw UnimplementedError();
 
   @override
   Future<void> archive(int customerId) => throw UnimplementedError();

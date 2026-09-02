@@ -6,6 +6,7 @@ import 'package:gewerber_app/core/errors/exceptions.dart';
 import 'package:gewerber_app/core/errors/failures.dart';
 import 'package:gewerber_app/domain/entities/business.dart';
 import 'package:gewerber_app/domain/entities/customer.dart';
+import 'package:gewerber_app/domain/entities/customer_list_page.dart';
 import 'package:gewerber_app/domain/repositories/customer_repository.dart';
 
 class _FakeCustomerRepository implements CustomerRepository {
@@ -23,6 +24,34 @@ class _FakeCustomerRepository implements CustomerRepository {
   }) async {
     if (failLoad) throw const NetworkException();
     return List.unmodifiable(_customers);
+  }
+
+  @override
+  Future<CustomerListPage> listPage({
+    CustomerStatus? status,
+    int? limit,
+    int? offset,
+  }) async {
+    if (failLoad) throw const NetworkException();
+    return CustomerListPage(
+      items: List.unmodifiable(_customers),
+      totalCount: _customers.length,
+      limit: limit ?? 20,
+      offset: offset ?? 0,
+    );
+  }
+
+  @override
+  Future<CustomerCursorPage> listCursorPage({
+    CustomerStatus? status,
+    int? limit,
+    String? cursor,
+  }) async {
+    if (failLoad) throw const NetworkException();
+    return CustomerCursorPage(
+      items: List.unmodifiable(_customers),
+      limit: limit ?? 20,
+    );
   }
 
   @override
