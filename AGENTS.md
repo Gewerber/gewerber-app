@@ -35,5 +35,5 @@ by the private composition root
 ([gewerber-app-commercial](https://github.com/Gewerber/gewerber-app-commercial),
 `apps/product`). The OSS build passes no features and must stay fully
 functional standalone. The commercial client dependency resolves against the
-public stubs (`Gewerber/gewerber-backend--stubs`); insiders override it via
+public stubs (`Gewerber/gewerber-backend-stubs`); insiders override it via
 gitignored `pubspec_overrides.yaml`.
