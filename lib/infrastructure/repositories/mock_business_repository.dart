@@ -1,6 +1,7 @@
 import 'package:injectable/injectable.dart';
 
 import 'package:gewerber_app/core/config/app_environment.dart';
+import 'package:gewerber_app/core/errors/exceptions.dart';
 import 'package:gewerber_app/domain/entities/business.dart';
 import 'package:gewerber_app/domain/repositories/business_repository.dart';
 
@@ -12,6 +13,13 @@ class MockBusinessRepository implements BusinessRepository {
 
   @override
   Future<List<Business>> listMine() async => List.unmodifiable(_businesses);
+
+  @override
+  Future<Business> getBusiness(int businessId) async {
+    final match = _businesses.where((b) => b.id == businessId);
+    if (match.isNotEmpty) return match.first;
+    throw const NotFoundException();
+  }
 
   @override
   Future<Business> create({

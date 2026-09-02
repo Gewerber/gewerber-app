@@ -14,6 +14,11 @@ class ServerpodBusinessRepository implements BusinessRepository {
   final BusinessRemoteDataSource _dataSource;
 
   @override
+  Future<Business> getBusiness(int businessId) {
+    return _guard(() => _dataSource.getBusiness(businessId));
+  }
+
+  @override
   Future<List<Business>> listMine() {
     return _guard(() => _dataSource.listMine());
   }

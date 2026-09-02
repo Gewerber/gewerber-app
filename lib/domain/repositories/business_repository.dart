@@ -23,4 +23,7 @@ abstract interface class BusinessRepository {
 
   /// Updates an existing business.
   Future<Business> update(Business business);
+
+  /// Returns a single business by its [businessId].
+  Future<Business> getBusiness(int businessId);
 }
