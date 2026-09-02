@@ -32,6 +32,7 @@ class TrendsSectionCard extends StatelessWidget {
     return SectionCard(
       title: title,
       onTap: () => context.go(RouteNames.accountingReport),
+      accentColor: GewerberColors.primary,
       child: switch (state.trendsStatus) {
         DashboardSectionStatus.initial ||
         DashboardSectionStatus.loading => const SectionCardLoading(),

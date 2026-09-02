@@ -83,15 +83,15 @@ abstract final class GewerberTheme {
       canvasColor: colorScheme.surface,
       dividerColor: colorScheme.outline.withValues(alpha: 0.6),
       splashFactory: InkSparkle.splashFactory,
-      // Screen transitions: keep the platform feel on mobile, but no
-      // animated page transitions on desktop/web.
+      // Screen transitions: keep the platform feel on mobile, subtle
+      // cross-fade on desktop/web for spatial awareness.
       pageTransitionsTheme: const PageTransitionsTheme(
         builders: {
           TargetPlatform.android: FadeForwardsPageTransitionsBuilder(),
           TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-          TargetPlatform.windows: _NoTransitionsPageTransitionsBuilder(),
-          TargetPlatform.macOS: _NoTransitionsPageTransitionsBuilder(),
-          TargetPlatform.linux: _NoTransitionsPageTransitionsBuilder(),
+          TargetPlatform.windows: _FadeTransitionPageTransitionsBuilder(),
+          TargetPlatform.macOS: _FadeTransitionPageTransitionsBuilder(),
+          TargetPlatform.linux: _FadeTransitionPageTransitionsBuilder(),
         },
       ),
       // Buttons — 8px radius (Brand Book §8)
@@ -255,10 +255,10 @@ abstract final class GewerberTheme {
   }
 }
 
-/// Page transition that swaps screens instantly — used on desktop platforms
-/// where animated route transitions feel out of place.
-class _NoTransitionsPageTransitionsBuilder extends PageTransitionsBuilder {
-  const _NoTransitionsPageTransitionsBuilder();
+/// Subtle cross-fade page transition for desktop/web — fast enough to feel
+/// instant but adds just enough motion to convey spatial navigation.
+class _FadeTransitionPageTransitionsBuilder extends PageTransitionsBuilder {
+  const _FadeTransitionPageTransitionsBuilder();
 
   @override
   Widget buildTransitions<T>(
@@ -268,6 +268,13 @@ class _NoTransitionsPageTransitionsBuilder extends PageTransitionsBuilder {
     Animation<double> secondaryAnimation,
     Widget child,
   ) {
-    return child;
+    return FadeTransition(
+      opacity: CurvedAnimation(
+        parent: animation,
+        curve: Curves.easeOut,
+        reverseCurve: Curves.easeIn,
+      ),
+      child: child,
+    );
   }
 }

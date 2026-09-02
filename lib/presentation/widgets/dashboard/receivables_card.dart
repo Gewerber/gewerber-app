@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:gewerber_app/application/dashboard/dashboard_cubit.dart';
 import 'package:gewerber_app/application/dashboard/dashboard_state.dart';
+import 'package:gewerber_app/core/theme/gewerber_colors.dart';
 import 'package:gewerber_app/core/theme/gewerber_tokens.dart';
 import 'package:gewerber_app/core/utils/format.dart';
 import 'package:gewerber_app/domain/entities/dashboard.dart';
@@ -32,6 +33,7 @@ class ReceivablesCard extends StatelessWidget {
       // The full debtor list lives in the customers module; push it so the
       // dashboard stays underneath.
       onTap: () => context.push(RouteNames.customers),
+      accentColor: GewerberColors.warning,
       child: switch (state.receivablesStatus) {
         DashboardSectionStatus.initial ||
         DashboardSectionStatus.loading => const SectionCardLoading(),

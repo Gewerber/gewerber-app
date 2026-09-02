@@ -9,6 +9,7 @@ import 'package:gewerber_app/core/utils/format.dart';
 import 'package:gewerber_app/domain/entities/transaction.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 import 'package:gewerber_app/presentation/router/route_names.dart';
+import 'package:gewerber_app/presentation/widgets/common/shimmer_loader.dart';
 
 /// AccountingScreen — income and expense transactions of the business.
 class AccountingScreen extends StatefulWidget {
@@ -96,7 +97,7 @@ class _AccountingScreenState extends State<AccountingScreen> {
           Expanded(
             child: switch (state.status) {
               AccountingViewStatus.initial || AccountingViewStatus.loading =>
-                const Center(child: CircularProgressIndicator()),
+                const Center(child: ShimmerLoader(lines: 5, height: 16)),
               AccountingViewStatus.failure => Center(
                 child: Text(l10n.accountingLoadError),
               ),

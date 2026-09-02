@@ -8,6 +8,7 @@ import 'package:gewerber_app/core/theme/app_theme.dart';
 import 'package:gewerber_app/domain/entities/invoice_template.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 import 'package:gewerber_app/presentation/router/route_names.dart';
+import 'package:gewerber_app/presentation/widgets/common/shimmer_loader.dart';
 
 /// InvoiceTemplatesScreen — list of the active business's invoice templates.
 class InvoiceTemplatesScreen extends StatefulWidget {
@@ -44,7 +45,7 @@ class _InvoiceTemplatesScreenState extends State<InvoiceTemplatesScreen> {
       body: switch (state.status) {
         InvoiceTemplateViewStatus.initial ||
         InvoiceTemplateViewStatus.loading => const Center(
-          child: CircularProgressIndicator(),
+          child: ShimmerLoader(lines: 5, height: 16),
         ),
         InvoiceTemplateViewStatus.failure => Center(
           child: Text(l10n.templatesLoadError),
