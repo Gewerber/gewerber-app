@@ -4,6 +4,7 @@ import 'package:injectable/injectable.dart';
 import 'package:gewerber_app/core/config/app_environment.dart';
 import 'package:gewerber_app/core/errors/exceptions.dart';
 import 'package:gewerber_app/domain/entities/invoice.dart';
+import 'package:gewerber_app/domain/entities/invoice_list_page.dart';
 import 'package:gewerber_app/infrastructure/core/serverpod_client_factory.dart';
 import 'package:gewerber_app/infrastructure/mappers/invoice_mapper.dart';
 
@@ -32,6 +33,49 @@ class InvoiceRemoteDataSource {
         offset: offset,
       );
       return models.map(_mapper.fromModel).toList();
+    } on sdk.ServerpodClientException {
+      throw const NetworkException();
+    }
+  }
+
+  Future<InvoiceListPage> listPage({
+    InvoiceStatus? status,
+    int? limit,
+    int? offset,
+  }) async {
+    try {
+      final result = await _client.invoice.listPage(
+        status: status == null ? null : _mapper.toProtocolStatus(status),
+        limit: limit,
+        offset: offset,
+      );
+      return InvoiceListPage(
+        items: result.items.map(_mapper.fromModel).toList(),
+        totalCount: result.totalCount,
+        limit: result.limit,
+        offset: result.offset,
+      );
+    } on sdk.ServerpodClientException {
+      throw const NetworkException();
+    }
+  }
+
+  Future<InvoiceCursorPage> listCursorPage({
+    InvoiceStatus? status,
+    int? limit,
+    String? cursor,
+  }) async {
+    try {
+      final result = await _client.invoice.listCursorPage(
+        status: status == null ? null : _mapper.toProtocolStatus(status),
+        limit: limit,
+        cursor: cursor,
+      );
+      return InvoiceCursorPage(
+        items: result.items.map(_mapper.fromModel).toList(),
+        nextCursor: result.nextCursor,
+        limit: result.limit,
+      );
     } on sdk.ServerpodClientException {
       throw const NetworkException();
     }

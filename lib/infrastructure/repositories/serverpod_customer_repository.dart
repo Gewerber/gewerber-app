@@ -4,6 +4,7 @@ import 'package:gewerber_app/core/config/app_environment.dart';
 import 'package:gewerber_app/core/errors/exceptions.dart';
 import 'package:gewerber_app/domain/entities/business.dart';
 import 'package:gewerber_app/domain/entities/customer.dart';
+import 'package:gewerber_app/domain/entities/customer_list_page.dart';
 import 'package:gewerber_app/domain/repositories/customer_repository.dart';
 import 'package:gewerber_app/infrastructure/datasources/remote/customer_remote_data_source.dart';
 
@@ -22,6 +23,32 @@ class ServerpodCustomerRepository implements CustomerRepository {
   }) {
     return _guard(
       () => _dataSource.list(status: status, limit: limit, offset: offset),
+    );
+  }
+
+  @override
+  Future<CustomerListPage> listPage({
+    CustomerStatus? status,
+    int? limit,
+    int? offset,
+  }) {
+    return _guard(
+      () => _dataSource.listPage(status: status, limit: limit, offset: offset),
+    );
+  }
+
+  @override
+  Future<CustomerCursorPage> listCursorPage({
+    CustomerStatus? status,
+    int? limit,
+    String? cursor,
+  }) {
+    return _guard(
+      () => _dataSource.listCursorPage(
+        status: status,
+        limit: limit,
+        cursor: cursor,
+      ),
     );
   }
 

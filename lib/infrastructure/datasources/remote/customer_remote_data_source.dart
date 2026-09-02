@@ -5,6 +5,7 @@ import 'package:gewerber_app/core/config/app_environment.dart';
 import 'package:gewerber_app/core/errors/exceptions.dart';
 import 'package:gewerber_app/domain/entities/business.dart';
 import 'package:gewerber_app/domain/entities/customer.dart';
+import 'package:gewerber_app/domain/entities/customer_list_page.dart';
 import 'package:gewerber_app/infrastructure/core/serverpod_client_factory.dart';
 import 'package:gewerber_app/infrastructure/mappers/customer_mapper.dart';
 
@@ -33,6 +34,49 @@ class CustomerRemoteDataSource {
         offset: offset,
       );
       return models.map(_mapper.fromModel).toList();
+    } on sdk.ServerpodClientException {
+      throw const NetworkException();
+    }
+  }
+
+  Future<CustomerListPage> listPage({
+    CustomerStatus? status,
+    int? limit,
+    int? offset,
+  }) async {
+    try {
+      final result = await _client.customer.listPage(
+        status: status == null ? null : _mapper.toProtocolStatus(status),
+        limit: limit,
+        offset: offset,
+      );
+      return CustomerListPage(
+        items: result.items.map(_mapper.fromModel).toList(),
+        totalCount: result.totalCount,
+        limit: result.limit,
+        offset: result.offset,
+      );
+    } on sdk.ServerpodClientException {
+      throw const NetworkException();
+    }
+  }
+
+  Future<CustomerCursorPage> listCursorPage({
+    CustomerStatus? status,
+    int? limit,
+    String? cursor,
+  }) async {
+    try {
+      final result = await _client.customer.listCursorPage(
+        status: status == null ? null : _mapper.toProtocolStatus(status),
+        limit: limit,
+        cursor: cursor,
+      );
+      return CustomerCursorPage(
+        items: result.items.map(_mapper.fromModel).toList(),
+        nextCursor: result.nextCursor,
+        limit: result.limit,
+      );
     } on sdk.ServerpodClientException {
       throw const NetworkException();
     }

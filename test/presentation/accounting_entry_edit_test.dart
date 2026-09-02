@@ -60,6 +60,9 @@ class _FailingUpdateRepository implements AccountingRepository {
     DateTime? from,
     DateTime? to,
   }) => throw UnimplementedError();
+
+  @override
+  Future<AccountingTransaction> getAccountingTransaction(int transactionId) => throw UnimplementedError();
 }
 
 void main() {

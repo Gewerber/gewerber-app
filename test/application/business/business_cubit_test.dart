@@ -49,6 +49,9 @@ class _FakeBusinessRepository implements BusinessRepository {
     _businesses[index] = business;
     return business;
   }
+
+  @override
+  Future<Business> getBusiness(int businessId) => throw UnimplementedError();
 }
 
 void main() {

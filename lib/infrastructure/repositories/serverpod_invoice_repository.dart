@@ -3,6 +3,7 @@ import 'package:injectable/injectable.dart';
 import 'package:gewerber_app/core/config/app_environment.dart';
 import 'package:gewerber_app/core/errors/exceptions.dart';
 import 'package:gewerber_app/domain/entities/invoice.dart';
+import 'package:gewerber_app/domain/entities/invoice_list_page.dart';
 import 'package:gewerber_app/domain/repositories/invoice_repository.dart';
 import 'package:gewerber_app/infrastructure/datasources/remote/invoice_remote_data_source.dart';
 
@@ -17,6 +18,32 @@ class ServerpodInvoiceRepository implements InvoiceRepository {
   Future<List<Invoice>> list({InvoiceStatus? status, int? limit, int? offset}) {
     return _guard(
       () => _dataSource.list(status: status, limit: limit, offset: offset),
+    );
+  }
+
+  @override
+  Future<InvoiceListPage> listPage({
+    InvoiceStatus? status,
+    int? limit,
+    int? offset,
+  }) {
+    return _guard(
+      () => _dataSource.listPage(status: status, limit: limit, offset: offset),
+    );
+  }
+
+  @override
+  Future<InvoiceCursorPage> listCursorPage({
+    InvoiceStatus? status,
+    int? limit,
+    String? cursor,
+  }) {
+    return _guard(
+      () => _dataSource.listCursorPage(
+        status: status,
+        limit: limit,
+        cursor: cursor,
+      ),
     );
   }
 
