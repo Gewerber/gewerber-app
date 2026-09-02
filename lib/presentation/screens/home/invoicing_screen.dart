@@ -16,6 +16,7 @@ import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 import 'package:gewerber_app/presentation/router/route_names.dart';
 import 'package:gewerber_app/presentation/widgets/common/section_card.dart';
 import 'package:gewerber_app/presentation/widgets/common/shimmer_loader.dart';
+import 'package:gewerber_app/presentation/widgets/common/staggered_list_item.dart';
 
 /// InvoicingScreen — list of the active business's invoices.
 class InvoicingScreen extends StatefulWidget {
@@ -140,10 +141,13 @@ class _InvoicingScreenState extends State<InvoicingScreen> {
                 separatorBuilder: (_, _) => const SizedBox(height: 8),
                 itemBuilder: (context, index) {
                   final invoice = state.invoices[index];
-                  return _InvoiceTile(
-                    invoice: invoice,
-                    onTap: () =>
-                        context.push(RouteNames.invoiceDetail, extra: invoice),
+                  return StaggeredListItem(
+                    index: index,
+                    child: _InvoiceTile(
+                      invoice: invoice,
+                      onTap: () =>
+                          context.push(RouteNames.invoiceDetail, extra: invoice),
+                    ),
                   );
                 },
               ),
