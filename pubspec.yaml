@@ -21,12 +21,12 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.9
   google_fonts: ^8.2.1
-  go_router: ^17.5.0
+  go_router: ^18.0.0
   flutter_bloc: ^9.1.1
   equatable: ^2.1.0
   get_it: ^9.2.1
   injectable: ^3.0.0
-  intl: ^0.20.2
+  intl: ^0.20.3
   flutter_svg: ^2.3.0
   shared_preferences: ^2.5.5
   serverpod_flutter: 4.0.0-beta.3
@@ -50,24 +50,18 @@ dependencies:
   flutter_animate: ^4.5.2
   flutter_flavor: ^3.1.4
   file_saver: ^0.4.0
-  # Receipt upload + documents screen: native/web file selection
-  # (web, Android, iOS, desktop; wasm-ready).
-  file_picker: ^12.0.0
-  # MIME detection for picked files on non-web platforms
-  # (see FilePickerService).
-  mime: ^2.0.0
-  url_launcher: ^6.3.0
-  shimmer: ^3.0.0
+  file_picker: ^12.1.3
+  mime: ^2.1.0
+  url_launcher: ^6.3.2
+  shimmer: ^4.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  # End-to-end smoke test (integration_test/app_smoke_test.dart); runs on a
-  # real device target: flutter test integration_test -d linux|chrome|<device>
   integration_test:
     sdk: flutter
   flutter_lints: ^6.0.0
-  build_runner: 2.15.1
+  build_runner: 2.16.0
   injectable_generator: ^3.1.3
 
 dependency_overrides:
