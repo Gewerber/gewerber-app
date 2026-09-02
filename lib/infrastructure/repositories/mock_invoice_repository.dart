@@ -2,6 +2,7 @@ import 'package:injectable/injectable.dart';
 
 import 'package:gewerber_app/core/config/app_environment.dart';
 import 'package:gewerber_app/domain/entities/invoice.dart';
+import 'package:gewerber_app/domain/entities/invoice_list_page.dart';
 import 'package:gewerber_app/domain/repositories/invoice_repository.dart';
 
 /// In-memory [InvoiceRepository] backing the demo experience and the widget
@@ -31,6 +32,47 @@ class MockInvoiceRepository implements InvoiceRepository {
         .skip(start)
         .take(end == null ? 1 << 31 : end - start)
         .toList();
+  }
+
+  @override
+  Future<InvoiceListPage> listPage({
+    InvoiceStatus? status,
+    int? limit,
+    int? offset,
+  }) async {
+    final filtered = _invoices.where(
+      (invoice) => status == null || invoice.status == status,
+    );
+    final totalCount = filtered.length;
+    final start = offset ?? 0;
+    final pageSize = limit ?? 20;
+    final items = filtered.skip(start).take(pageSize).toList();
+    return InvoiceListPage(
+      items: items,
+      totalCount: totalCount,
+      limit: pageSize,
+      offset: start,
+    );
+  }
+
+  @override
+  Future<InvoiceCursorPage> listCursorPage({
+    InvoiceStatus? status,
+    int? limit,
+    String? cursor,
+  }) async {
+    final filtered = _invoices
+        .where((invoice) => status == null || invoice.status == status)
+        .toList();
+    final pageSize = limit ?? 20;
+    final startIndex = cursor != null ? int.tryParse(cursor) ?? 0 : 0;
+    final items = filtered.skip(startIndex).take(pageSize).toList();
+    final hasMore = startIndex + pageSize < filtered.length;
+    return InvoiceCursorPage(
+      items: items,
+      nextCursor: hasMore ? '${startIndex + pageSize}' : null,
+      limit: pageSize,
+    );
   }
 
   @override
