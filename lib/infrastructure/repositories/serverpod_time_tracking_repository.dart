@@ -47,8 +47,30 @@ class ServerpodTimeTrackingRepository implements TimeTrackingRepository {
   }
 
   @override
+  Future<Project> getProject(int projectId) {
+    return _guard(() => _dataSource.getProject(projectId));
+  }
+
+  @override
   Future<List<Task>> listTasks(int projectId) {
     return _guard(() => _dataSource.listTasks(projectId));
+  }
+
+  @override
+  Future<List<Task>> listAllTasks({
+    int? projectId,
+    TaskStatus? status,
+    int? limit,
+    int? offset,
+  }) {
+    return _guard(
+      () => _dataSource.listAllTasks(
+        projectId: projectId,
+        status: status,
+        limit: limit,
+        offset: offset,
+      ),
+    );
   }
 
   @override
@@ -69,6 +91,11 @@ class ServerpodTimeTrackingRepository implements TimeTrackingRepository {
   @override
   Future<Task> updateTask(Task task) {
     return _guard(() => _dataSource.updateTask(task));
+  }
+
+  @override
+  Future<TimeEntry> getTimeEntry(int timeEntryId) {
+    return _guard(() => _dataSource.getTimeEntry(timeEntryId));
   }
 
   @override

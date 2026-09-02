@@ -1,6 +1,7 @@
 import 'package:injectable/injectable.dart';
 
 import 'package:gewerber_app/core/config/app_environment.dart';
+import 'package:gewerber_app/core/errors/exceptions.dart';
 import 'package:gewerber_app/domain/entities/transaction.dart';
 import 'package:gewerber_app/domain/repositories/accounting_repository.dart';
 
@@ -36,6 +37,17 @@ class MockAccountingRepository implements AccountingRepository {
         ? result.skip(start).toList()
         : result.skip(start).take(limit).toList();
     return limited;
+  }
+
+  @override
+  Future<AccountingTransaction> getAccountingTransaction(
+    int transactionId,
+  ) async {
+    final transaction = _transactions
+        .where((t) => t.id == transactionId)
+        .firstOrNull;
+    if (transaction == null) throw const NotFoundException();
+    return transaction;
   }
 
   @override
