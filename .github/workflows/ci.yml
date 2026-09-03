@@ -8,7 +8,7 @@
 #
 # No repository secrets are required: all dependencies are public. The
 # commercial client resolves against the stub packages in
-# Gewerber/gewerber-backend--stubs; closed features are composed in the
+# Gewerber/gewerber-backend-stubs; closed features are composed in the
 # private gewerber-app-commercial repository, not here.
 
 name: CI
