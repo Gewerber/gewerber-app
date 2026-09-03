@@ -9,7 +9,6 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
@@ -40,6 +39,7 @@ import '../domain/repositories/business_settings_repository.dart' as _i743;
 import '../domain/repositories/customer_repository.dart' as _i907;
 import '../domain/repositories/dashboard_repository.dart' as _i525;
 import '../domain/repositories/document_repository.dart' as _i591;
+import '../domain/repositories/entitlement_repository.dart' as _i476;
 import '../domain/repositories/guidance_repository.dart' as _i78;
 import '../domain/repositories/invoice_repository.dart' as _i778;
 import '../domain/repositories/invoice_template_repository.dart' as _i309;
@@ -63,6 +63,8 @@ import '../infrastructure/datasources/remote/dashboard_remote_data_source.dart'
     as _i807;
 import '../infrastructure/datasources/remote/document_remote_data_source.dart'
     as _i809;
+import '../infrastructure/datasources/remote/entitlement_remote_data_source.dart'
+    as _i449;
 import '../infrastructure/datasources/remote/guidance_remote_data_source.dart'
     as _i126;
 import '../infrastructure/datasources/remote/invoice_remote_data_source.dart'
@@ -100,6 +102,8 @@ import '../infrastructure/repositories/mock_business_settings_repository.dart'
 import '../infrastructure/repositories/mock_customer_repository.dart' as _i569;
 import '../infrastructure/repositories/mock_dashboard_repository.dart' as _i575;
 import '../infrastructure/repositories/mock_document_repository.dart' as _i415;
+import '../infrastructure/repositories/mock_entitlement_repository.dart'
+    as _i954;
 import '../infrastructure/repositories/mock_guidance_repository.dart' as _i420;
 import '../infrastructure/repositories/mock_invoice_repository.dart' as _i555;
 import '../infrastructure/repositories/mock_invoice_template_repository.dart'
@@ -125,6 +129,8 @@ import '../infrastructure/repositories/serverpod_dashboard_repository.dart'
     as _i425;
 import '../infrastructure/repositories/serverpod_document_repository.dart'
     as _i664;
+import '../infrastructure/repositories/serverpod_entitlement_repository.dart'
+    as _i222;
 import '../infrastructure/repositories/serverpod_guidance_repository.dart'
     as _i34;
 import '../infrastructure/repositories/serverpod_invoice_repository.dart'
@@ -197,6 +203,11 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i807.DashboardRemoteDataSource(gh<_i661.ServerpodClientFactory>()),
       registerFor: {_auth_live},
     );
+    gh.lazySingleton<_i449.EntitlementRemoteDataSource>(
+      () =>
+          _i449.EntitlementRemoteDataSource(gh<_i661.ServerpodClientFactory>()),
+      registerFor: {_auth_live},
+    );
     gh.lazySingleton<_i490.InvoiceTemplateRemoteDataSource>(
       () => _i490.InvoiceTemplateRemoteDataSource(
         gh<_i661.ServerpodClientFactory>(),
@@ -232,6 +243,10 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i756.TransactionMapper>(),
       ),
       registerFor: {_auth_live},
+    );
+    gh.lazySingleton<_i476.EntitlementRepository>(
+      () => _i954.MockEntitlementRepository(),
+      registerFor: {_auth_mock},
     );
     gh.lazySingleton<_i101.UserPreferencesRepository>(
       () => _i732.MockUserPreferencesRepository(),
@@ -403,6 +418,12 @@ extension GetItInjectableX on _i174.GetIt {
       ),
       registerFor: {_auth_live},
     );
+    gh.lazySingleton<_i476.EntitlementRepository>(
+      () => _i222.ServerpodEntitlementRepository(
+        gh<_i449.EntitlementRemoteDataSource>(),
+      ),
+      registerFor: {_auth_live},
+    );
     gh.lazySingleton<_i419.BusinessSettingsCubit>(
       () => _i419.BusinessSettingsCubit(gh<_i743.BusinessSettingsRepository>()),
     );
@@ -443,6 +464,15 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i268.UserProfileCubit>(
       () => _i268.UserProfileCubit(gh<_i439.UserProfileRepository>()),
+    );
+    gh.lazySingleton<_i592.CompositeDashboardRepository>(
+      () => _i592.CompositeDashboardRepository(
+        gh<_i188.AccountingRepository>(),
+        gh<_i778.InvoiceRepository>(),
+        gh<_i323.TimeTrackingRepository>(),
+        gh<_i907.CustomerRepository>(),
+      ),
+      registerFor: {_auth_live},
     );
     gh.lazySingleton<_i598.CustomerCubit>(
       () => _i598.CustomerCubit(gh<_i907.CustomerRepository>()),
