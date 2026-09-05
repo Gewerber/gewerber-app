@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gewerber_app/application/guidance/guidance_cubit.dart';
 import 'package:gewerber_app/core/theme/app_theme.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
+import 'package:gewerber_app/presentation/widgets/common/empty_state.dart';
 
 /// GuidanceTipsScreen — contextual tips served by the guidance system.
 ///
@@ -32,23 +33,13 @@ class _GuidanceTipsScreenState extends State<GuidanceTipsScreen> {
       appBar: AppBar(title: Text(l10n.tipsTitle)),
       body: switch ((state.isLoading, state.hasError, state.tips)) {
         (true, _, _) => const Center(child: CircularProgressIndicator()),
-        (_, true, _) => Center(child: Text(l10n.tipsLoadError)),
-        (_, _, final tips) when tips.isEmpty => Center(
-          child: Padding(
-            padding: const EdgeInsets.all(GewerberTokens.space32),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.lightbulb_outline,
-                  size: 56,
-                  color: Theme.of(context).colorScheme.outline,
-                ),
-                const SizedBox(height: GewerberTokens.space16),
-                Text(l10n.tipsEmpty, textAlign: TextAlign.center),
-              ],
-            ),
-          ),
+        (_, true, _) => EmptyState(
+          icon: Icons.error_outline,
+          message: l10n.tipsLoadError,
+        ),
+        (_, _, final tips) when tips.isEmpty => EmptyState(
+          icon: Icons.lightbulb_outline,
+          message: l10n.tipsEmpty,
         ),
         (_, _, final tips) => ListView(
           padding: const EdgeInsets.all(16),

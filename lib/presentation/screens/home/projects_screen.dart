@@ -8,6 +8,7 @@ import 'package:gewerber_app/core/theme/app_theme.dart';
 import 'package:gewerber_app/core/utils/format.dart';
 import 'package:gewerber_app/domain/entities/time_tracking.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
+import 'package:gewerber_app/presentation/widgets/common/empty_state.dart';
 import 'package:gewerber_app/presentation/widgets/common/shimmer_loader.dart';
 
 /// ProjectsScreen — projects and their tasks.
@@ -158,25 +159,13 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
       body: switch (state.status) {
         ProjectsViewStatus.initial || ProjectsViewStatus.loading =>
           const Center(child: ShimmerLoader(lines: 5, height: 16)),
-        ProjectsViewStatus.failure => Center(
-          child: Text(l10n.projectLoadError),
+        ProjectsViewStatus.failure => EmptyState(
+          icon: Icons.error_outline,
+          message: l10n.projectLoadError,
         ),
-        ProjectsViewStatus.loaded when state.projects.isEmpty => Center(
-          child: Padding(
-            padding: const EdgeInsets.all(GewerberTokens.space32),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.folder_outlined,
-                  size: 56,
-                  color: Theme.of(context).colorScheme.outline,
-                ),
-                const SizedBox(height: GewerberTokens.space16),
-                Text(l10n.projectsEmpty, textAlign: TextAlign.center),
-              ],
-            ),
-          ),
+        ProjectsViewStatus.loaded when state.projects.isEmpty => EmptyState(
+          icon: Icons.folder_outlined,
+          message: l10n.projectsEmpty,
         ),
         ProjectsViewStatus.loaded => ListView(
           padding: const EdgeInsets.all(16),

@@ -4,11 +4,11 @@ import 'package:go_router/go_router.dart';
 
 import 'package:gewerber_app/application/accounting/accounting_cubit.dart';
 import 'package:gewerber_app/application/accounting/accounting_state.dart';
-import 'package:gewerber_app/core/theme/app_theme.dart';
 import 'package:gewerber_app/core/utils/format.dart';
 import 'package:gewerber_app/domain/entities/transaction.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 import 'package:gewerber_app/presentation/router/route_names.dart';
+import 'package:gewerber_app/presentation/widgets/common/empty_state.dart';
 import 'package:gewerber_app/presentation/widgets/common/shimmer_loader.dart';
 
 /// AccountingScreen — income and expense transactions of the business.
@@ -98,11 +98,15 @@ class _AccountingScreenState extends State<AccountingScreen> {
             child: switch (state.status) {
               AccountingViewStatus.initial || AccountingViewStatus.loading =>
                 const Center(child: ShimmerLoader(lines: 5, height: 16)),
-              AccountingViewStatus.failure => Center(
-                child: Text(l10n.accountingLoadError),
+              AccountingViewStatus.failure => EmptyState(
+                icon: Icons.error_outline,
+                message: l10n.accountingLoadError,
               ),
               AccountingViewStatus.loaded when state.transactions.isEmpty =>
-                const _EmptyState(),
+                EmptyState(
+                  icon: Icons.account_balance_outlined,
+                  message: l10n.transactionsEmpty,
+                ),
               AccountingViewStatus.loaded => ListView.separated(
                 padding: const EdgeInsets.all(16),
                 itemCount: state.transactions.length,
@@ -245,32 +249,5 @@ class _TransactionTile extends StatelessWidget {
       TransactionCategory.tools => l10n.categoryTools,
       TransactionCategory.otherExpense => l10n.categoryOtherExpense,
     };
-  }
-}
-
-class _EmptyState extends StatelessWidget {
-  const _EmptyState();
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final colors = Theme.of(context).colorScheme;
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(GewerberTokens.space32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.account_balance_outlined,
-              size: 56,
-              color: colors.outline,
-            ),
-            const SizedBox(height: GewerberTokens.space16),
-            Text(l10n.transactionsEmpty, textAlign: TextAlign.center),
-          ],
-        ),
-      ),
-    );
   }
 }
