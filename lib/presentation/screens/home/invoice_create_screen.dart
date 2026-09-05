@@ -255,35 +255,29 @@ class _InvoiceCreateScreenState extends State<InvoiceCreateScreen> {
                   Row(
                     children: [
                       Expanded(
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: _DateField(
-                                label:
-                                    '${l10n.invoiceServiceFrom} (${l10n.onboardingOptional})',
-                                date: _serviceFrom,
-                                onTap: () => _pickDate(
-                                  current: _serviceFrom,
-                                  isStartDate: true,
-                                  onPicked: (date) =>
-                                      setState(() => _serviceFrom = date),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: GewerberTokens.space12),
-                            Expanded(
-                              child: _DateField(
-                                label:
-                                    '${l10n.invoiceServiceTo} (${l10n.onboardingOptional})',
-                                date: _serviceTo,
-                                onTap: () => _pickDate(
-                                  current: _serviceTo,
-                                  onPicked: (date) =>
-                                      setState(() => _serviceTo = date),
-                                ),
-                              ),
-                            ),
-                          ],
+                        child: _DateField(
+                          label:
+                              '${l10n.invoiceServiceFrom} (${l10n.onboardingOptional})',
+                          date: _serviceFrom,
+                          onTap: () => _pickDate(
+                            current: _serviceFrom,
+                            isStartDate: true,
+                            onPicked: (date) =>
+                                setState(() => _serviceFrom = date),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: GewerberTokens.space12),
+                      Expanded(
+                        child: _DateField(
+                          label:
+                              '${l10n.invoiceServiceTo} (${l10n.onboardingOptional})',
+                          date: _serviceTo,
+                          onTap: () => _pickDate(
+                            current: _serviceTo,
+                            onPicked: (date) =>
+                                setState(() => _serviceTo = date),
+                          ),
                         ),
                       ),
                       FieldInfoIcon(
