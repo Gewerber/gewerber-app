@@ -575,5 +575,15 @@
   "invoiceRemoveItem": "Position entfernen",
   "timerNotBillable": "Nicht abrechenbar",
   "documentsUploading": "Wird hochgeladen …",
-  "settingsDangerZone": "Gefahrenzone"
+  "settingsDangerZone": "Gefahrenzone",
+
+  "fieldHintLegalForm": "Rechtsform — beeinflusst Haftung und Besteuerung. Das Einzelunternehmen ist am einfachsten; die Besteuerung läuft über die Einkommensteuer. Freiberufler üben freie Berufe aus und zahlen keine Gewerbesteuer.",
+  "fieldHintKleinunternehmerInfo": "Die Kleinunternehmerregelung (§ 19 UStG) erlaubt dir, unterhalb der Umsatzgrenzen (25.000 € Vorjahr / 100.000 € laufendes Jahr, Stand 2025) keine Umsatzsteuer auszuweisen. Auf der Rechnung muss ein Pflichthinweis stehen. Du darfst keine USt berechnen und keinen Vorsteuerabzug geltend machen.",
+  "fieldHintVatIdInfo": "Die USt-IdNr. (Umsatzsteuer-Identifikationsnummer) braucht man für grenzüberschreitende B2B-Rechnungen in der EU (Reverse-Charge) — Aufbau: DE + 9 Ziffern. Nicht verwechseln mit der Steuernummer, die für inländische Steuererklärungen dient.",
+  "fieldHintCustomerVatIdInfo": "Wenn ein Geschäftskunde aus der EU seine USt-IdNr. angibt, schuldet er die Steuer ggf. selbst (Reverse-Charge, § 13b UStG). Prüfe die ID über VIES. Im Zweifel deutsche Umsatzsteuer berechnen.",
+  "fieldHintVatRateInfo": "Regelsatz 19 %, ermäßigter Satz 7 % (z. B. Bücher, Lebensmittel). Als Kleinunternehmer berechnest du 0 % mit dem § 19-Hinweis. Der Satz muss zur Leistung passen — falsche Sätze werden in Prüfungen häufig beanstandet.",
+  "fieldHintServicePeriodInfo": "Das Leistungsdatum bestimmt, welcher Steuersatz gilt und wann die Steuer entsteht (§ 13 UStG). Bei Dauerleistungen zählt das Ende des Zeitraums. Es weicht oft vom Rechnungsdatum ab.",
+  "fieldHintNumberPrefixInfo": "Die Rechnungsnummer muss eindeutig und lückenlos aufsteigend sein (GoBD). Ein Präfix wie \"RE-\" ist erlaubt; der Zähler darf sich nie wiederholen oder zurückgesetzt werden.",
+  "fieldHintBillableInfo": "Abrechenbare Zeiteinträge erscheinen auf der Rechnung an den Kunden. Nicht abrechenbare sind interne Zeit. Beim Umwandeln in eine Rechnung wird die erfasste Zeit mit dem Stundenlohn multipliziert.",
+  "fieldInfoMore": "Mehr im Ratgeber"
 }
