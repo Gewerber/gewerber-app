@@ -35,12 +35,18 @@ void main() {
   Future<void> completeOnboarding(WidgetTester tester) async {
     await tester.pumpAndSettle();
     if (find.byType(OnboardingScreen).evaluate().isEmpty) return;
-    // The preferences step (theme/language) comes before the business form.
+    // The preferences step (theme/language) comes before the business form;
+    // both action buttons sit below the fold on this viewport, so bring each
+    // one into view before tapping.
     if (find.text('Continue').evaluate().isNotEmpty) {
+      await tester.ensureVisible(find.text('Continue'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Continue'));
       await tester.pumpAndSettle();
     }
     await tester.enterText(find.byType(TextFormField), 'Demo GmbH');
+    await tester.ensureVisible(find.text('Create business'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Create business'));
     await tester.pumpAndSettle();
   }

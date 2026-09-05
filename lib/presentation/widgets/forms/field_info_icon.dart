@@ -52,9 +52,8 @@ class FieldInfoIcon extends StatelessWidget {
     return Semantics(
       // The Tooltip's own semantics would leave the button unnamed for
       // screen readers (it only sets the `tooltip` property), so the
-      // accessible name and description are provided explicitly here.
+      // accessible name is provided explicitly here.
       label: label,
-      tooltip: label,
       button: true,
       child: Tooltip(
         message: label,

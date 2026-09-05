@@ -6,13 +6,13 @@ import 'package:gewerber_app/di/injection.dart';
 import 'package:gewerber_app/domain/entities/dashboard.dart';
 import 'package:gewerber_app/domain/entities/document.dart';
 import 'package:gewerber_app/domain/entities/invoice.dart';
+import 'package:gewerber_app/domain/repositories/business_repository.dart';
 import 'package:gewerber_app/domain/repositories/dashboard_repository.dart';
 import 'package:gewerber_app/domain/repositories/document_repository.dart';
 import 'package:gewerber_app/presentation/app/gewerber_app.dart';
 import 'package:gewerber_app/presentation/router/app_router.dart';
 import 'package:gewerber_app/presentation/router/route_names.dart';
 import 'package:gewerber_app/presentation/screens/auth/login_screen.dart';
-import 'package:gewerber_app/presentation/screens/onboarding/onboarding_screen.dart';
 import 'package:gewerber_app/presentation/widgets/forms/custom_text_field.dart';
 
 export 'package:gewerber_app/presentation/app/gewerber_app.dart';
@@ -57,9 +57,12 @@ Future<void> pumpAuthenticatedApp(
   addTearDown(tester.view.reset);
 
   appRouter.go(RouteNames.splash);
-  // Tooltips never materialize in goldens: their OverlayPortals keep stale
-  // (invisible) semantics nodes after screens pop mid-flow, which trips the
-  // invisible-semantics assertion. Golden output does not depend on tooltips.
+  // Pre-create the business through the mock repository instead of driving
+  // the onboarding UI: the onboarding screen pops right after the form is
+  // submitted, and its field-hint OverlayPortal semantics subtree can leave
+  // a stale node behind in that frame (framework semantics race), tripping
+  // the invisible-semantics assertion in golden tests.
+  await getIt<BusinessRepository>().create(name: 'Demo GmbH');
   await tester.pumpWidget(
     const TooltipVisibility(visible: false, child: GewerberApp()),
   );
@@ -72,29 +75,6 @@ Future<void> pumpAuthenticatedApp(
     );
     await tester.enterText(find.byType(CustomTextField).at(1), 'demo-password');
     await tester.tap(find.text('Log in'));
-    await tester.pumpAndSettle();
-  }
-
-  if (find.byType(OnboardingScreen).evaluate().isNotEmpty) {
-    // The preferences step (theme/language) comes before the business form.
-    // On the 390x844 viewport the action buttons sit below the fold, so
-    // bring each one into view before tapping.
-    final continueButton = find.text('Continue');
-    await tester.ensureVisible(continueButton);
-    await tester.pumpAndSettle();
-    await tester.tap(continueButton);
-    await tester.pumpAndSettle();
-
-    await tester.enterText(find.byType(TextFormField), 'Demo GmbH');
-    // Drop focus: the focused field's deferred bring-into-view otherwise
-    // re-scrolls the list during the next settle and undoes the explicit
-    // scrolling below.
-    FocusManager.instance.primaryFocus?.unfocus();
-    await tester.pumpAndSettle();
-    final createButton = find.text('Create business');
-    await tester.ensureVisible(createButton);
-    await tester.pumpAndSettle();
-    await tester.tap(createButton);
     await tester.pumpAndSettle();
   }
 }
