@@ -772,5 +772,8 @@
   "fieldInfoMore": "More in the guide",
   "onboardingTaxNumber": "Tax number (Steuernummer)",
   "fieldHintTaxNumberShort": "Assigned by your local Finanzamt — used in domestic filings. Not the USt-IdNr.!",
-  "fieldHintTaxNumberInfo": "The Steuernummer is your domestic tax number, assigned by the Finanzamt of your place of business. It appears on tax returns (EÜR, USt-Voranmeldung). Do not confuse it with the USt-IdNr. (starting with DE), which is used for cross-border B2B invoicing. A Kleinunternehmer usually only has a Steuernummer."
+  "fieldHintTaxNumberInfo": "The Steuernummer is your domestic tax number, assigned by the Finanzamt of your place of business. It appears on tax returns (EÜR, USt-Voranmeldung). Do not confuse it with the USt-IdNr. (starting with DE), which is used for cross-border B2B invoicing. A Kleinunternehmer usually only has a Steuernummer.",
+  "fieldHintVatRateShort": "19% standard / 7% reduced — 0% only for Kleinunternehmer (§ 19 UStG).",
+  "fieldHintServicePeriodShort": "Determines when the VAT becomes due (§ 13 UStG).",
+  "fieldHintBillableShort": "Billable time can be invoiced to the customer."
 }
