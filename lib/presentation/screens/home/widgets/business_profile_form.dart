@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:gewerber_app/application/business/business_cubit.dart';
 import 'package:gewerber_app/core/theme/app_theme.dart';
 import 'package:gewerber_app/domain/entities/business.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
+import 'package:gewerber_app/presentation/router/route_names.dart';
 import 'package:gewerber_app/presentation/widgets/forms/custom_text_field.dart';
+import 'package:gewerber_app/presentation/widgets/forms/field_hint.dart';
+import 'package:gewerber_app/presentation/widgets/forms/field_label.dart';
 
 /// BusinessProfileForm — editable business profile form (extracted for master-detail).
 class BusinessProfileForm extends StatefulWidget {
@@ -139,23 +143,32 @@ class _BusinessProfileFormState extends State<BusinessProfileForm> {
             },
           ),
           const SizedBox(height: GewerberTokens.space16),
-          DropdownButtonFormField<LegalForm>(
-            initialValue: _legalForm,
-            isExpanded: true,
-            decoration: InputDecoration(
-              labelText: l10n.businessFormLegalForm,
-              prefixIcon: const Icon(Icons.gavel_outlined),
-            ),
-            items: [
-              for (final form in LegalForm.values)
-                DropdownMenuItem(
-                  value: form,
-                  child: Text(_legalFormLabel(form)),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              FieldLabel(
+                label: l10n.businessFormLegalForm,
+                infoText: l10n.fieldHintLegalForm,
+              ),
+              const SizedBox(height: GewerberTokens.space8),
+              DropdownButtonFormField<LegalForm>(
+                initialValue: _legalForm,
+                isExpanded: true,
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(Icons.gavel_outlined),
                 ),
+                items: [
+                  for (final form in LegalForm.values)
+                    DropdownMenuItem(
+                      value: form,
+                      child: Text(_legalFormLabel(form)),
+                    ),
+                ],
+                onChanged: (value) {
+                  if (value != null) setState(() => _legalForm = value);
+                },
+              ),
             ],
-            onChanged: (value) {
-              if (value != null) setState(() => _legalForm = value);
-            },
           ),
           const SizedBox(height: GewerberTokens.space8),
           SwitchListTile(
@@ -171,6 +184,11 @@ class _BusinessProfileFormState extends State<BusinessProfileForm> {
             controller: _vatIdController,
             label: l10n.businessFormVatId,
             icon: Icons.badge_outlined,
+            hint: FieldHint(
+              shortText: l10n.onboardingVatIdHint,
+              longText: l10n.fieldHintVatIdInfo,
+            ),
+            onHintMoreRequested: () => context.push(RouteNames.guideTips),
           ),
           const SizedBox(height: GewerberTokens.space16),
           CustomTextField(
