@@ -13,6 +13,8 @@ import 'package:gewerber_app/domain/entities/customer.dart';
 import 'package:gewerber_app/domain/entities/invoice.dart';
 import 'package:gewerber_app/domain/entities/invoice_template.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
+import 'package:gewerber_app/presentation/widgets/forms/field_info_icon.dart';
+import 'package:gewerber_app/presentation/widgets/forms/field_label.dart';
 
 /// InvoiceCreateScreen — create a new invoice or edit a draft.
 class InvoiceCreateScreen extends StatefulWidget {
@@ -218,6 +220,7 @@ class _InvoiceCreateScreenState extends State<InvoiceCreateScreen> {
                     selectedId: _customerId,
                     onChanged: (id) => setState(() => _customerId = id),
                   ),
+                  _ReverseChargeIndicator(selectedId: _customerId),
                   const SizedBox(height: GewerberTokens.space16),
                   Row(
                     children: [
@@ -246,47 +249,72 @@ class _InvoiceCreateScreenState extends State<InvoiceCreateScreen> {
                     ],
                   ),
                   const SizedBox(height: GewerberTokens.space8),
+                  // The two service-date fields keep their own inline labels,
+                  // so the period hint is attached as a standalone info icon
+                  // next to the row instead of a FieldLabel above it.
                   Row(
                     children: [
                       Expanded(
-                        child: _DateField(
-                          label:
-                              '${l10n.invoiceServiceFrom} (${l10n.onboardingOptional})',
-                          date: _serviceFrom,
-                          onTap: () => _pickDate(
-                            current: _serviceFrom,
-                            isStartDate: true,
-                            onPicked: (date) =>
-                                setState(() => _serviceFrom = date),
-                          ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: _DateField(
+                                label:
+                                    '${l10n.invoiceServiceFrom} (${l10n.onboardingOptional})',
+                                date: _serviceFrom,
+                                onTap: () => _pickDate(
+                                  current: _serviceFrom,
+                                  isStartDate: true,
+                                  onPicked: (date) =>
+                                      setState(() => _serviceFrom = date),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: GewerberTokens.space12),
+                            Expanded(
+                              child: _DateField(
+                                label:
+                                    '${l10n.invoiceServiceTo} (${l10n.onboardingOptional})',
+                                date: _serviceTo,
+                                onTap: () => _pickDate(
+                                  current: _serviceTo,
+                                  onPicked: (date) =>
+                                      setState(() => _serviceTo = date),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      const SizedBox(width: GewerberTokens.space12),
-                      Expanded(
-                        child: _DateField(
-                          label:
-                              '${l10n.invoiceServiceTo} (${l10n.onboardingOptional})',
-                          date: _serviceTo,
-                          onTap: () => _pickDate(
-                            current: _serviceTo,
-                            onPicked: (date) =>
-                                setState(() => _serviceTo = date),
-                          ),
-                        ),
+                      FieldInfoIcon(
+                        infoText: l10n.fieldHintServicePeriodShort,
+                        longInfoText: l10n.fieldHintServicePeriodInfo,
+                        semanticLabel: l10n.fieldHintServicePeriodShort,
                       ),
                     ],
                   ),
                   const SizedBox(height: GewerberTokens.space24),
-                  _VatRateSelector(
-                    selected: _vatRate,
-                    isKleinunternehmer:
-                        context
-                            .watch<BusinessCubit>()
-                            .state
-                            .activeBusiness
-                            ?.isKleinunternehmer ??
-                        false,
-                    onChanged: (rate) => setState(() => _vatRate = rate),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      FieldLabel(
+                        label: l10n.invoiceVatRate,
+                        infoText: l10n.fieldHintVatRateShort,
+                        longInfoText: l10n.fieldHintVatRateInfo,
+                      ),
+                      const SizedBox(height: GewerberTokens.space8),
+                      _VatRateSelector(
+                        selected: _vatRate,
+                        isKleinunternehmer:
+                            context
+                                .watch<BusinessCubit>()
+                                .state
+                                .activeBusiness
+                                ?.isKleinunternehmer ??
+                            false,
+                        onChanged: (rate) => setState(() => _vatRate = rate),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: GewerberTokens.space24),
                   Text(
@@ -432,6 +460,73 @@ class _CustomerPicker extends StatelessWidget {
   }
 }
 
+/// Compact pill shown when the selected customer has provided a USt-IdNr.:
+/// domestic German VAT rules may not apply (reverse charge, § 13b UStG).
+/// Renders nothing while no customer is selected or the customer's VAT ID is
+/// empty. Watches the [CustomerCubit] locally so the parent form does not
+/// rebuild whenever the customer list changes.
+class _ReverseChargeIndicator extends StatelessWidget {
+  const _ReverseChargeIndicator({required this.selectedId});
+
+  final int? selectedId;
+
+  @override
+  Widget build(BuildContext context) {
+    if (selectedId == null) return const SizedBox.shrink();
+    final customer = context
+        .watch<CustomerCubit>()
+        .state
+        .customers
+        .where((customer) => customer.id == selectedId)
+        .firstOrNull;
+    final vatId = customer?.vatId;
+    if (vatId == null || vatId.trim().isEmpty) return const SizedBox.shrink();
+
+    final l10n = AppLocalizations.of(context);
+    final colors = Theme.of(context).colorScheme;
+    return Padding(
+      padding: const EdgeInsets.only(top: GewerberTokens.space8),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: GewerberTokens.space12,
+            vertical: 6,
+          ),
+          decoration: BoxDecoration(
+            color: colors.secondaryContainer,
+            borderRadius: BorderRadius.circular(GewerberTokens.space16),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.swap_horiz_outlined,
+                size: 16,
+                color: colors.onSecondaryContainer,
+              ),
+              const SizedBox(width: GewerberTokens.space8),
+              Flexible(
+                child: Text(
+                  l10n.customerVatId,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: colors.onSecondaryContainer,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              // No short hint key exists for this edge case, so the full
+              // explanation doubles as the (tap-triggered) tooltip; the
+              // tooltip is the only surface for the text here.
+              FieldInfoIcon(infoText: l10n.fieldHintCustomerVatIdInfo),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 /// Unobtrusive notice shown on the new-invoice form while the business's
 /// default template was resolved and will be applied on save. Renders
 /// nothing while the lookup is running, when there is no default template,
@@ -510,11 +605,12 @@ class _VatRateSelector extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
 
     if (isKleinunternehmer) {
-      // § 19 UStG: no VAT may be charged — nothing to choose.
+      // § 19 UStG: no VAT may be charged — nothing to choose. The field label
+      // (with its hint icon) is rendered above the selector by the caller, so
+      // the decorator stays label-free to avoid showing it twice.
       return InputDecorator(
-        decoration: InputDecoration(
-          labelText: l10n.invoiceVatRate,
-          prefixIcon: const Icon(Icons.percent_outlined),
+        decoration: const InputDecoration(
+          prefixIcon: Icon(Icons.percent_outlined),
         ),
         child: Text(l10n.invoiceVatNoneHint),
       );
