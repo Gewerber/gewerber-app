@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:gewerber_app/core/theme/gewerber_tokens.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 import 'package:gewerber_app/presentation/widgets/forms/field_info_sheet.dart';
 
@@ -81,7 +82,10 @@ class FieldInfoIcon extends StatelessWidget {
           icon: const Icon(Icons.info_outline),
           color: color ?? theme.colorScheme.primary,
           iconSize: 20,
-          constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+          constraints: const BoxConstraints(
+            minWidth: GewerberTokens.minTouchTarget,
+            minHeight: GewerberTokens.minTouchTarget,
+          ),
         ),
       ),
     );

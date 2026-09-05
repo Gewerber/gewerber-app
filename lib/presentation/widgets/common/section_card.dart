@@ -44,7 +44,9 @@ class _SectionCardState extends State<SectionCard> {
     Widget card = Card(
       margin: EdgeInsets.zero,
       clipBehavior: Clip.antiAlias,
-      elevation: _isHovered && hasInteraction ? 2 : 0,
+      elevation: _isHovered && hasInteraction
+          ? GewerberTokens.elevationHover
+          : GewerberTokens.elevationRest,
       child: InkWell(
         onTap: widget.onTap,
         onTapDown: hasInteraction
@@ -106,8 +108,8 @@ class _SectionCardState extends State<SectionCard> {
     if (hasInteraction) {
       card = AnimatedScale(
         scale: _isPressed ? 0.98 : 1.0,
-        duration: const Duration(milliseconds: 120),
-        curve: Curves.easeOutCubic,
+        duration: GewerberTokens.motionFast,
+        curve: GewerberTokens.motionCurve,
         child: MouseRegion(
           onEnter: (_) => setState(() => _isHovered = true),
           onExit: (_) => setState(() => _isHovered = false),

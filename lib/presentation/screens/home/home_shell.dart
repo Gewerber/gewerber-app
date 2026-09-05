@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:gewerber_app/core/theme/gewerber_tokens.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 import 'package:gewerber_app/presentation/widgets/common/beta_banner.dart';
-
-/// Minimum width at which the shell switches from the bottom navigation bar
-/// to a side [NavigationRail] (web-first layout).
-const double _railBreakpoint = 900;
 
 /// One navigation destination of the app shell, shared by the bottom
 /// navigation bar (narrow screens) and the navigation rail (wide screens).
@@ -34,7 +31,7 @@ class HomeShell extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        if (constraints.maxWidth >= _railBreakpoint) {
+        if (constraints.maxWidth >= GewerberTokens.breakpointMedium) {
           return Scaffold(
             body: Column(
               children: [
@@ -48,7 +45,9 @@ class HomeShell extends StatelessWidget {
                         selectedIndex: navigationShell.currentIndex,
                         onDestinationSelected: (index) =>
                             _selectBranch(context, index),
-                        extended: constraints.maxWidth >= 1400,
+                        extended:
+                            constraints.maxWidth >=
+                            GewerberTokens.breakpointExpanded,
                       ),
                       const VerticalDivider(thickness: 1, width: 1),
                       Expanded(child: navigationShell),

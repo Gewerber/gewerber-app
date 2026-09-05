@@ -7,9 +7,6 @@ import 'package:gewerber_app/core/theme/app_theme.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 import 'package:gewerber_app/presentation/widgets/brand/brand_logo.dart';
 
-/// Desktop breakpoint above which the two-column brand + form layout applies.
-const double _authBreakpoint = 900;
-
 /// Content-pane width below which the header drops the brand wordmark:
 /// back button + appearance switchers + full wordmark no longer fit side by
 /// side (~360 logical px), so the bare-logo fallback keeps the row
@@ -50,7 +47,7 @@ class AuthPanelLayout extends StatelessWidget {
     return Scaffold(
       body: LayoutBuilder(
         builder: (context, constraints) {
-          final wide = constraints.maxWidth >= _authBreakpoint;
+          final wide = constraints.maxWidth >= GewerberTokens.breakpointMedium;
           return Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
