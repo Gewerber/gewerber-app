@@ -82,7 +82,7 @@ class FieldInfoIcon extends StatelessWidget {
           icon: const Icon(Icons.info_outline),
           color: color ?? theme.colorScheme.primary,
           iconSize: 20,
-          visualDensity: VisualDensity.compact,
+          constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
         ),
       ),
     );

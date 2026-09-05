@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import './field_info_icon.dart';
+import 'package:gewerber_app/presentation/widgets/forms/field_info_icon.dart';
 
 /// A form-field label with an optional inline info icon.
 ///
@@ -10,10 +10,9 @@ import './field_info_icon.dart';
 /// field-hint system the same way [CustomTextField] does via its decoration.
 ///
 /// The [label] text and the [FieldInfoIcon] sit on one line. When [infoText]
-/// is null the widget renders just the label text. The whole row is wrapped in
-/// a [Semantics] node labelled with [label] (child semantics are kept, so the
-/// icon still announces its own tooltip), letting screen readers read the
-/// label and discover the hint in a single stop.
+/// is null the widget renders just the label text. No extra semantics node is
+/// added — the plain [Text] already announces itself and the icon carries its
+/// own accessible name, avoiding double announcements.
 class FieldLabel extends StatelessWidget {
   const FieldLabel({
     super.key,
@@ -39,30 +38,27 @@ class FieldLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Semantics(
-      label: label,
-      child: Row(
-        children: [
-          // Flexible so long localized labels wrap instead of overflowing on
-          // narrow screens; the info icon always keeps its space.
-          Flexible(
-            child: Text(
-              label,
-              style: theme.textTheme.labelMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
+    return Row(
+      children: [
+        // Flexible so long localized labels wrap instead of overflowing on
+        // narrow screens; the info icon always keeps its space.
+        Flexible(
+          child: Text(
+            label,
+            style: theme.textTheme.labelMedium?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
-          if (infoText != null) ...[
-            const SizedBox(width: 4),
-            FieldInfoIcon(
-              infoText: infoText!,
-              longInfoText: longInfoText,
-              semanticLabel: semanticLabel,
-            ),
-          ],
+        ),
+        if (infoText != null) ...[
+          const SizedBox(width: 4),
+          FieldInfoIcon(
+            infoText: infoText!,
+            longInfoText: longInfoText,
+            semanticLabel: semanticLabel,
+          ),
         ],
-      ),
+      ],
     );
   }
 }
