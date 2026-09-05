@@ -35,7 +35,10 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: 3.44.8
+          # Matches the local dev SDK; 3.44.x pins intl 0.20.2 via
+          # flutter_localizations, which conflicts with the intl ^0.20.3
+          # required since #24 (visual hierarchy).
+          flutter-version: 3.47.2
           cache: true
 
       - name: Install dependencies
