@@ -49,34 +49,41 @@ class FieldInfoIcon extends StatelessWidget {
     final label = semanticLabel ?? infoText;
     final hasSheet = longInfoText != null;
 
-    return Tooltip(
-      // The tooltip message doubles as the button's semantics label.
-      message: label,
-      // Tap reveals the hint for touch users, hover for pointer users. When
-      // a detail sheet is present the tap opens it and the modal barrier
-      // dismisses the tooltip, so the two never stack.
-      triggerMode: TooltipTriggerMode.tap,
-      child: IconButton(
-        onPressed: () {
-          if (!hasSheet) return;
-          showFieldInfoSheet<void>(
-            context: context,
-            title: sheetTitle ?? infoText,
-            body: infoText,
-            longBody: longInfoText,
-            // The trailing "more" action deep-links into the guidance
-            // system; its label comes from l10n so callers don't have to
-            // pass it through every layer.
-            onMoreRequested: onLongInfoRequested,
-            moreLabel: onLongInfoRequested != null
-                ? AppLocalizations.of(context).fieldInfoMore
-                : null,
-          );
-        },
-        icon: const Icon(Icons.info_outline),
-        color: color ?? theme.colorScheme.primary,
-        iconSize: 20,
-        visualDensity: VisualDensity.compact,
+    return Semantics(
+      // Flutter's Tooltip exposes its message via the `tooltip` semantics
+      // property only, which leaves the button itself unnamed for screen
+      // readers. An explicit label gives the icon an accessible name while
+      // the tooltip description is kept.
+      label: label,
+      button: true,
+      child: Tooltip(
+        message: label,
+        // Tap reveals the hint for touch users, hover for pointer users.
+        // When a detail sheet is present the tap opens it and the modal
+        // barrier dismisses the tooltip, so the two never stack.
+        triggerMode: TooltipTriggerMode.tap,
+        child: IconButton(
+          onPressed: () {
+            if (!hasSheet) return;
+            showFieldInfoSheet<void>(
+              context: context,
+              title: sheetTitle ?? infoText,
+              body: infoText,
+              longBody: longInfoText,
+              // The trailing "more" action deep-links into the guidance
+              // system; its label comes from l10n so callers don't have to
+              // pass it through every layer.
+              onMoreRequested: onLongInfoRequested,
+              moreLabel: onLongInfoRequested != null
+                  ? AppLocalizations.of(context).fieldInfoMore
+                  : null,
+            );
+          },
+          icon: const Icon(Icons.info_outline),
+          color: color ?? theme.colorScheme.primary,
+          iconSize: 20,
+          visualDensity: VisualDensity.compact,
+        ),
       ),
     );
   }
