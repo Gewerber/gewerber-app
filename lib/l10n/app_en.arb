@@ -775,5 +775,8 @@
   "fieldHintTaxNumberInfo": "The Steuernummer is your domestic tax number, assigned by the Finanzamt of your place of business. It appears on tax returns (EÜR, USt-Voranmeldung). Do not confuse it with the USt-IdNr. (starting with DE), which is used for cross-border B2B invoicing. A Kleinunternehmer usually only has a Steuernummer.",
   "fieldHintVatRateShort": "19% standard / 7% reduced — 0% only for Kleinunternehmer (§ 19 UStG).",
   "fieldHintServicePeriodShort": "Determines when the VAT becomes due (§ 13 UStG).",
-  "fieldHintBillableShort": "Billable time can be invoiced to the customer."
+  "fieldHintBillableShort": "Billable time can be invoiced to the customer.",
+  "commonDismiss": "Dismiss",
+  "timeEntryDeleteTitle": "Delete entry",
+  "timeEntryDeleteConfirm": "Delete this time entry? This cannot be undone."
 }

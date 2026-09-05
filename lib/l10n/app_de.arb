@@ -591,5 +591,8 @@
   "fieldHintTaxNumberInfo": "Die Steuernummer ist deine inländische Steuernummer, vergeben vom Finanzamt deines Geschäftssitzes. Sie steht auf Steuererklärungen (EÜR, USt-Voranmeldung). Nicht verwechseln mit der USt-IdNr. (beginnt mit DE), die für grenzüberschreitende B2B-Rechnungen dient. Ein Kleinunternehmer hat in der Regel nur eine Steuernummer.",
   "fieldHintVatRateShort": "19 % Regelsatz / 7 % ermäßigt — 0 % nur für Kleinunternehmer (§ 19 UStG).",
   "fieldHintServicePeriodShort": "Bestimmt, wann die Umsatzsteuer fällig wird (§ 13 UStG).",
-  "fieldHintBillableShort": "Abrechenbare Zeiten können dem Kunden in Rechnung gestellt werden."
+  "fieldHintBillableShort": "Abrechenbare Zeiten können dem Kunden in Rechnung gestellt werden.",
+  "commonDismiss": "Schließen",
+  "timeEntryDeleteTitle": "Eintrag löschen",
+  "timeEntryDeleteConfirm": "Diesen Zeiteintrag löschen? Das kann nicht rückgängig gemacht werden."
 }

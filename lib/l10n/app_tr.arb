@@ -591,5 +591,8 @@
   "fieldHintTaxNumberInfo": "Steuernummer, işletme yerinizdeki Finanzamt tarafından verilen yurt içi vergi numaranızdır. Vergi beyannamelerinde (EÜR, USt-Voranmeldung) yer alır. Sınır ötesi B2B faturalar için kullanılan USt-IdNr. (DE ile başlar) ile karıştırmayın. Bir Kleinunternehmer genellikle yalnızca Steuernummer'a sahiptir.",
   "fieldHintVatRateShort": "%19 standart / %7 indirimli — yalnızca Kleinunternehmer için %0 (§ 19 UStG).",
   "fieldHintServicePeriodShort": "KDV'nin ne zaman doğduğunu belirler (§ 13 UStG).",
-  "fieldHintBillableShort": "Faturalandırılabilir zaman müşteriye faturalanabilir."
+  "fieldHintBillableShort": "Faturalandırılabilir zaman müşteriye faturalanabilir.",
+  "commonDismiss": "Kapat",
+  "timeEntryDeleteTitle": "Kaydı sil",
+  "timeEntryDeleteConfirm": "Bu zaman kaydı silinsin mi? Bu işlem geri alınamaz."
 }

@@ -591,5 +591,8 @@
   "fieldHintTaxNumberInfo": "Steuernummer — ваш внутренний налоговый номер, который присваивает Finanzamt по месту ведения бизнеса. Он указывается в налоговых декларациях (EÜR, USt-Voranmeldung). Не путайте с USt-IdNr. (начинается с DE), которая нужна для трансграничных B2B-счетов. У Kleinunternehmer обычно есть только Steuernummer.",
   "fieldHintVatRateShort": "19 % стандартная / 7 % сниженная — 0 % только для Kleinunternehmer (§ 19 UStG).",
   "fieldHintServicePeriodShort": "Определяет, когда возникает НДС (§ 13 UStG).",
-  "fieldHintBillableShort": "Оплачиваемое время можно выставить клиенту в счёте."
+  "fieldHintBillableShort": "Оплачиваемое время можно выставить клиенту в счёте.",
+  "commonDismiss": "Закрыть",
+  "timeEntryDeleteTitle": "Удалить запись",
+  "timeEntryDeleteConfirm": "Удалить эту запись времени? Это действие нельзя отменить."
 }
