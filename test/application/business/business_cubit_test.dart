@@ -38,6 +38,8 @@ class _FakeBusinessRepository implements BusinessRepository {
       name: name,
       legalForm: legalForm,
       isKleinunternehmer: isKleinunternehmer,
+      vatId: vatId,
+      taxNumber: taxNumber,
     );
     _businesses.add(business);
     return business;

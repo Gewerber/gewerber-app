@@ -9,6 +9,7 @@ import 'package:gewerber_app/domain/entities/invoice.dart';
 import 'package:gewerber_app/domain/repositories/business_repository.dart';
 import 'package:gewerber_app/domain/repositories/dashboard_repository.dart';
 import 'package:gewerber_app/domain/repositories/document_repository.dart';
+import 'package:gewerber_app/infrastructure/repositories/mock_business_repository.dart';
 import 'package:gewerber_app/presentation/app/gewerber_app.dart';
 import 'package:gewerber_app/presentation/router/app_router.dart';
 import 'package:gewerber_app/presentation/router/route_names.dart';
@@ -61,8 +62,15 @@ Future<void> pumpAuthenticatedApp(
   // the onboarding UI: the onboarding screen pops right after the form is
   // submitted, and its field-hint OverlayPortal semantics subtree can leave
   // a stale node behind in that frame (framework semantics race), tripping
-  // the invisible-semantics assertion in golden tests.
-  await getIt<BusinessRepository>().create(name: 'Demo GmbH');
+  // the invisible-semantics assertion in golden tests. The guard keeps
+  // repeated calls within one test file from accumulating duplicates.
+  final businessRepository = getIt<BusinessRepository>();
+  if (businessRepository is MockBusinessRepository) {
+    final existing = await businessRepository.listMine();
+    if (existing.isEmpty) {
+      await businessRepository.create(name: 'Demo GmbH');
+    }
+  }
   await tester.pumpWidget(
     const TooltipVisibility(visible: false, child: GewerberApp()),
   );
