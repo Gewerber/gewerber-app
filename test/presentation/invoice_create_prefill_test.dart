@@ -28,12 +28,15 @@ void main() {
     required InvoiceTemplateRepository templateRepository,
     required MockInvoiceRepository invoiceRepository,
     Invoice? invoice,
+    MockCustomerRepository? customerRepository,
   }) async {
     tester.view.physicalSize = const Size(800, 1600);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.reset);
 
     final invoiceCubit = InvoiceCubit(invoiceRepository);
+    final customers = customerRepository ?? MockCustomerRepository();
+    final customerCubit = CustomerCubit(customers)..load();
     final router = GoRouter(
       initialLocation: '/',
       routes: [
@@ -54,9 +57,7 @@ void main() {
           BlocProvider<BusinessCubit>.value(
             value: BusinessCubit(MockBusinessRepository()),
           ),
-          BlocProvider<CustomerCubit>.value(
-            value: CustomerCubit(MockCustomerRepository()),
-          ),
+          BlocProvider<CustomerCubit>.value(value: customerCubit),
           BlocProvider<InvoiceCubit>.value(value: invoiceCubit),
           BlocProvider<InvoiceTemplateCubit>.value(
             value: InvoiceTemplateCubit(templateRepository),
@@ -173,5 +174,37 @@ void main() {
     final result = await invoiceRepository.get(draft.id);
     expect(result.invoice.templateId, isNull);
     expect(invoiceCubit.state.invoices, isEmpty);
+  });
+
+  testWidgets('reverse-charge chip appears for customers with a VAT ID', (
+    tester,
+  ) async {
+    final customerRepository = MockCustomerRepository();
+    await customerRepository.create(name: 'ACME GmbH', vatId: 'DE123456789');
+    await customerRepository.create(name: 'Private Client');
+
+    await pumpCreateScreen(
+      tester,
+      templateRepository: MockInvoiceTemplateRepository(),
+      invoiceRepository: MockInvoiceRepository(),
+      customerRepository: customerRepository,
+    );
+
+    // Hidden while no customer is selected.
+    expect(find.byIcon(Icons.swap_horiz_outlined), findsNothing);
+
+    // Select the customer carrying a USt-IdNr. — the chip appears.
+    await tester.tap(find.text('No customer'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('ACME GmbH').last);
+    await tester.pumpAndSettle();
+    expect(find.byIcon(Icons.swap_horiz_outlined), findsOneWidget);
+
+    // Choosing a customer without a VAT ID hides it again.
+    await tester.tap(find.text('ACME GmbH').first);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Private Client').last);
+    await tester.pumpAndSettle();
+    expect(find.byIcon(Icons.swap_horiz_outlined), findsNothing);
   });
 }
