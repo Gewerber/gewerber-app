@@ -5,6 +5,7 @@ import 'package:gewerber_app/application/guidance/guidance_cubit.dart';
 import 'package:gewerber_app/core/theme/app_theme.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 import 'package:gewerber_app/presentation/widgets/common/empty_state.dart';
+import 'package:gewerber_app/presentation/widgets/common/shimmer_loader.dart';
 
 /// GuidanceTipsScreen — contextual tips served by the guidance system.
 ///
@@ -32,7 +33,9 @@ class _GuidanceTipsScreenState extends State<GuidanceTipsScreen> {
     return Scaffold(
       appBar: AppBar(title: Text(l10n.tipsTitle)),
       body: switch ((state.isLoading, state.hasError, state.tips)) {
-        (true, _, _) => const Center(child: CircularProgressIndicator()),
+        (true, _, _) => const Center(
+          child: ShimmerLoader(lines: 5, height: 16),
+        ),
         (_, true, _) => EmptyState(
           icon: Icons.error_outline,
           message: l10n.tipsLoadError,
