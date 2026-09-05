@@ -24,6 +24,7 @@ class _BusinessProfileFormState extends State<BusinessProfileForm> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _vatIdController = TextEditingController();
+  final _taxNumberController = TextEditingController();
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
   final _streetController = TextEditingController();
@@ -39,6 +40,7 @@ class _BusinessProfileFormState extends State<BusinessProfileForm> {
   void dispose() {
     _nameController.dispose();
     _vatIdController.dispose();
+    _taxNumberController.dispose();
     _emailController.dispose();
     _phoneController.dispose();
     _streetController.dispose();
@@ -52,6 +54,7 @@ class _BusinessProfileFormState extends State<BusinessProfileForm> {
     _initialized = true;
     _nameController.text = business.name;
     _vatIdController.text = business.vatId ?? '';
+    _taxNumberController.text = business.taxNumber ?? '';
     _emailController.text = business.email ?? '';
     _phoneController.text = business.phone ?? '';
     _streetController.text = business.address?.street ?? '';
@@ -78,6 +81,9 @@ class _BusinessProfileFormState extends State<BusinessProfileForm> {
         vatId: _vatIdController.text.trim().isEmpty
             ? null
             : _vatIdController.text.trim(),
+        taxNumber: _taxNumberController.text.trim().isEmpty
+            ? null
+            : _taxNumberController.text.trim(),
         email: _emailController.text.trim().isEmpty
             ? null
             : _emailController.text.trim(),
@@ -197,6 +203,17 @@ class _BusinessProfileFormState extends State<BusinessProfileForm> {
             hint: FieldHint(
               shortText: l10n.onboardingVatIdHint,
               longText: l10n.fieldHintVatIdInfo,
+            ),
+            onHintMoreRequested: () => context.push(RouteNames.guideTips),
+          ),
+          const SizedBox(height: GewerberTokens.space16),
+          CustomTextField(
+            controller: _taxNumberController,
+            label: l10n.onboardingTaxNumber,
+            icon: Icons.receipt_long_outlined,
+            hint: FieldHint(
+              shortText: l10n.fieldHintTaxNumberShort,
+              longText: l10n.fieldHintTaxNumberInfo,
             ),
             onHintMoreRequested: () => context.push(RouteNames.guideTips),
           ),

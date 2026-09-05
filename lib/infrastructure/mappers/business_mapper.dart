@@ -16,6 +16,7 @@ class BusinessMapper {
       legalForm: LegalForm.fromName(model.legalForm.name),
       isKleinunternehmer: model.isKleinunternehmer,
       vatId: model.vatId,
+      taxNumber: model.taxNumber,
       email: model.email,
       phone: model.phone,
       address: address == null

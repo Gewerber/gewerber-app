@@ -48,6 +48,7 @@ class BusinessRemoteDataSource {
     LegalForm legalForm = LegalForm.einzelunternehmen,
     bool isKleinunternehmer = false,
     String? vatId,
+    String? taxNumber,
     String? email,
     String? phone,
     Address? address,
@@ -61,6 +62,7 @@ class BusinessRemoteDataSource {
           legalForm: _mapper.toProtocolLegalForm(legalForm),
           isKleinunternehmer: isKleinunternehmer,
           vatId: vatId,
+          taxNumber: taxNumber,
           email: email,
           phone: phone,
           address: address == null ? null : _mapper.toProtocolAddress(address),
@@ -84,6 +86,7 @@ class BusinessRemoteDataSource {
           legalForm: _mapper.toProtocolLegalForm(business.legalForm),
           isKleinunternehmer: business.isKleinunternehmer,
           vatId: business.vatId,
+          taxNumber: business.taxNumber,
           email: business.email,
           phone: business.phone,
           address: business.address == null

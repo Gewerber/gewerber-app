@@ -14,6 +14,7 @@ abstract interface class BusinessRepository {
     LegalForm legalForm,
     bool isKleinunternehmer,
     String? vatId,
+    String? taxNumber,
     String? email,
     String? phone,
     Address? address,

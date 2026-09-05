@@ -63,6 +63,7 @@ class Business extends Equatable {
     this.legalForm = LegalForm.einzelunternehmen,
     this.isKleinunternehmer = false,
     this.vatId,
+    this.taxNumber,
     this.email,
     this.phone,
     this.address,
@@ -77,6 +78,10 @@ class Business extends Equatable {
   /// Whether the owner is a §19 UStG Kleinunternehmer (VAT-exempt).
   final bool isKleinunternehmer;
   final String? vatId;
+
+  /// Domestic tax number (Steuernummer) assigned by the Finanzamt. Distinct
+  /// from [vatId] (the USt-IdNr. used for cross-border B2B invoicing).
+  final String? taxNumber;
   final String? email;
   final String? phone;
   final Address? address;
@@ -90,6 +95,7 @@ class Business extends Equatable {
     legalForm,
     isKleinunternehmer,
     vatId,
+    taxNumber,
     email,
     phone,
     address,
