@@ -2,10 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:gewerber_app/core/theme/gewerber_tokens.dart';
 
-/// Logical width at or above which the hint is shown as a dialog instead of a
-/// bottom sheet (matches the app-wide desktop breakpoint).
-const double _wideBreakpoint = 900;
-
 /// Shows an adaptive explanation sheet for a form field.
 ///
 /// On narrow screens (< 900 logical px) a scroll-controlled modal bottom sheet
@@ -24,7 +20,8 @@ Future<T?> showFieldInfoSheet<T>({
   VoidCallback? onMoreRequested,
   String? moreLabel,
 }) {
-  final isWide = MediaQuery.sizeOf(context).width >= _wideBreakpoint;
+  final isWide =
+      MediaQuery.sizeOf(context).width >= GewerberTokens.breakpointMedium;
 
   if (isWide) {
     return showDialog<T>(
