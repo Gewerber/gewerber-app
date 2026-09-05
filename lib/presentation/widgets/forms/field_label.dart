@@ -43,10 +43,14 @@ class FieldLabel extends StatelessWidget {
       label: label,
       child: Row(
         children: [
-          Text(
-            label,
-            style: theme.textTheme.labelMedium?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
+          // Flexible so long localized labels wrap instead of overflowing on
+          // narrow screens; the info icon always keeps its space.
+          Flexible(
+            child: Text(
+              label,
+              style: theme.textTheme.labelMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
             ),
           ),
           if (infoText != null) ...[
