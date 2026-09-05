@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import 'package:gewerber_app/core/theme/app_theme.dart';
+import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 
 /// Inline error banner shown above the form when an auth request fails.
 ///
@@ -56,7 +57,7 @@ class AuthErrorBanner extends StatelessWidget {
                   size: 18,
                   color: colors.onErrorContainer,
                 ),
-                tooltip: 'Dismiss',
+                tooltip: AppLocalizations.of(context).commonDismiss,
                 onPressed: onDismiss,
               ),
           ],

@@ -212,17 +212,27 @@ class _TransactionTile extends StatelessWidget {
           '${formatDate(transaction.occurredAt)} · '
           '${_categoryLabel(l10n, transaction.category)}',
         ),
-        trailing: Text(
-          '${isIncome ? '+' : '-'}${formatCents(transaction.amountCents)}',
-          style: TextStyle(
-            color: isIncome ? colors.primary : colors.error,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
         // Opens the editor, mirroring the customers and recurring-schedule
-        // lists; delete stays on long-press.
+        // lists. Delete is a visible trailing action — long-press alone was
+        // undiscoverable (a11y audit 2026-08).
         onTap: onEdit,
-        onLongPress: onDelete,
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              '${isIncome ? '+' : '-'}${formatCents(transaction.amountCents)}',
+              style: TextStyle(
+                color: isIncome ? colors.primary : colors.error,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            IconButton(
+              tooltip: l10n.transactionDeleteTitle,
+              icon: Icon(Icons.delete_outline, color: colors.error),
+              onPressed: onDelete,
+            ),
+          ],
+        ),
       ),
     );
   }
