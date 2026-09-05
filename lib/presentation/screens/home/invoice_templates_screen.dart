@@ -8,6 +8,7 @@ import 'package:gewerber_app/core/theme/app_theme.dart';
 import 'package:gewerber_app/domain/entities/invoice_template.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 import 'package:gewerber_app/presentation/router/route_names.dart';
+import 'package:gewerber_app/presentation/widgets/common/empty_state.dart';
 import 'package:gewerber_app/presentation/widgets/common/shimmer_loader.dart';
 
 /// InvoiceTemplatesScreen — list of the active business's invoice templates.
@@ -47,11 +48,15 @@ class _InvoiceTemplatesScreenState extends State<InvoiceTemplatesScreen> {
         InvoiceTemplateViewStatus.loading => const Center(
           child: ShimmerLoader(lines: 5, height: 16),
         ),
-        InvoiceTemplateViewStatus.failure => Center(
-          child: Text(l10n.templatesLoadError),
+        InvoiceTemplateViewStatus.failure => EmptyState(
+          icon: Icons.error_outline,
+          message: l10n.templatesLoadError,
         ),
         InvoiceTemplateViewStatus.loaded when state.templates.isEmpty =>
-          _EmptyState(),
+          EmptyState(
+            icon: Icons.description_outlined,
+            message: l10n.templatesEmpty,
+          ),
         InvoiceTemplateViewStatus.loaded => ListView.separated(
           padding: const EdgeInsets.all(GewerberTokens.space16),
           itemCount: state.templates.length,
@@ -115,29 +120,6 @@ class _TemplateTile extends StatelessWidget {
               )
             : null,
         onTap: onTap,
-      ),
-    );
-  }
-}
-
-class _EmptyState extends StatelessWidget {
-  const _EmptyState();
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final colors = Theme.of(context).colorScheme;
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(GewerberTokens.space32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.description_outlined, size: 56, color: colors.outline),
-            const SizedBox(height: GewerberTokens.space16),
-            Text(l10n.templatesEmpty, textAlign: TextAlign.center),
-          ],
-        ),
       ),
     );
   }

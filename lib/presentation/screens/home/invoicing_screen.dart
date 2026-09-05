@@ -14,6 +14,7 @@ import 'package:gewerber_app/core/utils/format.dart';
 import 'package:gewerber_app/domain/entities/invoice.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 import 'package:gewerber_app/presentation/router/route_names.dart';
+import 'package:gewerber_app/presentation/widgets/common/empty_state.dart';
 import 'package:gewerber_app/presentation/widgets/common/section_card.dart';
 import 'package:gewerber_app/presentation/widgets/common/shimmer_loader.dart';
 import 'package:gewerber_app/presentation/widgets/common/staggered_list_item.dart';
@@ -130,11 +131,15 @@ class _InvoicingScreenState extends State<InvoicingScreen> {
             child: switch (state.status) {
               InvoiceViewStatus.initial || InvoiceViewStatus.loading =>
                 const Center(child: ShimmerLoader(lines: 5, height: 16)),
-              InvoiceViewStatus.failure => Center(
-                child: Text(l10n.invoiceError),
+              InvoiceViewStatus.failure => EmptyState(
+                icon: Icons.error_outline,
+                message: l10n.invoiceError,
               ),
               InvoiceViewStatus.loaded when state.invoices.isEmpty =>
-                const _EmptyState(),
+                EmptyState(
+                  icon: Icons.receipt_long_outlined,
+                  message: l10n.invoicesEmpty,
+                ),
               InvoiceViewStatus.loaded => ListView.separated(
                 padding: const EdgeInsets.all(16),
                 itemCount: state.invoices.length,
@@ -260,28 +265,5 @@ class _InvoiceTile extends StatelessWidget {
       InvoiceStatus.overdue => l10n.invoiceStatusOverdue,
       InvoiceStatus.cancelled => l10n.invoiceStatusCancelled,
     };
-  }
-}
-
-class _EmptyState extends StatelessWidget {
-  const _EmptyState();
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final colors = Theme.of(context).colorScheme;
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(GewerberTokens.space32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.receipt_long_outlined, size: 56, color: colors.outline),
-            const SizedBox(height: GewerberTokens.space16),
-            Text(l10n.invoicesEmpty, textAlign: TextAlign.center),
-          ],
-        ),
-      ),
-    );
   }
 }
