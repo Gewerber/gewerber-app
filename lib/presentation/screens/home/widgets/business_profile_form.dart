@@ -9,6 +9,7 @@ import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 import 'package:gewerber_app/presentation/router/route_names.dart';
 import 'package:gewerber_app/presentation/widgets/forms/custom_text_field.dart';
 import 'package:gewerber_app/presentation/widgets/forms/field_hint.dart';
+import 'package:gewerber_app/presentation/widgets/forms/field_info_icon.dart';
 import 'package:gewerber_app/presentation/widgets/forms/field_label.dart';
 
 /// BusinessProfileForm — editable business profile form (extracted for master-detail).
@@ -173,7 +174,16 @@ class _BusinessProfileFormState extends State<BusinessProfileForm> {
           const SizedBox(height: GewerberTokens.space8),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
-            title: Text(l10n.businessFormKleinunternehmer),
+            title: Row(
+              children: [
+                Expanded(child: Text(l10n.businessFormKleinunternehmer)),
+                FieldInfoIcon(
+                  infoText: l10n.onboardingKleinunternehmerHint,
+                  longInfoText: l10n.fieldHintKleinunternehmerInfo,
+                  sheetTitle: l10n.businessFormKleinunternehmer,
+                ),
+              ],
+            ),
             value: _isKleinunternehmer,
             onChanged: (value) {
               setState(() => _isKleinunternehmer = value);
