@@ -759,5 +759,15 @@
   "invoiceRemoveItem": "Remove item",
   "timerNotBillable": "Not billable",
   "documentsUploading": "Uploading…",
-  "settingsDangerZone": "Danger zone"
+  "settingsDangerZone": "Danger zone",
+
+  "fieldHintLegalForm": "Legal form — affects liability and taxation. Einzelunternehmen: simplest, taxed via income tax (Einkommensteuer). Freiberufler: freelance professions, no Gewerbe tax.",
+  "fieldHintKleinunternehmerInfo": "The Kleinunternehmer rule (§ 19 UStG) lets you skip VAT on invoices while revenue stays under the limit (€25,000 previous year / €100,000 current year, 2025 rules). You must note the exemption on invoices. You cannot charge VAT and cannot deduct input tax (Vorsteuer).",
+  "fieldHintVatIdInfo": "The USt-IdNr. (VAT ID) is required for cross-border B2B invoicing in the EU (reverse charge) and starts with DE followed by 9 digits. Do not confuse it with the Steuernummer (tax number) which is used in domestic filings.",
+  "fieldHintCustomerVatIdInfo": "If an EU business customer provides their USt-IdNr., domestic German VAT rules may not apply (reverse charge, § 13b UStG). Always validate the ID via VIES. When in doubt, charge German VAT.",
+  "fieldHintVatRateInfo": "Standard rate 19%, reduced 7% (e.g. books, food). Kleinunternehmer charge 0% with the § 19 note. The rate must match the service; wrong rates are a common audit finding.",
+  "fieldHintServicePeriodInfo": "Leistungsdatum (date of service) determines which VAT rate applies and when the tax becomes due (§ 13 UStG). For continuous services the end of the period applies. Often differs from the invoice date.",
+  "fieldHintNumberPrefixInfo": "Invoice numbering must be unique and sequential (GoBD). A prefix like \"RE-\" is allowed; the counter must never repeat or reset.",
+  "fieldHintBillableInfo": "Billable time entries appear on invoices to the customer. Non-billable is internal time. The hourly rate multiplies the tracked hours when converting time entries into an invoice.",
+  "fieldInfoMore": "More in the guide"
 }
