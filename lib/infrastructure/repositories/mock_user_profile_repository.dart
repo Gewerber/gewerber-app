@@ -31,10 +31,7 @@ class MockUserProfileRepository implements UserProfileRepository {
   @override
   Future<MyIdentity> me() async {
     if (_deleted) throw const AccountDeletedException();
-    return const MyIdentity(
-      userId: 'mock-user',
-      memberships: [],
-    );
+    return const MyIdentity(userId: 'mock-user', memberships: []);
   }
 
   @override
