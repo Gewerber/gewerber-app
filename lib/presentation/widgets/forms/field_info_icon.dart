@@ -50,11 +50,11 @@ class FieldInfoIcon extends StatelessWidget {
     final hasSheet = longInfoText != null;
 
     return Semantics(
-      // Flutter's Tooltip exposes its message via the `tooltip` semantics
-      // property only, which leaves the button itself unnamed for screen
-      // readers. An explicit label gives the icon an accessible name while
-      // the tooltip description is kept.
+      // The Tooltip's own semantics would leave the button unnamed for
+      // screen readers (it only sets the `tooltip` property), so the
+      // accessible name and description are provided explicitly here.
       label: label,
+      tooltip: label,
       button: true,
       child: Tooltip(
         message: label,

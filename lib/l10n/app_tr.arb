@@ -585,5 +585,8 @@
   "fieldHintServicePeriodInfo": "Hizmet tarihi (Leistungsdatum), hangi KDV oranının uygulanacağını ve verginin ne zaman doğduğunu belirler (§ 13 UStG). Sürekli hizmetlerde dönemin sonu esas alınır. Fatura tarihinden sıklıkla farklıdır.",
   "fieldHintNumberPrefixInfo": "Fatura numarası benzersiz ve ardışık olmalıdır (GoBD). \"RE-\" gibi bir önek kullanılabilir; sayaç asla tekrarlamamalı veya sıfırlanmamalıdır.",
   "fieldHintBillableInfo": "Faturalandırılabilir zaman kayıtları müşteriye kesilen faturalarda görünür. Faturalandırılamayanlar iç zamandır. Zaman kayıtları faturaya dönüştürülürken kaydedilen saatler saatlik ücretle çarpılır.",
-  "fieldInfoMore": "Rehberde daha fazlası"
+  "fieldInfoMore": "Rehberde daha fazlası",
+  "onboardingTaxNumber": "Vergi numarası (Steuernummer)",
+  "fieldHintTaxNumberShort": "Yerel Finanzamt tarafından verilir — yurt içi beyanlar için. USt-IdNr. ile karıştırmayın!",
+  "fieldHintTaxNumberInfo": "Steuernummer, işletme yerinizdeki Finanzamt tarafından verilen yurt içi vergi numaranızdır. Vergi beyannamelerinde (EÜR, USt-Voranmeldung) yer alır. Sınır ötesi B2B faturalar için kullanılan USt-IdNr. (DE ile başlar) ile karıştırmayın. Bir Kleinunternehmer genellikle yalnızca Steuernummer'a sahiptir."
 }

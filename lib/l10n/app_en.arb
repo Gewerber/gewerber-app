@@ -769,5 +769,8 @@
   "fieldHintServicePeriodInfo": "Leistungsdatum (date of service) determines which VAT rate applies and when the tax becomes due (§ 13 UStG). For continuous services the end of the period applies. Often differs from the invoice date.",
   "fieldHintNumberPrefixInfo": "Invoice numbering must be unique and sequential (GoBD). A prefix like \"RE-\" is allowed; the counter must never repeat or reset.",
   "fieldHintBillableInfo": "Billable time entries appear on invoices to the customer. Non-billable is internal time. The hourly rate multiplies the tracked hours when converting time entries into an invoice.",
-  "fieldInfoMore": "More in the guide"
+  "fieldInfoMore": "More in the guide",
+  "onboardingTaxNumber": "Tax number (Steuernummer)",
+  "fieldHintTaxNumberShort": "Assigned by your local Finanzamt — used in domestic filings. Not the USt-IdNr.!",
+  "fieldHintTaxNumberInfo": "The Steuernummer is your domestic tax number, assigned by the Finanzamt of your place of business. It appears on tax returns (EÜR, USt-Voranmeldung). Do not confuse it with the USt-IdNr. (starting with DE), which is used for cross-border B2B invoicing. A Kleinunternehmer usually only has a Steuernummer."
 }

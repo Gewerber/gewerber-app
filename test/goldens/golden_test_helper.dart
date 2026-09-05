@@ -57,7 +57,12 @@ Future<void> pumpAuthenticatedApp(
   addTearDown(tester.view.reset);
 
   appRouter.go(RouteNames.splash);
-  await tester.pumpWidget(const GewerberApp());
+  // Tooltips never materialize in goldens: their OverlayPortals keep stale
+  // (invisible) semantics nodes after screens pop mid-flow, which trips the
+  // invisible-semantics assertion. Golden output does not depend on tooltips.
+  await tester.pumpWidget(
+    const TooltipVisibility(visible: false, child: GewerberApp()),
+  );
   await tester.pumpAndSettle();
 
   if (find.byType(LoginScreen).evaluate().isNotEmpty) {
