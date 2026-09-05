@@ -769,5 +769,8 @@
   "fieldHintServicePeriodInfo": "Leistungsdatum (date of service) determines which VAT rate applies and when the tax becomes due (§ 13 UStG). For continuous services the end of the period applies. Often differs from the invoice date.",
   "fieldHintNumberPrefixInfo": "Invoice numbering must be unique and sequential (GoBD). A prefix like \"RE-\" is allowed; the counter must never repeat or reset.",
   "fieldHintBillableInfo": "Billable time entries appear on invoices to the customer. Non-billable is internal time. The hourly rate multiplies the tracked hours when converting time entries into an invoice.",
-  "fieldInfoMore": "More in the guide"
+  "fieldInfoMore": "More in the guide",
+  "fieldHintVatRateShort": "19% standard / 7% reduced — 0% only for Kleinunternehmer (§ 19 UStG).",
+  "fieldHintServicePeriodShort": "Determines when the VAT becomes due (§ 13 UStG).",
+  "fieldHintBillableShort": "Billable time can be invoiced to the customer."
 }
