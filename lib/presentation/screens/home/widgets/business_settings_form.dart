@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:gewerber_app/application/business/business_cubit.dart';
 import 'package:gewerber_app/application/business_settings/business_settings_cubit.dart';
@@ -7,6 +8,9 @@ import 'package:gewerber_app/application/business_settings/business_settings_sta
 import 'package:gewerber_app/core/theme/app_theme.dart';
 import 'package:gewerber_app/domain/entities/business_settings.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
+import 'package:gewerber_app/presentation/router/route_names.dart';
+import 'package:gewerber_app/presentation/widgets/forms/custom_text_field.dart';
+import 'package:gewerber_app/presentation/widgets/forms/field_hint.dart';
 
 /// BusinessSettingsForm — invoice numbering and payment terms form (extracted for master-detail).
 class BusinessSettingsForm extends StatefulWidget {
@@ -148,12 +152,15 @@ class _SettingsFormState extends State<_SettingsForm> {
         const SizedBox(height: GewerberTokens.space24),
         Text(l10n.businessSettingsInvoiceNumber, style: textTheme.titleMedium),
         const SizedBox(height: GewerberTokens.space12),
-        TextField(
+        CustomTextField(
           controller: _prefixController,
-          decoration: InputDecoration(
-            labelText: l10n.businessSettingsNumberPrefix,
-            helperText: l10n.businessSettingsNumberPrefixHint,
+          label: l10n.businessSettingsNumberPrefix,
+          helperText: l10n.businessSettingsNumberPrefixHint,
+          hint: FieldHint(
+            shortText: l10n.businessSettingsNumberPrefixHint,
+            longText: l10n.fieldHintNumberPrefixInfo,
           ),
+          onHintMoreRequested: () => context.push(RouteNames.guideTips),
         ),
         const SizedBox(height: GewerberTokens.space8),
         SwitchListTile(
