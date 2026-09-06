@@ -61,7 +61,10 @@ void main() {
       await tester.tap(find.text('Continue'));
       await tester.pumpAndSettle();
       await tester.enterText(find.byType(TextFormField), 'Demo GmbH');
-      await tester.tap(find.text('Create business'));
+      final createButton = find.text('Create business');
+      await tester.ensureVisible(createButton);
+      await tester.pumpAndSettle();
+      await tester.tap(createButton);
       await tester.pumpAndSettle();
     }
 

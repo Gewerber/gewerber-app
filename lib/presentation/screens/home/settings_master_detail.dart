@@ -4,15 +4,13 @@ import 'package:go_router/go_router.dart';
 
 import 'package:gewerber_app/application/auth/auth_cubit.dart';
 import 'package:gewerber_app/application/user_profile/user_profile_cubit.dart';
+import 'package:gewerber_app/core/theme/gewerber_tokens.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 import 'package:gewerber_app/presentation/router/route_names.dart';
 import 'package:gewerber_app/presentation/screens/home/widgets/delete_account_dialog.dart';
 import 'package:gewerber_app/presentation/screens/home/widgets/settings_detail_pane.dart';
 import 'package:gewerber_app/presentation/screens/home/widgets/settings_navigation_rail.dart';
 import 'package:gewerber_app/presentation/widgets/common/module_menu_tile.dart';
-
-/// Breakpoint for two-pane master-detail layout (standard Material tablet breakpoint).
-const double _settingsBreakpoint = 600;
 
 /// Settings sections shared by the mobile list and the desktop rail/pane.
 ///
@@ -165,7 +163,8 @@ class _SettingsMasterDetailState extends State<SettingsMasterDetail> {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final isDesktop = constraints.maxWidth >= _settingsBreakpoint;
+        final isDesktop =
+            constraints.maxWidth >= GewerberTokens.breakpointCompact;
 
         if (isDesktop) {
           return _buildDesktopLayout(context, l10n);

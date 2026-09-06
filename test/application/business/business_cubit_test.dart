@@ -26,6 +26,7 @@ class _FakeBusinessRepository implements BusinessRepository {
     LegalForm legalForm = LegalForm.einzelunternehmen,
     bool isKleinunternehmer = false,
     String? vatId,
+    String? taxNumber,
     String? email,
     String? phone,
     Address? address,
@@ -37,6 +38,8 @@ class _FakeBusinessRepository implements BusinessRepository {
       name: name,
       legalForm: legalForm,
       isKleinunternehmer: isKleinunternehmer,
+      vatId: vatId,
+      taxNumber: taxNumber,
     );
     _businesses.add(business);
     return business;

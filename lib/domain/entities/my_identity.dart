@@ -6,8 +6,7 @@ import 'package:equatable/equatable.dart';
 /// serialised via `serialized: byName`.
 enum AdminRole {
   moderator,
-  admin,
-  ;
+  admin;
 
   /// Resolves a [name] to the corresponding enum value.
   ///
@@ -30,8 +29,7 @@ enum AdminRole {
 enum MembershipRole {
   owner,
   admin,
-  member,
-  ;
+  member;
 
   /// Resolves a [name] to the corresponding enum value.
   ///

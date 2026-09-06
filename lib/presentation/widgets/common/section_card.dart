@@ -44,7 +44,9 @@ class _SectionCardState extends State<SectionCard> {
     Widget card = Card(
       margin: EdgeInsets.zero,
       clipBehavior: Clip.antiAlias,
-      elevation: _isHovered && hasInteraction ? 2 : 0,
+      elevation: _isHovered && hasInteraction
+          ? GewerberTokens.elevationHover
+          : GewerberTokens.elevationRest,
       child: InkWell(
         onTap: widget.onTap,
         onTapDown: hasInteraction
@@ -56,45 +58,49 @@ class _SectionCardState extends State<SectionCard> {
         onTapCancel: hasInteraction
             ? () => setState(() => _isPressed = false)
             : null,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (widget.accentColor != null)
-              Container(width: 3, color: widget.accentColor),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(GewerberTokens.space16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          // Announced as a heading so screen reader users can
-                          // jump between the dashboard sections.
-                          child: Semantics(
-                            header: true,
-                            child: Text(
-                              widget.title,
-                              style: Theme.of(context).textTheme.titleMedium,
+        child: IntrinsicHeight(
+          // Without IntrinsicHeight the stretch Row crashes with an infinite
+          // height when the card is placed in an unbounded context (ListView).
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (widget.accentColor != null)
+                Container(width: 3, color: widget.accentColor),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(GewerberTokens.space16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            // Announced as a heading so screen reader users can
+                            // jump between the dashboard sections.
+                            child: Semantics(
+                              header: true,
+                              child: Text(
+                                widget.title,
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
                             ),
                           ),
-                        ),
-                        if (widget.onTap != null)
-                          Icon(
-                            Icons.chevron_right,
-                            size: 20,
-                            color: Theme.of(context).colorScheme.outline,
-                          ),
-                      ],
-                    ),
-                    const SizedBox(height: GewerberTokens.space12),
-                    widget.child,
-                  ],
+                          if (widget.onTap != null)
+                            Icon(
+                              Icons.chevron_right,
+                              size: 20,
+                              color: Theme.of(context).colorScheme.outline,
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: GewerberTokens.space12),
+                      widget.child,
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -102,8 +108,8 @@ class _SectionCardState extends State<SectionCard> {
     if (hasInteraction) {
       card = AnimatedScale(
         scale: _isPressed ? 0.98 : 1.0,
-        duration: const Duration(milliseconds: 120),
-        curve: Curves.easeOutCubic,
+        duration: GewerberTokens.motionFast,
+        curve: GewerberTokens.motionCurve,
         child: MouseRegion(
           onEnter: (_) => setState(() => _isHovered = true),
           onExit: (_) => setState(() => _isHovered = false),

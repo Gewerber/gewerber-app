@@ -62,7 +62,8 @@ class _FailingUpdateRepository implements AccountingRepository {
   }) => throw UnimplementedError();
 
   @override
-  Future<AccountingTransaction> getAccountingTransaction(int transactionId) => throw UnimplementedError();
+  Future<AccountingTransaction> getAccountingTransaction(int transactionId) =>
+      throw UnimplementedError();
 }
 
 void main() {

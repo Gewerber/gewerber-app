@@ -10,6 +10,9 @@ import 'package:gewerber_app/presentation/router/route_names.dart';
 import 'package:gewerber_app/presentation/screens/onboarding/widgets/preferences_step.dart';
 import 'package:gewerber_app/presentation/widgets/auth/auth_primary_button.dart';
 import 'package:gewerber_app/presentation/widgets/forms/custom_text_field.dart';
+import 'package:gewerber_app/presentation/widgets/forms/field_hint.dart';
+import 'package:gewerber_app/presentation/widgets/forms/field_info_icon.dart';
+import 'package:gewerber_app/presentation/widgets/forms/field_label.dart';
 
 /// Onboarding — set up the app and create the user's first business.
 ///
@@ -32,6 +35,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _vatIdController = TextEditingController();
+  final _taxNumberController = TextEditingController();
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
   final _streetController = TextEditingController();
@@ -46,6 +50,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   void dispose() {
     _nameController.dispose();
     _vatIdController.dispose();
+    _taxNumberController.dispose();
     _emailController.dispose();
     _phoneController.dispose();
     _streetController.dispose();
@@ -66,6 +71,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       vatId: _vatIdController.text.trim().isEmpty
           ? null
           : _vatIdController.text.trim(),
+      taxNumber: _taxNumberController.text.trim().isEmpty
+          ? null
+          : _taxNumberController.text.trim(),
       email: _emailController.text.trim().isEmpty
           ? null
           : _emailController.text.trim(),
@@ -155,30 +163,51 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           },
                         ),
                         const SizedBox(height: GewerberTokens.space16),
-                        DropdownButtonFormField<LegalForm>(
-                          initialValue: _legalForm,
-                          isExpanded: true,
-                          decoration: InputDecoration(
-                            labelText: l10n.onboardingLegalForm,
-                            prefixIcon: const Icon(Icons.gavel_outlined),
-                          ),
-                          items: [
-                            for (final form in LegalForm.values)
-                              DropdownMenuItem(
-                                value: form,
-                                child: Text(_legalFormLabel(form)),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            FieldLabel(
+                              label: l10n.onboardingLegalForm,
+                              infoText: l10n.fieldHintLegalForm,
+                            ),
+                            const SizedBox(height: GewerberTokens.space8),
+                            DropdownButtonFormField<LegalForm>(
+                              initialValue: _legalForm,
+                              isExpanded: true,
+                              decoration: const InputDecoration(
+                                prefixIcon: Icon(Icons.gavel_outlined),
                               ),
+                              items: [
+                                for (final form in LegalForm.values)
+                                  DropdownMenuItem(
+                                    value: form,
+                                    child: Text(_legalFormLabel(form)),
+                                  ),
+                              ],
+                              onChanged: (value) {
+                                if (value != null) {
+                                  setState(() => _legalForm = value);
+                                }
+                              },
+                            ),
                           ],
-                          onChanged: (value) {
-                            if (value != null) {
-                              setState(() => _legalForm = value);
-                            }
-                          },
                         ),
                         const SizedBox(height: GewerberTokens.space16),
                         SwitchListTile(
                           contentPadding: EdgeInsets.zero,
-                          title: Text(l10n.onboardingKleinunternehmer),
+                          title: Row(
+                            children: [
+                              Expanded(
+                                child: Text(l10n.onboardingKleinunternehmer),
+                              ),
+                              FieldInfoIcon(
+                                infoText: l10n.onboardingKleinunternehmerHint,
+                                longInfoText:
+                                    l10n.fieldHintKleinunternehmerInfo,
+                                sheetTitle: l10n.onboardingKleinunternehmer,
+                              ),
+                            ],
+                          ),
                           subtitle: Text(l10n.onboardingKleinunternehmerHint),
                           value: _isKleinunternehmer,
                           onChanged: (value) {
@@ -191,6 +220,25 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           label: l10n.onboardingVatId,
                           icon: Icons.badge_outlined,
                           helperText: l10n.onboardingVatIdHint,
+                          hint: FieldHint(
+                            shortText: l10n.onboardingVatIdHint,
+                            longText: l10n.fieldHintVatIdInfo,
+                          ),
+                          onHintMoreRequested: () =>
+                              context.push(RouteNames.guideTips),
+                          textInputAction: TextInputAction.next,
+                        ),
+                        const SizedBox(height: GewerberTokens.space16),
+                        CustomTextField(
+                          controller: _taxNumberController,
+                          label: l10n.onboardingTaxNumber,
+                          icon: Icons.receipt_long_outlined,
+                          hint: FieldHint(
+                            shortText: l10n.fieldHintTaxNumberShort,
+                            longText: l10n.fieldHintTaxNumberInfo,
+                          ),
+                          onHintMoreRequested: () =>
+                              context.push(RouteNames.guideTips),
                           textInputAction: TextInputAction.next,
                         ),
                         const SizedBox(height: GewerberTokens.space16),

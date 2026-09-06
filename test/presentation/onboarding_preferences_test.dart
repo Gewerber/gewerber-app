@@ -91,7 +91,10 @@ void main() {
       expect(find.text('Создать бизнес'), findsOneWidget);
 
       // Back returns to the preferences step.
-      await tester.tap(find.text('Назад'));
+      final backButton = find.text('Назад');
+      await tester.ensureVisible(backButton);
+      await tester.pumpAndSettle();
+      await tester.tap(backButton);
       await tester.pumpAndSettle();
       expect(find.byType(PreferencesStep), findsOneWidget);
 
@@ -99,7 +102,10 @@ void main() {
       await tester.tap(find.text('Продолжить'));
       await tester.pumpAndSettle();
       await tester.enterText(find.byType(TextFormField), 'Demo GmbH');
-      await tester.tap(find.text('Создать бизнес'));
+      final createButton = find.text('Создать бизнес');
+      await tester.ensureVisible(createButton);
+      await tester.pumpAndSettle();
+      await tester.tap(createButton);
       await tester.pumpAndSettle();
       expect(find.byType(DashboardScreen), findsOneWidget);
     },

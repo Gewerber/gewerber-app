@@ -48,13 +48,18 @@ abstract final class GewerberTheme {
       onPrimaryContainer: Color(0xFFD1E1FA),
       secondary: Color(0xFF4CD4A9),
       onSecondary: Color(0xFF0A2B1F),
-      secondaryContainer: Color(0xFF2DB387),
+      // v1.1 dark containers: the retired v1.0 secondaryContainer #2DB387
+      // gave onSecondaryContainer only 2.45:1; #1D9570 (Brand Book v1.1
+      // accentDark) lifts the pair to 3.47:1 — fine for large/UI content,
+      // and body text on it stays on light surfaces in practice. Same
+      // treatment for errorContainer → errorDark #B12222 (4.52 → 5.81:1).
+      secondaryContainer: Color(0xFF1D9570),
       onSecondaryContainer: Color(0xFFE8FAF3),
       tertiary: Color(0xFF4CD4A9),
       onTertiary: Color(0xFF0A2B1F),
       error: Color(0xFFF08080),
       onError: Color(0xFF3A0A0A),
-      errorContainer: Color(0xFFC43A3A),
+      errorContainer: Color(0xFFB12222),
       onErrorContainer: Color(0xFFFDEAEA),
       outline: Color(0xFF2A3540),
       surface: Color(0xFF151A1F),

@@ -13,9 +13,9 @@ class MockCustomerRepository implements CustomerRepository {
   final List<Customer> _customers = [];
 
   List<Customer> _filteredList(CustomerStatus? status) {
-    return _customers.where(
-      (customer) => status == null || customer.status == status,
-    ).toList();
+    return _customers
+        .where((customer) => status == null || customer.status == status)
+        .toList();
   }
 
   @override
@@ -42,10 +42,7 @@ class MockCustomerRepository implements CustomerRepository {
     final filtered = _filteredList(status);
     final effectiveOffset = offset ?? 0;
     final effectiveLimit = limit ?? 20;
-    final page = filtered
-        .skip(effectiveOffset)
-        .take(effectiveLimit)
-        .toList();
+    final page = filtered.skip(effectiveOffset).take(effectiveLimit).toList();
     return CustomerListPage(
       items: page,
       totalCount: filtered.length,
@@ -66,10 +63,7 @@ class MockCustomerRepository implements CustomerRepository {
         ? 0
         : filtered.indexWhere((c) => c.id.toString() == cursor);
     final safeStart = startIndex < 0 ? 0 : startIndex;
-    final page = filtered
-        .skip(safeStart)
-        .take(effectiveLimit + 1)
-        .toList();
+    final page = filtered.skip(safeStart).take(effectiveLimit + 1).toList();
     final hasMore = page.length > effectiveLimit;
     final items = hasMore ? page.sublist(0, effectiveLimit) : page;
     return CustomerCursorPage(

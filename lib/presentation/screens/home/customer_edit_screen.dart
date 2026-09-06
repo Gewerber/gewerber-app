@@ -7,7 +7,9 @@ import 'package:gewerber_app/core/theme/app_theme.dart';
 import 'package:gewerber_app/domain/entities/business.dart';
 import 'package:gewerber_app/domain/entities/customer.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
+import 'package:gewerber_app/presentation/router/route_names.dart';
 import 'package:gewerber_app/presentation/widgets/forms/custom_text_field.dart';
+import 'package:gewerber_app/presentation/widgets/forms/field_hint.dart';
 
 /// CustomerEditScreen — create or edit a customer.
 class CustomerEditScreen extends StatefulWidget {
@@ -178,6 +180,12 @@ class _CustomerEditScreenState extends State<CustomerEditScreen> {
                     controller: _vatIdController,
                     label: l10n.customerVatId,
                     icon: Icons.badge_outlined,
+                    hint: FieldHint(
+                      shortText: l10n.onboardingVatIdHint,
+                      longText: l10n.fieldHintCustomerVatIdInfo,
+                    ),
+                    onHintMoreRequested: () =>
+                        context.push(RouteNames.guideTips),
                   ),
                   const SizedBox(height: GewerberTokens.space16),
                   CustomTextField(

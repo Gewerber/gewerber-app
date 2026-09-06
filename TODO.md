@@ -120,6 +120,9 @@
 - Web-сборка: рассмотреть `--wasm` после стабилизации зависимостей.
 - (2026-08-22) Даты в UI теперь локале-зависимые (de → `22.08.2026`); ISO оставлен только в именах файлов экспорта.
 - (2026-08-22) CI на fork-PR: секрет `COMMERCIAL_REPO_TOKEN` недоступен — `pub get` приватной зависимости упадёт by design.
-- (2026-08-25, a11y-pass, flag-only) Контраст vs белый фон (WCAG AA 4.5:1 текст / 3:1 крупный текст и UI): `GewerberColors.success #3BB273` = 2.69 (тренд-бейджи «+x %»), `accentDark #2DB387` = 2.66 (расходные бары графика), `textMuted #9AA5B1` = 2.50, `warning #F5A623` = 2.03; `error #E54848` = 3.92 (проходит только как крупный/UI) — есть тёмные варианты (`errorDark` 5.23, `successDark`, `primary` 4.86 ✓). Нужен продуктовый редизайн палитры, не трогал.
-- (2026-08-25, a11y-pass, flag-only) Удаление транзакций и time-записей доступно только через long-press (`onLongPress`) — нет видимого действия; нужна архитектурная доработка (swipe/dispose menu), не трогал.
-- (2026-08-25, a11y-pass, flag-only) Закрывающий IconButton в `auth_error_banner.dart` без tooltip (auth-зона вне скоупа пост-логин прохода); focus traversal порядок не проверялся глубоко — требует отдельного прохода с реальным screen reader.
+- (2026-09-05) **UI/UX-план выполнен**: система подсказок полей (ядро + 2 волны, PR #32/#34), Steuernummer (PR #36 + backend #24), палитра Brand Book v1.1 (PR #37, контраст-тест `test/core/theme/contrast_test.dart` как регресс-спека), токены motion/elevation/breakpoints, EmptyState (PR #38), видимое удаление + tooltip (PR #39).
+- (2026-09-05, resolved) Контраст палитры — исправлен hex в v1.1 (success #187F4F, warning #996200, textMuted #64707E, error #CC3333, accentDark #1D9570; все ≥ 4.5:1 текст / 3:1 UI на белом и фоне); hex-таблицу бренд-бука обновить в org `.github` (отдельный PR).
+- (2026-09-05, resolved) Long-press-only удаление — видимая IconButton (+ диалог подтверждения для time entries).
+- (2026-09-05, resolved) tooltip в `auth_error_banner.dart` — l10n `commonDismiss`.
+- (2026-08-25) Focus traversal порядок не проверялся глубоко — требует отдельного прохода с реальным screen reader.
+- (2026-09-05) **app CI жёлтый до релиза backend**: `gewerber_backend_client` резолвится с `ref: main`, где ещё нет `taxNumber` (backend develop #24/#25). Release develop → main backend'а — за оператором.

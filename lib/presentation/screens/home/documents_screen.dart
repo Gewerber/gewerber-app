@@ -11,6 +11,8 @@ import 'package:gewerber_app/core/theme/app_theme.dart';
 import 'package:gewerber_app/core/utils/format.dart';
 import 'package:gewerber_app/domain/entities/document.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
+import 'package:gewerber_app/presentation/widgets/common/empty_state.dart';
+import 'package:gewerber_app/presentation/widgets/common/shimmer_loader.dart';
 
 /// DocumentsScreen — all files stored for the business (receipts, logos,
 /// attachments, generated invoice PDFs) with upload and download.
@@ -112,19 +114,14 @@ class _DocumentsViewState extends State<DocumentsView> {
         constraints: const BoxConstraints(maxWidth: 720),
         child: switch (state.status) {
           DocumentsViewStatus.initial || DocumentsViewStatus.loading =>
-            const Center(child: CircularProgressIndicator()),
-          DocumentsViewStatus.failure => Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(l10n.documentsLoadError),
-                const SizedBox(height: GewerberTokens.space12),
-                OutlinedButton.icon(
-                  onPressed: () => context.read<DocumentsCubit>().load(),
-                  icon: const Icon(Icons.refresh),
-                  label: Text(l10n.commonRetry),
-                ),
-              ],
+            const Center(child: ShimmerLoader(lines: 5, height: 16)),
+          DocumentsViewStatus.failure => EmptyState(
+            icon: Icons.error_outline,
+            message: l10n.documentsLoadError,
+            action: OutlinedButton.icon(
+              onPressed: () => context.read<DocumentsCubit>().load(),
+              icon: const Icon(Icons.refresh),
+              label: Text(l10n.commonRetry),
             ),
           ),
           DocumentsViewStatus.loaded => ListView(
@@ -158,16 +155,10 @@ class _DocumentsViewState extends State<DocumentsView> {
                 ),
               const SizedBox(height: GewerberTokens.space16),
               if (state.documents.isEmpty)
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: GewerberTokens.space24,
-                  ),
-                  child: Text(
-                    l10n.documentsEmpty,
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-                  ),
+                EmptyState(
+                  icon: Icons.folder_open_outlined,
+                  message: l10n.documentsEmpty,
+                  compact: true,
                 )
               else
                 for (final document in state.documents) ...[

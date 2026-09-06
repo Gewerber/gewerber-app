@@ -11,6 +11,7 @@ import 'package:gewerber_app/domain/entities/customer.dart';
 import 'package:gewerber_app/domain/entities/recurring_schedule.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 import 'package:gewerber_app/presentation/router/route_names.dart';
+import 'package:gewerber_app/presentation/widgets/common/empty_state.dart';
 import 'package:gewerber_app/presentation/widgets/common/shimmer_loader.dart';
 
 /// RecurringSchedulesScreen — list of the active business's recurring
@@ -54,11 +55,12 @@ class _RecurringSchedulesScreenState extends State<RecurringSchedulesScreen> {
         RecurringScheduleViewStatus.loading => const Center(
           child: ShimmerLoader(lines: 5, height: 16),
         ),
-        RecurringScheduleViewStatus.failure => Center(
-          child: Text(l10n.recurringLoadError),
+        RecurringScheduleViewStatus.failure => EmptyState(
+          icon: Icons.error_outline,
+          message: l10n.recurringLoadError,
         ),
         RecurringScheduleViewStatus.loaded when state.schedules.isEmpty =>
-          _EmptyState(),
+          EmptyState(icon: Icons.event_repeat, message: l10n.recurringEmpty),
         RecurringScheduleViewStatus.loaded => ListView.separated(
           padding: const EdgeInsets.all(GewerberTokens.space16),
           itemCount: state.schedules.length,
@@ -130,28 +132,5 @@ class _ScheduleTile extends StatelessWidget {
       RecurrenceInterval.quarterly => l10n.recurringIntervalQuarterly,
       RecurrenceInterval.yearly => l10n.recurringIntervalYearly,
     };
-  }
-}
-
-class _EmptyState extends StatelessWidget {
-  const _EmptyState();
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final colors = Theme.of(context).colorScheme;
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(GewerberTokens.space32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.event_repeat, size: 56, color: colors.outline),
-            const SizedBox(height: GewerberTokens.space16),
-            Text(l10n.recurringEmpty, textAlign: TextAlign.center),
-          ],
-        ),
-      ),
-    );
   }
 }

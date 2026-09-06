@@ -19,10 +19,6 @@ import 'package:gewerber_app/presentation/widgets/dashboard/recent_activity_card
 import 'package:gewerber_app/presentation/widgets/dashboard/receivables_card.dart';
 import 'package:gewerber_app/presentation/widgets/dashboard/trends_section_card.dart';
 
-/// Breakpoint at which the dashboard switches from a single column to the
-/// two-column layout (tablet landscape / desktop).
-const double _twoColumnBreakpoint = 900;
-
 /// DashboardScreen — overview of open invoices, this month's P&L and tracked
 /// time, with quick actions into the modules, plus the v2 sections (trends,
 /// recent activity, receivables) loaded through [DashboardCubit].
@@ -89,7 +85,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
         onRefresh: _refreshAll,
         child: LayoutBuilder(
           builder: (context, constraints) {
-            final wide = constraints.maxWidth >= _twoColumnBreakpoint;
+            final wide =
+                constraints.maxWidth >= GewerberTokens.breakpointMedium;
             final openInvoices = _OpenInvoicesSection(onRetry: _load);
             final monthResult = _MonthResultSection(ok: _plOk, onRetry: _load);
             final trackedTime = _TrackedTimeSection(

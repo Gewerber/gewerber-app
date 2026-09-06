@@ -575,5 +575,24 @@
   "invoiceRemoveItem": "Kalem kaldır",
   "timerNotBillable": "Faturalandırılamaz",
   "documentsUploading": "Yükleniyor…",
-  "settingsDangerZone": "Tehlikeli bölge"
+  "settingsDangerZone": "Tehlikeli bölge",
+
+  "fieldHintLegalForm": "Şirket türü — sorumluluğu ve vergilendirmeyi etkiler. Einzelunternehmen (tek kişilik işletme): en basit yapı, gelir vergisi (Einkommensteuer) ile vergilendirilir. Freiberufler (serbest meslek): ticaret vergisi (Gewerbesteuer) ödemez.",
+  "fieldHintKleinunternehmerInfo": "Küçük işletme kuralı (§ 19 UStG), ciro sınırın altında kaldığı sürece (önceki yıl 25.000 € / mevcut yıl 100.000 €, 2025 kuralları) faturalarınızda KDV hesaplamamanıza izin verir. Muafiyetin faturada belirtilmesi gerekir. KDV hesaplayamazsınız ve indirilecek KDV'yi (Vorsteuer) talep edemezsiniz.",
+  "fieldHintVatIdInfo": "USt-IdNr. (KDV kimlik numarası), AB'deki sınır ötesi B2B faturaları için gereklidir (reverse charge) ve DE + 9 rakamdan oluşur. Yurt içi beyannamelerde kullanılan Steuernummer (vergi numarası) ile karıştırmayın.",
+  "fieldHintCustomerVatIdInfo": "AB'li bir kurumsal müşteri USt-IdNr.'sini belirtirse Almanya'nın yurt içi KDV kuralları geçerli olmayabilir (reverse charge, § 13b UStG). Kimliği VIES üzerinden doğrulayın. Şüphe durumunda Alman KDV'si hesaplayın.",
+  "fieldHintVatRateInfo": "Standart oran %19, indirimli oran %7 (ör. kitap, gıda). Kleinunternehmer, § 19 notuyla %0 hesaplar. Oran, sunulan hizmetle uyumlu olmalıdır; yanlış oranlar denetimde sık karşılaşılan bir bulgudur.",
+  "fieldHintServicePeriodInfo": "Hizmet tarihi (Leistungsdatum), hangi KDV oranının uygulanacağını ve verginin ne zaman doğduğunu belirler (§ 13 UStG). Sürekli hizmetlerde dönemin sonu esas alınır. Fatura tarihinden sıklıkla farklıdır.",
+  "fieldHintNumberPrefixInfo": "Fatura numarası benzersiz ve ardışık olmalıdır (GoBD). \"RE-\" gibi bir önek kullanılabilir; sayaç asla tekrarlamamalı veya sıfırlanmamalıdır.",
+  "fieldHintBillableInfo": "Faturalandırılabilir zaman kayıtları müşteriye kesilen faturalarda görünür. Faturalandırılamayanlar iç zamandır. Zaman kayıtları faturaya dönüştürülürken kaydedilen saatler saatlik ücretle çarpılır.",
+  "fieldInfoMore": "Rehberde daha fazlası",
+  "onboardingTaxNumber": "Vergi numarası (Steuernummer)",
+  "fieldHintTaxNumberShort": "Yerel Finanzamt tarafından verilir — yurt içi beyanlar için. USt-IdNr. ile karıştırmayın!",
+  "fieldHintTaxNumberInfo": "Steuernummer, işletme yerinizdeki Finanzamt tarafından verilen yurt içi vergi numaranızdır. Vergi beyannamelerinde (EÜR, USt-Voranmeldung) yer alır. Sınır ötesi B2B faturalar için kullanılan USt-IdNr. (DE ile başlar) ile karıştırmayın. Bir Kleinunternehmer genellikle yalnızca Steuernummer'a sahiptir.",
+  "fieldHintVatRateShort": "%19 standart / %7 indirimli — yalnızca Kleinunternehmer için %0 (§ 19 UStG).",
+  "fieldHintServicePeriodShort": "KDV'nin ne zaman doğduğunu belirler (§ 13 UStG).",
+  "fieldHintBillableShort": "Faturalandırılabilir zaman müşteriye faturalanabilir.",
+  "commonDismiss": "Kapat",
+  "timeEntryDeleteTitle": "Kaydı sil",
+  "timeEntryDeleteConfirm": "Bu zaman kaydı silinsin mi? Bu işlem geri alınamaz."
 }

@@ -69,6 +69,29 @@ class _TimerScreenState extends State<TimerScreen> {
     }
   }
 
+  Future<void> _deleteEntry(int entryId) async {
+    final l10n = AppLocalizations.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.timeEntryDeleteTitle),
+        content: Text(l10n.timeEntryDeleteConfirm),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.commonCancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(l10n.timeEntryDeleteTitle),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    await context.read<TimeEntriesCubit>().deleteEntry(entryId);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -201,8 +224,7 @@ class _TimerScreenState extends State<TimerScreen> {
                 _EntryTile(
                   entry: entry,
                   projects: projects,
-                  onDelete: () =>
-                      context.read<TimeEntriesCubit>().deleteEntry(entry.id),
+                  onDelete: () => _deleteEntry(entry.id),
                 ),
           ],
         ),
@@ -339,8 +361,19 @@ class _EntryTile extends StatelessWidget {
         subtitle: Text(
           '${formatDate(entry.startedAt)} ${formatTime(entry.startedAt)}',
         ),
-        trailing: Text(formatMinutes(entry.durationMinutes ?? 0)),
-        onLongPress: onDelete,
+        // Visible delete — long-press alone was undiscoverable (a11y audit
+        // 2026-08). The delete confirmation dialog lives in the caller.
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(formatMinutes(entry.durationMinutes ?? 0)),
+            IconButton(
+              tooltip: l10n.transactionDeleteTitle,
+              icon: Icon(Icons.delete_outline, color: colors.error),
+              onPressed: onDelete,
+            ),
+          ],
+        ),
       ),
     );
   }

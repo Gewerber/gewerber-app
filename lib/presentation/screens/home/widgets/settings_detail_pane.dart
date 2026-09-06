@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:gewerber_app/core/theme/gewerber_tokens.dart';
 import 'package:gewerber_app/presentation/screens/home/documents_screen.dart'
     show DocumentsView;
 import 'package:gewerber_app/presentation/screens/home/settings_master_detail.dart'
@@ -22,7 +23,7 @@ class SettingsDetailPane extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 200),
+      duration: GewerberTokens.motionBase,
       switchInCurve: Curves.easeOut,
       switchOutCurve: Curves.easeIn,
       child: _buildDetailContent(context),

@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:gewerber_app/application/business/business_cubit.dart';
 import 'package:gewerber_app/core/theme/app_theme.dart';
 import 'package:gewerber_app/domain/entities/business.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
+import 'package:gewerber_app/presentation/router/route_names.dart';
 import 'package:gewerber_app/presentation/widgets/forms/custom_text_field.dart';
+import 'package:gewerber_app/presentation/widgets/forms/field_hint.dart';
+import 'package:gewerber_app/presentation/widgets/forms/field_info_icon.dart';
+import 'package:gewerber_app/presentation/widgets/forms/field_label.dart';
 
 /// BusinessProfileForm — editable business profile form (extracted for master-detail).
 class BusinessProfileForm extends StatefulWidget {
@@ -19,6 +24,7 @@ class _BusinessProfileFormState extends State<BusinessProfileForm> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _vatIdController = TextEditingController();
+  final _taxNumberController = TextEditingController();
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
   final _streetController = TextEditingController();
@@ -34,6 +40,7 @@ class _BusinessProfileFormState extends State<BusinessProfileForm> {
   void dispose() {
     _nameController.dispose();
     _vatIdController.dispose();
+    _taxNumberController.dispose();
     _emailController.dispose();
     _phoneController.dispose();
     _streetController.dispose();
@@ -47,6 +54,7 @@ class _BusinessProfileFormState extends State<BusinessProfileForm> {
     _initialized = true;
     _nameController.text = business.name;
     _vatIdController.text = business.vatId ?? '';
+    _taxNumberController.text = business.taxNumber ?? '';
     _emailController.text = business.email ?? '';
     _phoneController.text = business.phone ?? '';
     _streetController.text = business.address?.street ?? '';
@@ -73,6 +81,9 @@ class _BusinessProfileFormState extends State<BusinessProfileForm> {
         vatId: _vatIdController.text.trim().isEmpty
             ? null
             : _vatIdController.text.trim(),
+        taxNumber: _taxNumberController.text.trim().isEmpty
+            ? null
+            : _taxNumberController.text.trim(),
         email: _emailController.text.trim().isEmpty
             ? null
             : _emailController.text.trim(),
@@ -139,28 +150,46 @@ class _BusinessProfileFormState extends State<BusinessProfileForm> {
             },
           ),
           const SizedBox(height: GewerberTokens.space16),
-          DropdownButtonFormField<LegalForm>(
-            initialValue: _legalForm,
-            isExpanded: true,
-            decoration: InputDecoration(
-              labelText: l10n.businessFormLegalForm,
-              prefixIcon: const Icon(Icons.gavel_outlined),
-            ),
-            items: [
-              for (final form in LegalForm.values)
-                DropdownMenuItem(
-                  value: form,
-                  child: Text(_legalFormLabel(form)),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              FieldLabel(
+                label: l10n.businessFormLegalForm,
+                infoText: l10n.fieldHintLegalForm,
+              ),
+              const SizedBox(height: GewerberTokens.space8),
+              DropdownButtonFormField<LegalForm>(
+                initialValue: _legalForm,
+                isExpanded: true,
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(Icons.gavel_outlined),
                 ),
+                items: [
+                  for (final form in LegalForm.values)
+                    DropdownMenuItem(
+                      value: form,
+                      child: Text(_legalFormLabel(form)),
+                    ),
+                ],
+                onChanged: (value) {
+                  if (value != null) setState(() => _legalForm = value);
+                },
+              ),
             ],
-            onChanged: (value) {
-              if (value != null) setState(() => _legalForm = value);
-            },
           ),
           const SizedBox(height: GewerberTokens.space8),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
-            title: Text(l10n.businessFormKleinunternehmer),
+            title: Row(
+              children: [
+                Expanded(child: Text(l10n.businessFormKleinunternehmer)),
+                FieldInfoIcon(
+                  infoText: l10n.onboardingKleinunternehmerHint,
+                  longInfoText: l10n.fieldHintKleinunternehmerInfo,
+                  sheetTitle: l10n.businessFormKleinunternehmer,
+                ),
+              ],
+            ),
             value: _isKleinunternehmer,
             onChanged: (value) {
               setState(() => _isKleinunternehmer = value);
@@ -171,6 +200,22 @@ class _BusinessProfileFormState extends State<BusinessProfileForm> {
             controller: _vatIdController,
             label: l10n.businessFormVatId,
             icon: Icons.badge_outlined,
+            hint: FieldHint(
+              shortText: l10n.onboardingVatIdHint,
+              longText: l10n.fieldHintVatIdInfo,
+            ),
+            onHintMoreRequested: () => context.push(RouteNames.guideTips),
+          ),
+          const SizedBox(height: GewerberTokens.space16),
+          CustomTextField(
+            controller: _taxNumberController,
+            label: l10n.onboardingTaxNumber,
+            icon: Icons.receipt_long_outlined,
+            hint: FieldHint(
+              shortText: l10n.fieldHintTaxNumberShort,
+              longText: l10n.fieldHintTaxNumberInfo,
+            ),
+            onHintMoreRequested: () => context.push(RouteNames.guideTips),
           ),
           const SizedBox(height: GewerberTokens.space16),
           CustomTextField(

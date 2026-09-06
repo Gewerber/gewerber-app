@@ -7,6 +7,7 @@ import 'package:gewerber_app/application/time_tracking/time_entries_cubit.dart';
 import 'package:gewerber_app/core/theme/app_theme.dart';
 import 'package:gewerber_app/domain/entities/time_tracking.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
+import 'package:gewerber_app/presentation/widgets/forms/field_info_icon.dart';
 
 /// TimeEntryCreateScreen — add a manual time entry.
 class TimeEntryCreateScreen extends StatefulWidget {
@@ -208,7 +209,16 @@ class _TimeEntryCreateScreenState extends State<TimeEntryCreateScreen> {
           ),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
-            title: Text(l10n.timerBillableLabel),
+            title: Row(
+              children: [
+                Expanded(child: Text(l10n.timerBillableLabel)),
+                FieldInfoIcon(
+                  infoText: l10n.fieldHintBillableShort,
+                  longInfoText: l10n.fieldHintBillableInfo,
+                  sheetTitle: l10n.timerBillableLabel,
+                ),
+              ],
+            ),
             value: _billable,
             onChanged: (value) => setState(() => _billable = value),
           ),

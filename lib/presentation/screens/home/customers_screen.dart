@@ -8,6 +8,7 @@ import 'package:gewerber_app/core/theme/app_theme.dart';
 import 'package:gewerber_app/domain/entities/customer.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 import 'package:gewerber_app/presentation/router/route_names.dart';
+import 'package:gewerber_app/presentation/widgets/common/empty_state.dart';
 import 'package:gewerber_app/presentation/widgets/common/shimmer_loader.dart';
 import 'package:gewerber_app/presentation/widgets/common/staggered_list_item.dart';
 
@@ -94,8 +95,11 @@ class _CustomersScreenState extends State<CustomersScreen> {
       body: switch (state.status) {
         CustomerViewStatus.initial || CustomerViewStatus.loading =>
           const Center(child: ShimmerLoader(lines: 5, height: 16)),
-        CustomerViewStatus.failure => Center(child: Text(l10n.customerError)),
-        CustomerViewStatus.loaded when state.customers.isEmpty => _EmptyState(
+        CustomerViewStatus.failure => EmptyState(
+          icon: Icons.error_outline,
+          message: l10n.customerError,
+        ),
+        CustomerViewStatus.loaded when state.customers.isEmpty => EmptyState(
           icon: Icons.people_outline,
           message: l10n.customersEmpty,
         ),
@@ -137,7 +141,7 @@ class _CustomersScreenState extends State<CustomersScreen> {
     final customers = state.customers.where(_matches).toList();
 
     if (customers.isEmpty) {
-      return _EmptyState(
+      return EmptyState(
         icon: Icons.search_off_outlined,
         message: l10n.customersNoResults,
       );
@@ -206,31 +210,6 @@ class _CustomerTile extends StatelessWidget {
                 onPressed: onDelete,
               ),
         onTap: onTap,
-      ),
-    );
-  }
-}
-
-class _EmptyState extends StatelessWidget {
-  const _EmptyState({required this.icon, required this.message});
-
-  final IconData icon;
-  final String message;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(GewerberTokens.space32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: 56, color: colors.outline),
-            const SizedBox(height: GewerberTokens.space16),
-            Text(message, textAlign: TextAlign.center),
-          ],
-        ),
       ),
     );
   }
