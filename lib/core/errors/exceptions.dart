@@ -77,6 +77,18 @@ final class NotFoundException extends AppException {
   const NotFoundException([super.message = 'Not found']);
 }
 
+/// Thrown when the backend reports that the free-tier monthly invoice limit
+/// has been reached (mirrors the server's serializable
+/// `InvoiceLimitReachedException`). Only ever raised on commercial deployments
+/// that enforce quotas; carries the plan [limit] so the UI can message it.
+final class InvoiceLimitReachedException extends AppException {
+  const InvoiceLimitReachedException({required this.limit})
+    : super('Monthly invoice limit reached');
+
+  /// The monthly invoice limit of the active plan.
+  final int limit;
+}
+
 /// Thrown when a social identity provider is not configured for the app.
 final class SocialAuthNotConfiguredException extends AppException {
   const SocialAuthNotConfiguredException()

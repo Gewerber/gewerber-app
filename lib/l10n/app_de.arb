@@ -294,6 +294,8 @@
   "invoiceSaving": "Wird gespeichert…",
   "invoiceSaved": "Rechnung gespeichert.",
   "invoiceError": "Wir konnten die Rechnung nicht speichern. Bitte versuche es erneut.",
+  "invoiceLimitReached": "Monatliches Limit des kostenlosen Tarifs erreicht ({limit} Rechnungen). Upgrade in den Tarifen, um unbegrenzt zu fakturieren.",
+  "invoiceLimitUpgrade": "Tarife ansehen",
   "invoiceDelete": "Rechnung löschen",
   "invoiceDeleteConfirm": "Diese Rechnung löschen? Das kann nicht rückgängig gemacht werden.",
   "invoiceDeleted": "Rechnung gelöscht.",
