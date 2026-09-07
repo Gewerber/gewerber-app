@@ -348,6 +348,15 @@
   "invoiceSaving": "Saving…",
   "invoiceSaved": "Invoice saved.",
   "invoiceError": "We couldn't save the invoice. Please try again.",
+  "invoiceLimitReached": "You've reached the free plan's monthly limit ({limit} invoices). Upgrade your plan to invoice without limits.",
+  "@invoiceLimitReached": {
+    "placeholders": {
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "invoiceLimitUpgrade": "View plans",
   "invoiceDelete": "Delete invoice",
   "invoiceDeleteConfirm": "Delete this invoice? This cannot be undone.",
   "invoiceDeleted": "Invoice deleted.",

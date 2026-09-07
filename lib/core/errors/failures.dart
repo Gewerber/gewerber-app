@@ -72,6 +72,16 @@ final class NotFoundFailure extends Failure {
   const NotFoundFailure([super.message = 'Resource not found']);
 }
 
+/// The free-tier monthly invoice limit was reached (see
+/// `InvoiceLimitReachedException`). Carries the plan [limit] for messaging.
+final class InvoiceLimitReachedFailure extends Failure {
+  const InvoiceLimitReachedFailure({required this.limit})
+    : super('Monthly invoice limit reached');
+
+  /// The monthly invoice limit of the active plan.
+  final int limit;
+}
+
 /// A social identity provider is not configured.
 final class SocialAuthNotConfiguredFailure extends Failure {
   const SocialAuthNotConfiguredFailure() : super('Social sign-in unavailable');

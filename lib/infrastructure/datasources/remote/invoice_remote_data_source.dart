@@ -120,6 +120,8 @@ class InvoiceRemoteDataSource {
         ),
       );
       return _mapper.fromModel(model);
+    } on sdk.InvoiceLimitReachedException catch (e) {
+      throw InvoiceLimitReachedException(limit: e.limit);
     } on sdk.ServerpodClientException {
       throw const NetworkException();
     }

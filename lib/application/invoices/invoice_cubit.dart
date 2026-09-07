@@ -94,7 +94,18 @@ class InvoiceCubit extends Cubit<InvoiceState> {
         );
       }
       return true;
+    } on AppException catch (e) {
+      // Record the mapped failure (status stays `loaded` so the list is not
+      // replaced by an error screen) so the create screen can branch on the
+      // specific kind — e.g. the free-tier quota paywall dialog.
+      if (!isClosed) {
+        emit(state.copyWith(failure: mapAppException(e)));
+      }
+      return false;
     } on Exception {
+      if (!isClosed) {
+        emit(state.copyWith(failure: const NetworkFailure()));
+      }
       return false;
     }
   }

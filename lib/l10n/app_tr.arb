@@ -294,6 +294,8 @@
   "invoiceSaving": "Kaydediliyor…",
   "invoiceSaved": "Fatura kaydedildi.",
   "invoiceError": "Fatura kaydedilemedi. Lütfen tekrar deneyin.",
+  "invoiceLimitReached": "Ücretsiz paketin aylık limiti ({limit} fatura) doldu. Sınırsız fatura kesmek için paketinizi yükseltin.",
+  "invoiceLimitUpgrade": "Paketleri gör",
   "invoiceDelete": "Faturayı sil",
   "invoiceDeleteConfirm": "Bu fatura silinsin mi? Bu işlem geri alınamaz.",
   "invoiceDeleted": "Fatura silindi.",
