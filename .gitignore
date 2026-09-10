@@ -51,3 +51,6 @@ android/key.properties
 pubspec_overrides.yaml
 android/.kotlin/sessions/kotlin-compiler-3122669433423210435.salive
 lib/l10n/generated/
+
+# Local-only task tracker (standing rule: never version-control TODO.md)
+/TODO.md
