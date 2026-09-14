@@ -20,10 +20,19 @@ RUN flutter pub get
 # CI passes the environment-specific backend URL; the default targets
 # production (https://api.gewerber.de).
 #
+# GEWERBER_DEP_REF: branch deploys pass the branch they build (develop →
+# staging) so the gewerber_backend_client / commercial-stub git deps are
+# consumed from that branch end-to-end; default main keeps the committed
+# refs — production and plain builds are unchanged.
+COPY . .
+ARG GEWERBER_DEP_REF=main
+RUN if [ "$GEWERBER_DEP_REF" != "main" ]; then \
+      sh tool/retarget_gewerber_refs.sh "$GEWERBER_DEP_REF"; \
+    fi
+
 # FLAVOR selects the entry point: "prod" uses lib/main.dart (no flavor
 # banner), any other value builds lib/main_<flavor>.dart (banner + per-flavor
 # defaults).
-COPY . .
 RUN flutter pub get
 ARG FLAVOR=prod
 ARG SERVER_HOST=https://api.gewerber.de
