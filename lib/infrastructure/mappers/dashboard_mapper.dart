@@ -24,10 +24,10 @@ class DashboardMapper {
   ];
 
   /// Merged activity feed across invoicing, accounting and time tracking,
-  /// newest first — mirroring the client-side composition it replaces.
+  /// newest first.
   ///
   /// Still-running time entries have no duration yet and never enter the
-  /// feed, exactly like in `CompositeDashboardRepository`.
+  /// feed.
   List<RecentActivityItem> activityFromModel(sdk.DashboardSummary model) {
     final items = <RecentActivityItem>[
       for (final invoice in model.recentInvoices)
