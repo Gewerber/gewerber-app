@@ -39,19 +39,19 @@ RUN flutter pub get
 COPY . .
 ARG GEWERBER_DEP_REF=main
 RUN if [ "$GEWERBER_DEP_REF" != "main" ]; then \
-      tee pubspec_overrides.yaml > /dev/null <<EOF; \
-      dependency_overrides:
-        gewerber_backend_client:
-          git:
-            url: https://github.com/Gewerber/gewerber-backend.git
-            path: gewerber_backend_client
-            ref: $GEWERBER_DEP_REF
-        gewerber_backend_commercial_client:
-          git:
-            url: https://github.com/Gewerber/gewerber-backend-stubs.git
-            path: gewerber_backend_commercial_client
-            ref: $GEWERBER_DEP_REF
-      EOF
+      printf '%s\n' \
+        'dependency_overrides:' \
+        '  gewerber_backend_client:' \
+        '    git:' \
+        '      url: https://github.com/Gewerber/gewerber-backend.git' \
+        '      path: gewerber_backend_client' \
+        "      ref: $GEWERBER_DEP_REF" \
+        '  gewerber_backend_commercial_client:' \
+        '    git:' \
+        '      url: https://github.com/Gewerber/gewerber-backend-stubs.git' \
+        '      path: gewerber_backend_commercial_client' \
+        "      ref: $GEWERBER_DEP_REF" \
+        > pubspec_overrides.yaml; \
       echo "pinned inter-repo deps to ref: $GEWERBER_DEP_REF"; \
     fi
 
