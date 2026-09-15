@@ -88,6 +88,7 @@
   "commonComingSoon": "Yakında",
   "commonAdd": "Ekle",
   "commonCancel": "İptal",
+  "commonSave": "Kaydet",
   "commonGoogle": "Google",
   "commonApple": "Apple",
   "commonFacebook": "Facebook",
@@ -388,6 +389,8 @@
   "exportSuccess": "Dışa aktarma indirildi.",
 
   "projectNewTitle": "Yeni proje",
+  "projectEditTitle": "Projeyi düzenle",
+  "projectEditAction": "Projeyi düzenle",
   "projectNameLabel": "Proje adı",
   "projectHourlyRateLabel": "Saatlik ücret",
   "projectHourlyRateHint": "İsteğe bağlı, örn. 85,00",
