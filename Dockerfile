@@ -4,13 +4,30 @@
 # All dependencies are public (backend client and the commercial client stubs
 # resolve from GitHub without authentication) — no build secrets required.
 #
-# Base image: openruntimes/flutter with an explicit Flutter minor pin
-# (`v5-3.47` = Flutter 3.47.x / Dart 3.13.x, matching the workspace SDK
-# ^3.13.3 and CI's flutter-version). The former ghcr.io/cirruslabs/flutter
-# `stable`/`latest` tags lagged the release channel (bundled a Dart below the
-# workspace SDK floor, breaking `pub get`) and have no 3.47.x version tags.
+# Base: official dart:3.13.3 + Flutter SDK 3.47.3 installed from the pinned
+# release archive (sha256-verified). Community Flutter images (cirruslabs,
+# openruntimes) lag the release channel and publish no exact 3.47.3 tag, so
+# they cannot satisfy the workspace SDK floor (^3.13.3 = the Dart shipped
+# with Flutter 3.47.3); installing from the official archive keeps image and
+# pubspec provably in lockstep. Bump FLUTTER_VERSION together with CI's
+# flutter-version (workflows/ci.yml).
 
-FROM openruntimes/flutter:v5-3.47 AS build
+FROM dart:3.13.3 AS build
+
+ENV FLUTTER_VERSION=3.47.3 \
+    FLUTTER_HOME=/opt/flutter
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends ca-certificates curl git unzip xz-utils \
+  && rm -rf /var/lib/apt/lists/* \
+  && curl -fsSL "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_${FLUTTER_VERSION}-stable.tar.xz" -o /tmp/flutter.tar.xz \
+  && echo "988665565cad9091db1baa54bf6d3868bb40e29719592f3c3a164deefd4208e1  /tmp/flutter.tar.xz" | sha256sum -c - \
+  && tar -xJf /tmp/flutter.tar.xz -C /opt \
+  && rm /tmp/flutter.tar.xz \
+  && git config --global --add safe.directory "$FLUTTER_HOME" \
+  && "$FLUTTER_HOME/bin/flutter" --version \
+  && "$FLUTTER_HOME/bin/flutter" precache --web
+
+ENV PATH="$FLUTTER_HOME/bin:$FLUTTER_HOME/bin/cache/dart-sdk/bin:$PATH"
 
 WORKDIR /app
 
