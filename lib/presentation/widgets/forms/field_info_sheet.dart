@@ -109,17 +109,15 @@ class _FieldInfoContent extends StatelessWidget {
           const SizedBox(height: GewerberTokens.space16),
           Text(
             body,
-            style: Theme.of(
-              context,
-            ).textTheme.bodyMedium?.copyWith(color: colors.onSurface),
+            style: Theme.of(context).textTheme.bodyMedium
+                ?.copyWith(color: colors.onSurface),
           ),
           if (longBody != null) ...[
             const SizedBox(height: GewerberTokens.space12),
             Text(
               longBody!,
-              style: Theme.of(
-                context,
-              ).textTheme.bodyMedium?.copyWith(color: colors.onSurfaceVariant),
+              style: Theme.of(context).textTheme.bodyMedium
+                  ?.copyWith(color: colors.onSurfaceVariant),
             ),
           ],
           if (onMoreRequested != null && moreLabel != null) ...[

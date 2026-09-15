@@ -69,9 +69,8 @@ class _TimeEntryCreateScreenState extends State<TimeEntryCreateScreen> {
   Future<void> _submit() async {
     final l10n = AppLocalizations.of(context);
     if (_durationMinutes <= 0) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.timeEntryDurationInvalid)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.timeEntryDurationInvalid)));
       return;
     }
     setState(() => _isSaving = true);
@@ -94,15 +93,13 @@ class _TimeEntryCreateScreenState extends State<TimeEntryCreateScreen> {
     );
     if (!mounted) return;
     if (success) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.timeEntrySaved)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.timeEntrySaved)));
       context.pop();
     } else {
       setState(() => _isSaving = false);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.timeEntrySaveError)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.timeEntrySaveError)));
     }
   }
 

@@ -69,9 +69,8 @@ class _ReportScreenState extends State<ReportScreen> {
     );
     if (!mounted) return;
     if (csv == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.exportError)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.exportError)));
       return;
     }
     await FileSaver.instance.saveFile(
@@ -81,9 +80,8 @@ class _ReportScreenState extends State<ReportScreen> {
       mimeType: MimeType.csv,
     );
     if (!mounted) return;
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(l10n.exportSuccess)));
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(l10n.exportSuccess)));
   }
 
   @override

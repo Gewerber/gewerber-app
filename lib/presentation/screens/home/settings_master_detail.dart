@@ -135,9 +135,8 @@ class _SettingsMasterDetailState extends State<SettingsMasterDetail> {
       if (deleted) {
         await context.read<AuthCubit>().logOut();
       } else {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(l10n.accountDeleteError)));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(l10n.accountDeleteError)));
       }
     } finally {
       if (mounted) setState(() => _isDeletingAccount = false);

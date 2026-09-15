@@ -82,14 +82,12 @@ class _InvoiceTemplateEditScreenState extends State<InvoiceTemplateEditScreen> {
     if (!mounted) return;
     setState(() => _isSaving = false);
     if (saved) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.templateSaved)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.templateSaved)));
       context.pop();
     } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.templateSaveError)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.templateSaveError)));
     }
   }
 

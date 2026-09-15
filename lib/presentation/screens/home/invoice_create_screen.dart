@@ -237,9 +237,8 @@ class _InvoiceCreateScreenState extends State<InvoiceCreateScreen> {
   }
 
   void _showSnack(String message) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -379,9 +378,9 @@ class _InvoiceCreateScreenState extends State<InvoiceCreateScreen> {
                             child: Text(
                               l10n.invoicesEmpty,
                               style: TextStyle(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.onSurfaceVariant,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant,
                               ),
                             ),
                           ),
@@ -547,9 +546,8 @@ class _ReverseChargeIndicator extends StatelessWidget {
               Flexible(
                 child: Text(
                   l10n.customerVatId,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: colors.onSecondaryContainer,
-                  ),
+                  style: Theme.of(context).textTheme.bodySmall
+                      ?.copyWith(color: colors.onSecondaryContainer),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
@@ -608,12 +606,10 @@ class _TemplatePrefillIndicator extends StatelessWidget {
                   const SizedBox(width: GewerberTokens.space8),
                   Flexible(
                     child: Text(
-                      AppLocalizations.of(
-                        context,
-                      ).invoiceTemplateApplied(template.name),
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: colors.onSecondaryContainer,
-                      ),
+                      AppLocalizations.of(context)
+                          .invoiceTemplateApplied(template.name),
+                      style: Theme.of(context).textTheme.bodySmall
+                          ?.copyWith(color: colors.onSecondaryContainer),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),

@@ -46,9 +46,8 @@ class AboutContent extends StatelessWidget {
                 const SizedBox(height: GewerberTokens.space8),
                 Text(
                   l10n.aboutSubtitle,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: colors.onSurfaceVariant,
-                  ),
+                  style: Theme.of(context).textTheme.bodyMedium
+                      ?.copyWith(color: colors.onSurfaceVariant),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: GewerberTokens.space12),

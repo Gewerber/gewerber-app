@@ -45,9 +45,8 @@ class _InvoicingScreenState extends State<InvoicingScreen> {
         : await cubit.exportJson(status: _filter);
     if (!mounted) return;
     if (content == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.exportError)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.exportError)));
       return;
     }
     final isCsv = format == 'csv';
@@ -58,9 +57,8 @@ class _InvoicingScreenState extends State<InvoicingScreen> {
       mimeType: isCsv ? MimeType.csv : MimeType.json,
     );
     if (!mounted) return;
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(l10n.exportSuccess)));
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(l10n.exportSuccess)));
   }
 
   @override

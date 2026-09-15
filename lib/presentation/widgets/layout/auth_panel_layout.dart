@@ -227,9 +227,8 @@ class _TrustRow extends StatelessWidget {
         Expanded(
           child: Text(
             point.text,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.white.withValues(alpha: 0.92),
-            ),
+            style: Theme.of(context).textTheme.bodyMedium
+                ?.copyWith(color: Colors.white.withValues(alpha: 0.92)),
           ),
         ),
       ],
