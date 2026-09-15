@@ -3,8 +3,14 @@
 # ---- Build stage ---------------------------------------------------------
 # All dependencies are public (backend client and the commercial client stubs
 # resolve from GitHub without authentication) — no build secrets required.
+#
+# Base image: openruntimes/flutter with an explicit Flutter minor pin
+# (`v5-3.47` = Flutter 3.47.x / Dart 3.13.x, matching the workspace SDK
+# ^3.13.3 and CI's flutter-version). The former ghcr.io/cirruslabs/flutter
+# `stable`/`latest` tags lagged the release channel (bundled a Dart below the
+# workspace SDK floor, breaking `pub get`) and have no 3.47.x version tags.
 
-FROM ghcr.io/cirruslabs/flutter:stable AS build
+FROM openruntimes/flutter:v5-3.47 AS build
 
 WORKDIR /app
 

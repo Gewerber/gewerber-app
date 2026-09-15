@@ -35,11 +35,20 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          # Matches the local dev SDK; 3.44.x pins intl 0.20.2 via
-          # flutter_localizations, which conflicts with the intl ^0.20.3
-          # required since #24 (visual hierarchy).
-          flutter-version: 3.47.2
+          # Flutter 3.47.3 = Dart 3.13.3 (workspace SDK constraint).
+          # 3.44.x pinned intl 0.20.2 via flutter_localizations, which
+          # conflicted with intl ^0.20.3 required since #24 (visual
+          # hierarchy) — kept above that line.
+          flutter-version: 3.47.3
           cache: true
+
+      # Pre-release pairing: consume `gewerber_backend_client` and the
+      # commercial stubs from their `develop` branches (rc.2) while the
+      # release train hasn't published rc.2 to `main`; main builds keep
+      # `ref: main`. See tool/retarget_gewerber_refs.sh.
+      - name: Inter-repo deps follow the target branch
+        if: github.ref_name == 'develop' || github.base_ref == 'develop'
+        run: sh tool/retarget_gewerber_refs.sh develop
 
       - name: Install dependencies
         run: flutter pub get
