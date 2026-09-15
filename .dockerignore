@@ -7,6 +7,9 @@ build/
 .dart_tool/
 .packages
 pubspec_overrides.yaml
+# Local locks pin revisions resolved against developer path-overrides —
+# the image must resolve fresh against the pairing refs instead.
+pubspec.lock
 
 # Non-web platforms (web-only build for now; un-ignore if mobile/desktop CI is added)
 android/
