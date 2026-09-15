@@ -383,9 +383,8 @@ class _TrackedTimeSection extends StatelessWidget {
         (null, false) => const SectionCardLoading(),
         _ => Text(
           l10n.timeReportEmpty,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-          ),
+          style: Theme.of(context).textTheme.bodyMedium
+              ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
         ),
       },
     );
@@ -426,9 +425,9 @@ class _AmountRow extends StatelessWidget {
                           Text(
                             entry.$1,
                             style: textTheme.bodySmall?.copyWith(
-                              color: Theme.of(
-                                context,
-                              ).colorScheme.onSurfaceVariant,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -451,9 +450,9 @@ class _AmountRow extends StatelessWidget {
                         Text(
                           entry.$1,
                           style: textTheme.bodySmall?.copyWith(
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.onSurfaceVariant,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSurfaceVariant,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,

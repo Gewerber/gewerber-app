@@ -144,16 +144,14 @@ class _CompletionBanner extends StatelessWidget {
                 children: [
                   Text(
                     l10n.checklistCompleteTitle,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: colors.onPrimaryContainer,
-                    ),
+                    style: Theme.of(context).textTheme.titleMedium
+                        ?.copyWith(color: colors.onPrimaryContainer),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     l10n.checklistCompleteSubtitle,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: colors.onPrimaryContainer,
-                    ),
+                    style: Theme.of(context).textTheme.bodySmall
+                        ?.copyWith(color: colors.onPrimaryContainer),
                   ),
                 ],
               ),

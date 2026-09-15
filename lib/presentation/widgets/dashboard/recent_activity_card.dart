@@ -34,9 +34,8 @@ class RecentActivityCard extends StatelessWidget {
         ),
         DashboardSectionStatus.loaded when state.activity.isEmpty => Text(
           l10n.dashboardRecentActivityEmpty,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-          ),
+          style: Theme.of(context).textTheme.bodyMedium
+              ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
         ),
         DashboardSectionStatus.loaded => Column(
           children: [

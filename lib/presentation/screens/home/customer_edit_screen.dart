@@ -115,14 +115,12 @@ class _CustomerEditScreenState extends State<CustomerEditScreen> {
     if (!mounted) return;
     setState(() => _isSaving = false);
     if (saved) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.customerSaved)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.customerSaved)));
       context.pop();
     } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.customerError)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.customerError)));
     }
   }
 

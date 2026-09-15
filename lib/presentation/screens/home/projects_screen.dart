@@ -80,9 +80,8 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
     );
     if (!mounted) return;
     if (!success) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.projectSaveError)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.projectSaveError)));
     }
   }
 
@@ -263,9 +262,8 @@ class _ProjectTile extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   l10n.tasksEmpty,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: colors.onSurfaceVariant,
-                  ),
+                  style: Theme.of(context).textTheme.bodySmall
+                      ?.copyWith(color: colors.onSurfaceVariant),
                 ),
               ),
             )

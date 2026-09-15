@@ -75,9 +75,8 @@ class _CustomersScreenState extends State<CustomersScreen> {
     if (confirmed != true || !mounted) return;
     await context.read<CustomerCubit>().archive(customer.id);
     if (!mounted) return;
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(l10n.customersArchived)));
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(l10n.customersArchived)));
   }
 
   @override
@@ -121,9 +120,8 @@ class _CustomersScreenState extends State<CustomersScreen> {
                       ? null
                       : IconButton(
                           icon: const Icon(Icons.close_outlined),
-                          tooltip: MaterialLocalizations.of(
-                            context,
-                          ).clearButtonTooltip,
+                          tooltip: MaterialLocalizations.of(context)
+                              .clearButtonTooltip,
                           onPressed: () => _searchController.clear(),
                         ),
                 ),

@@ -75,9 +75,8 @@ void main() {
       // Switching the theme updates the whole app immediately.
       await tester.tap(find.text('Dark'));
       await tester.pumpAndSettle();
-      final brightness = Theme.of(
-        tester.element(find.byType(OnboardingScreen)),
-      ).brightness;
+      final brightness = Theme.of(tester.element(find.byType(OnboardingScreen)))
+          .brightness;
       expect(brightness, Brightness.dark);
 
       // Switching the language updates the whole app immediately.

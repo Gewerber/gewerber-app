@@ -176,9 +176,8 @@ class _SummaryCard extends StatelessWidget {
           children: [
             Text(
               label,
-              style: Theme.of(
-                context,
-              ).textTheme.bodySmall?.copyWith(color: colors.onSurfaceVariant),
+              style: Theme.of(context).textTheme.bodySmall
+                  ?.copyWith(color: colors.onSurfaceVariant),
             ),
             const SizedBox(height: GewerberTokens.space4),
             Text(value, style: Theme.of(context).textTheme.headlineSmall),

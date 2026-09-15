@@ -395,9 +395,8 @@ class _EntryPreview extends StatelessWidget {
           const SizedBox(height: GewerberTokens.space4),
           Text(
             l10n.timeBillingEstimateDisclaimer,
-            style: Theme.of(
-              context,
-            ).textTheme.bodySmall?.copyWith(color: colors.onSurfaceVariant),
+            style: Theme.of(context).textTheme.bodySmall
+                ?.copyWith(color: colors.onSurfaceVariant),
           ),
         ],
       ],

@@ -61,9 +61,8 @@ class _ReceivablesBody extends StatelessWidget {
     if (summary == null || summary.debtors.isEmpty) {
       return Text(
         l10n.dashboardReceivablesEmpty,
-        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
-        ),
+        style: Theme.of(context).textTheme.bodyMedium
+            ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
       );
     }
 
@@ -86,9 +85,8 @@ class _ReceivablesBody extends StatelessWidget {
             padding: const EdgeInsets.only(top: GewerberTokens.space4),
             child: Text(
               l10n.dashboardViewAll,
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                color: Theme.of(context).colorScheme.primary,
-              ),
+              style: Theme.of(context).textTheme.labelSmall
+                  ?.copyWith(color: Theme.of(context).colorScheme.primary),
             ),
           ),
         const Divider(height: GewerberTokens.space24),
