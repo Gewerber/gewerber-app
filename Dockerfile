@@ -27,13 +27,32 @@ RUN flutter pub get
 # production (https://api.gewerber.de).
 #
 # GEWERBER_DEP_REF: branch deploys pass the branch they build (develop →
-# staging) so the gewerber_backend_client / commercial-stub git deps are
-# consumed from that branch end-to-end; default main keeps the committed
-# refs — production and plain builds are unchanged.
+# staging). For any non-main value a pubspec_overrides.yaml is generated that
+# pins the whole inter-repo chain (gewerber_backend_client + the commercial
+# stub) to that ref via dependency_overrides — which pub applies across the
+# entire resolution graph, including the git-fetched backend client pubspec
+# that still commits `ref: main` for the stubs. (Rewriting only the local
+# pubspec leaves that transitive requirement and pub fails on the main-vs-
+# develop source conflict.) Default main keeps the committed refs —
+# production and plain builds are unchanged. `.dockerignore` drops any
+# developer pubspec_overrides.yaml so the build is deterministic.
 COPY . .
 ARG GEWERBER_DEP_REF=main
 RUN if [ "$GEWERBER_DEP_REF" != "main" ]; then \
-      sh tool/retarget_gewerber_refs.sh "$GEWERBER_DEP_REF"; \
+      tee pubspec_overrides.yaml > /dev/null <<EOF; \
+      dependency_overrides:
+        gewerber_backend_client:
+          git:
+            url: https://github.com/Gewerber/gewerber-backend.git
+            path: gewerber_backend_client
+            ref: $GEWERBER_DEP_REF
+        gewerber_backend_commercial_client:
+          git:
+            url: https://github.com/Gewerber/gewerber-backend-stubs.git
+            path: gewerber_backend_commercial_client
+            ref: $GEWERBER_DEP_REF
+      EOF
+      echo "pinned inter-repo deps to ref: $GEWERBER_DEP_REF"; \
     fi
 
 # FLAVOR selects the entry point: "prod" uses lib/main.dart (no flavor
