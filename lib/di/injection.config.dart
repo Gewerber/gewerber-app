@@ -9,6 +9,7 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
@@ -91,8 +92,6 @@ import '../infrastructure/mappers/time_tracking_mapper.dart' as _i42;
 import '../infrastructure/mappers/transaction_mapper.dart' as _i756;
 import '../infrastructure/mappers/user_mapper.dart' as _i980;
 import '../infrastructure/mappers/user_preferences_mapper.dart' as _i53;
-import '../infrastructure/repositories/composite_dashboard_repository.dart'
-    as _i592;
 import '../infrastructure/repositories/mock_accounting_repository.dart'
     as _i254;
 import '../infrastructure/repositories/mock_auth_repository.dart' as _i338;
@@ -464,15 +463,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i268.UserProfileCubit>(
       () => _i268.UserProfileCubit(gh<_i439.UserProfileRepository>()),
-    );
-    gh.lazySingleton<_i592.CompositeDashboardRepository>(
-      () => _i592.CompositeDashboardRepository(
-        gh<_i188.AccountingRepository>(),
-        gh<_i778.InvoiceRepository>(),
-        gh<_i323.TimeTrackingRepository>(),
-        gh<_i907.CustomerRepository>(),
-      ),
-      registerFor: {_auth_live},
     );
     gh.lazySingleton<_i598.CustomerCubit>(
       () => _i598.CustomerCubit(gh<_i907.CustomerRepository>()),
