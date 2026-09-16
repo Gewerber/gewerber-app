@@ -88,6 +88,7 @@
   "commonComingSoon": "Bald verfügbar",
   "commonAdd": "Hinzufügen",
   "commonCancel": "Abbrechen",
+  "commonSave": "Speichern",
   "commonGoogle": "Google",
   "commonApple": "Apple",
   "commonFacebook": "Facebook",
@@ -388,6 +389,8 @@
   "exportSuccess": "Export heruntergeladen.",
 
   "projectNewTitle": "Neues Projekt",
+  "projectEditTitle": "Projekt bearbeiten",
+  "projectEditAction": "Projekt bearbeiten",
   "projectNameLabel": "Projektname",
   "projectHourlyRateLabel": "Stundensatz",
   "projectHourlyRateHint": "Optional, z. B. 85,00",

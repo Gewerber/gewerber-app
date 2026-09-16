@@ -88,6 +88,7 @@
   "commonComingSoon": "Скоро",
   "commonAdd": "Добавить",
   "commonCancel": "Отмена",
+  "commonSave": "Сохранить",
   "commonGoogle": "Google",
   "commonApple": "Apple",
   "commonFacebook": "Facebook",
@@ -388,6 +389,8 @@
   "exportSuccess": "Экспорт загружен.",
 
   "projectNewTitle": "Новый проект",
+  "projectEditTitle": "Редактировать проект",
+  "projectEditAction": "Редактировать проект",
   "projectNameLabel": "Название проекта",
   "projectHourlyRateLabel": "Ставка в час",
   "projectHourlyRateHint": "Необязательно, напр. 85,00",

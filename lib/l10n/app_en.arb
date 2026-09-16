@@ -107,6 +107,7 @@
   "commonComingSoon": "Coming soon",
   "commonAdd": "Add",
   "commonCancel": "Cancel",
+  "commonSave": "Save",
   "commonGoogle": "Google",
   "commonApple": "Apple",
   "commonFacebook": "Facebook",
@@ -474,6 +475,8 @@
   "exportSuccess": "Export downloaded.",
 
   "projectNewTitle": "New project",
+  "projectEditTitle": "Edit project",
+  "projectEditAction": "Edit project",
   "projectNameLabel": "Project name",
   "projectHourlyRateLabel": "Hourly rate",
   "projectHourlyRateHint": "Optional, e.g. 85.00",

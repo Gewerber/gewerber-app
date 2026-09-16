@@ -29,54 +29,51 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
 
   Future<void> _createProject() async {
     final l10n = AppLocalizations.of(context);
-    final nameController = TextEditingController();
-    final rateController = TextEditingController();
-
-    final created = await showDialog<bool>(
+    final values = await showDialog<_ProjectFormValues>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.projectNewTitle),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: nameController,
-              autofocus: true,
-              decoration: InputDecoration(labelText: l10n.projectNameLabel),
-            ),
-            const SizedBox(height: GewerberTokens.space12),
-            TextField(
-              controller: rateController,
-              keyboardType: const TextInputType.numberWithOptions(
-                decimal: true,
-              ),
-              decoration: InputDecoration(
-                labelText: l10n.projectHourlyRateLabel,
-                helperText: l10n.projectHourlyRateHint,
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(l10n.commonBack),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text(l10n.commonAdd),
-          ),
-        ],
+      builder: (context) => _ProjectFormDialog(
+        title: l10n.projectNewTitle,
+        submitLabel: l10n.commonAdd,
       ),
     );
-    if (created != true || !mounted) return;
+    if (values == null || !mounted) return;
 
-    final name = nameController.text.trim();
-    if (name.isEmpty) return;
     final cubit = context.read<ProjectsCubit>();
     final success = await cubit.createProject(
-      name: name,
-      hourlyRateCents: parseEuroInput(rateController.text),
+      name: values.name,
+      hourlyRateCents: parseEuroInput(values.rateText),
+    );
+    if (!mounted) return;
+    if (!success) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.projectSaveError)));
+    }
+  }
+
+  Future<void> _editProject(Project project) async {
+    final l10n = AppLocalizations.of(context);
+    final values = await showDialog<_ProjectFormValues>(
+      context: context,
+      builder: (context) => _ProjectFormDialog(
+        title: l10n.projectEditTitle,
+        submitLabel: l10n.commonSave,
+        initialName: project.name,
+        // Pre-fill the rate as plain decimal input (same pattern as the
+        // invoice and accounting edit forms), round-trippable via
+        // `parseEuroInput`.
+        initialRate: project.hourlyRateCents == null
+            ? ''
+            : (project.hourlyRateCents! / 100).toStringAsFixed(2),
+      ),
+    );
+    if (values == null || !mounted) return;
+
+    final cubit = context.read<ProjectsCubit>();
+    final success = await cubit.updateProject(
+      project.copyWith(
+        name: values.name,
+        hourlyRateCents: parseEuroInput(values.rateText),
+      ),
     );
     if (!mounted) return;
     if (!success) {
@@ -191,6 +188,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
                     ),
                   );
                 },
+                onEdit: () => _editProject(project),
                 onDelete: () => _deleteProject(project),
               ),
           ],
@@ -208,6 +206,7 @@ class _ProjectTile extends StatelessWidget {
     required this.onAddTask,
     required this.onToggleTask,
     required this.onToggleArchived,
+    required this.onEdit,
     required this.onDelete,
   });
 
@@ -217,6 +216,7 @@ class _ProjectTile extends StatelessWidget {
   final VoidCallback onAddTask;
   final ValueChanged<Task> onToggleTask;
   final VoidCallback onToggleArchived;
+  final VoidCallback onEdit;
   final VoidCallback onDelete;
 
   @override
@@ -284,6 +284,11 @@ class _ProjectTile extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
+              IconButton(
+                tooltip: l10n.projectEditAction,
+                icon: const Icon(Icons.edit_outlined),
+                onPressed: onEdit,
+              ),
               TextButton(
                 onPressed: onToggleArchived,
                 child: Text(
@@ -302,6 +307,94 @@ class _ProjectTile extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Values captured by the [_ProjectFormDialog].
+class _ProjectFormValues {
+  const _ProjectFormValues({required this.name, required this.rateText});
+
+  /// Trimmed, non-empty project name.
+  final String name;
+
+  /// Raw hourly-rate input, parsed via `parseEuroInput` by the caller.
+  final String rateText;
+}
+
+/// Shared create/edit form for a project: a name and an optional hourly rate.
+///
+/// Pops a [_ProjectFormValues] on submit, or `null` when dismissed.
+class _ProjectFormDialog extends StatefulWidget {
+  const _ProjectFormDialog({
+    required this.title,
+    required this.submitLabel,
+    this.initialName = '',
+    this.initialRate = '',
+  });
+
+  final String title;
+  final String submitLabel;
+  final String initialName;
+  final String initialRate;
+
+  @override
+  State<_ProjectFormDialog> createState() => _ProjectFormDialogState();
+}
+
+class _ProjectFormDialogState extends State<_ProjectFormDialog> {
+  late final TextEditingController _nameController = TextEditingController(
+    text: widget.initialName,
+  );
+  late final TextEditingController _rateController = TextEditingController(
+    text: widget.initialRate,
+  );
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _rateController.dispose();
+    super.dispose();
+  }
+
+  void _submit() {
+    final name = _nameController.text.trim();
+    if (name.isEmpty) return;
+    Navigator.of(context)
+        .pop(_ProjectFormValues(name: name, rateText: _rateController.text));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return AlertDialog(
+      title: Text(widget.title),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            controller: _nameController,
+            autofocus: true,
+            decoration: InputDecoration(labelText: l10n.projectNameLabel),
+          ),
+          const SizedBox(height: GewerberTokens.space12),
+          TextField(
+            controller: _rateController,
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            decoration: InputDecoration(
+              labelText: l10n.projectHourlyRateLabel,
+              helperText: l10n.projectHourlyRateHint,
+            ),
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(l10n.commonBack),
+        ),
+        FilledButton(onPressed: _submit, child: Text(widget.submitLabel)),
+      ],
     );
   }
 }
