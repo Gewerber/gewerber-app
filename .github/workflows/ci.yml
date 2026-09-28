@@ -42,14 +42,14 @@ jobs:
           flutter-version: 3.47.3
           cache: true
 
-      # Pre-release pairing: while the rc.2 chain lives only on the develop
-      # branches (release train not cut), pin the whole inter-repo web via
-      # dependency_overrides. Overrides apply across the ENTIRE resolution
-      # graph — including the git-fetched gewerber_backend_client pubspec,
-      # which still commits `ref: main` for the stubs — so the sources
-      # unify on develop. (Rewriting only local pubspecs leaves that
-      # transitive requirement and pub fails with a main-vs-develop
-      # source conflict.) main builds keep `ref: main`.
+      # Pairing: builds that target develop unify the inter-repo chain on
+      # develop, because the generated client SDKs on `main` still pin an
+      # older Serverpod release than this branch. dependency_overrides apply
+      # across the ENTIRE resolution graph — including the git-fetched
+      # gewerber_backend_client pubspec, which commits `ref: main` for the
+      # stubs — so the sources unify. Builds that target `main` (release PRs
+      # included) keep the committed refs and are gated by the release-train
+      # step below.
       - name: Pair inter-repo deps with the target branch
         if: github.ref_name == 'develop' || github.base_ref == 'develop'
         run: |
@@ -67,6 +67,43 @@ jobs:
                 path: gewerber_backend_commercial_client
                 ref: develop
           EOF
+
+      # Release-train gate: `main` builds resolve the committed `ref: main`
+      # git deps, so the app can only ship once gewerber-backend's main (and
+      # the commercial stubs' main) carry a compatible Serverpod release.
+      # Fail here with the fix instead of letting `flutter pub get` die with
+      # an opaque version-solving error.
+      #
+      # Compares the *floor* of each constraint, not the raw string. Every
+      # package now declares a caret range (`^4.0.3`), and a literal string
+      # compare would report `^4.0.3` vs `4.0.3` as skew and block every
+      # `main` build forever. Stripping the range prefix means the gate still
+      # catches the case that matters — a pre-release such as `4.0.0-rc.1`
+      # on the backend's main, which no caret can satisfy.
+      - name: Release-train gate (Serverpod parity with backend main)
+        if: github.ref_name == 'main' || github.base_ref == 'main'
+        env:
+          BACKEND_CLIENT_PUBSPEC: https://raw.githubusercontent.com/Gewerber/gewerber-backend/main/gewerber_backend_client/pubspec.yaml
+          STUBS_CLIENT_PUBSPEC: https://raw.githubusercontent.com/Gewerber/gewerber-backend-stubs/main/gewerber_backend_commercial_client/pubspec.yaml
+        run: |
+          set -euo pipefail
+          # Keep only the lower bound: `^4.0.3` -> `4.0.3`, `4.0.3` -> `4.0.3`,
+          # `4.0.0-rc.1` -> `4.0.0-rc.1` (a pre-release floor, which is exactly
+          # the skew this gate exists to catch).
+          floor() { printf '%s' "$1" | sed -E 's/^[\^~]?[[:space:]]*//; s/[[:space:]].*$//'; }
+          app=$(floor "$(sed -n 's/^  serverpod_flutter: *//p' pubspec.yaml | tr -d '"')")
+          backend=$(floor "$(curl -fsSL "$BACKEND_CLIENT_PUBSPEC" \
+            | sed -n 's/^  serverpod_client: *//p' | tr -d '"')")
+          stubs=$(floor "$(curl -fsSL "$STUBS_CLIENT_PUBSPEC" \
+            | sed -n 's/^  serverpod_client: *//p' | tr -d '"')")
+          for pair in "gewerber-backend $backend" "gewerber-backend-stubs $stubs"; do
+            set -- $pair
+            if [ "$app" != "$2" ]; then
+              echo "::error title=Serverpod skew::app requires serverpod_flutter $app, but $1 main provides $2. Release gewerber-backend-commercial, then gewerber-backend (develop -> main), before releasing the app."
+              exit 1
+            fi
+          done
+          echo "Serverpod parity on main: $app"
 
       - name: Install dependencies
         run: flutter pub get
