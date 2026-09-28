@@ -37,11 +37,12 @@ WORKDIR /app
 # (gewerber_backend_client + the commercial stub) to that ref via
 # dependency_overrides — which pub applies across the entire resolution
 # graph, including the git-fetched backend client pubspec that still commits
-# `ref: main` for the stubs. (Without it, the rc.2 app cannot resolve against
-# the still-unreleased-to-main rc.1 backend client at all.) Default main
-# keeps the committed refs — production and plain builds are unchanged.
-# `.dockerignore` drops any developer pubspec_overrides.yaml so the build is
-# deterministic.
+# `ref: main` for the stubs. (Without it, a `^4.0.3` app cannot resolve
+# against the not-yet-released-to-main backend client, whose floor is lower —
+# and a caret range never selects the `4.0.0-rc.1` that main still carries.)
+# Default main keeps the committed refs — production and plain builds are
+# unchanged. `.dockerignore` drops any developer pubspec_overrides.yaml so the
+# build is deterministic.
 ARG GEWERBER_DEP_REF=main
 
 # Resolve dependencies first for better layer caching. `pubspec.lock` is
