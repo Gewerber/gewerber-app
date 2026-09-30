@@ -25,6 +25,9 @@ Failure mapAppException(AppException exception) {
     ValidationException(:final message) => ValidationFailure(message),
     ConflictException() => const ConflictFailure(),
     NotFoundException() => const NotFoundFailure(),
+    InvoiceLimitReachedException(:final limit) => InvoiceLimitReachedFailure(
+      limit: limit,
+    ),
     AppException() => const NetworkFailure(),
   };
 }

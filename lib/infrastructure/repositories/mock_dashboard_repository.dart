@@ -21,8 +21,8 @@ class MockDashboardRepository implements DashboardRepository {
     DateTime? anchor,
   }) async {
     final effectiveAnchor = anchor ?? DateTime.now();
-    // Same clamp as CompositeDashboardRepository so both implementations
-    // honour the repository contract on their own.
+    // Clamp defensively so the mock honours the repository contract on its
+    // own.
     final count = months.clamp(1, DashboardRepository.maxTrendMonths);
     final starts = lastNMonthStarts(effectiveAnchor, count);
     return [

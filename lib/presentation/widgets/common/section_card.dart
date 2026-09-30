@@ -150,9 +150,8 @@ class SectionCardError extends StatelessWidget {
       children: [
         Text(
           l10n.dashboardLoadError,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-          ),
+          style: Theme.of(context).textTheme.bodyMedium
+              ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
         ),
         TextButton(onPressed: onRetry, child: Text(l10n.commonRetry)),
       ],

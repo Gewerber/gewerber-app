@@ -118,14 +118,12 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
     final deleted = await context.read<InvoiceCubit>().delete(invoice.id);
     if (!mounted) return;
     if (deleted) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.invoiceDeleted)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.invoiceDeleted)));
       context.pop();
     } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.invoiceDeleteDraftOnly)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.invoiceDeleteDraftOnly)));
     }
   }
 
@@ -136,9 +134,8 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
     if (!mounted) return;
     setState(() => _busy = false);
     if (pdf == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.invoiceActionError)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.invoiceActionError)));
       return;
     }
     final name = pdf.fileName.endsWith('.pdf')
@@ -151,9 +148,8 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
       mimeType: MimeType.pdf,
     );
     if (!mounted) return;
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(l10n.invoicePdfSaved)));
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(l10n.invoicePdfSaved)));
   }
 
   Future<void> _recordPayment() async {
@@ -207,9 +203,8 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
 
     final amountCents = parseEuroInput(amountController.text);
     if (amountCents == null || amountCents <= 0) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.transactionAmountInvalid)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.transactionAmountInvalid)));
       return;
     }
     final success = await context.read<InvoiceCubit>().recordPayment(
@@ -226,13 +221,11 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
       );
       if (!mounted) return;
       setState(() => _paymentStatus = status);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.paymentRecorded)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.paymentRecorded)));
     } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.invoiceActionError)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.invoiceActionError)));
     }
   }
 
@@ -659,9 +652,8 @@ class _RemindersCard extends StatelessWidget {
           children: [
             Text(
               l10n.reminderHistoryTitle,
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(color: colors.onErrorContainer),
+              style: Theme.of(context).textTheme.titleMedium
+                  ?.copyWith(color: colors.onErrorContainer),
             ),
             const SizedBox(height: GewerberTokens.space8),
             for (final reminder in reminders)

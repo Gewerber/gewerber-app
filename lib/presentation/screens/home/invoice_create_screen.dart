@@ -7,12 +7,15 @@ import 'package:gewerber_app/application/customers/customer_cubit.dart';
 import 'package:gewerber_app/application/customers/customer_state.dart';
 import 'package:gewerber_app/application/invoice_templates/invoice_template_cubit.dart';
 import 'package:gewerber_app/application/invoices/invoice_cubit.dart';
+import 'package:gewerber_app/core/errors/failures.dart';
 import 'package:gewerber_app/core/theme/app_theme.dart';
 import 'package:gewerber_app/core/utils/format.dart';
 import 'package:gewerber_app/domain/entities/customer.dart';
 import 'package:gewerber_app/domain/entities/invoice.dart';
 import 'package:gewerber_app/domain/entities/invoice_template.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
+import 'package:gewerber_app/presentation/router/route_names.dart';
+import 'package:gewerber_app/presentation/router/route_presence.dart';
 import 'package:gewerber_app/presentation/widgets/forms/field_info_icon.dart';
 import 'package:gewerber_app/presentation/widgets/forms/field_label.dart';
 
@@ -187,15 +190,55 @@ class _InvoiceCreateScreenState extends State<InvoiceCreateScreen> {
     if (saved) {
       _showSnack(l10n.invoiceSaved);
       context.pop();
+    } else if (invoiceCubit.state.failure case InvoiceLimitReachedFailure(
+      :final limit,
+    )) {
+      await _showQuotaPaywall(limit);
     } else {
       _showSnack(l10n.invoiceError);
     }
   }
 
+  /// Paywall prompt shown when the free-tier monthly invoice limit is hit.
+  ///
+  /// The upgrade action points at the subscription plans screen, which is
+  /// contributed by the closed-source subscription feature and therefore
+  /// absent from the OSS build. The action is only offered when the running
+  /// router actually resolves that route; otherwise the dialog degrades to a
+  /// plain informational message.
+  Future<void> _showQuotaPaywall(int limit) async {
+    final l10n = AppLocalizations.of(context);
+    final router = GoRouter.maybeOf(context);
+    final canUpgrade =
+        router != null &&
+        goRouterHasLocation(router, RouteNames.subscriptionPlans);
+
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        icon: const Icon(Icons.lock_outline),
+        content: Text(l10n.invoiceLimitReached(limit)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: Text(l10n.commonCancel),
+          ),
+          if (canUpgrade)
+            FilledButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+                router.push(RouteNames.subscriptionPlans);
+              },
+              child: Text(l10n.invoiceLimitUpgrade),
+            ),
+        ],
+      ),
+    );
+  }
+
   void _showSnack(String message) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -335,9 +378,9 @@ class _InvoiceCreateScreenState extends State<InvoiceCreateScreen> {
                             child: Text(
                               l10n.invoicesEmpty,
                               style: TextStyle(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.onSurfaceVariant,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant,
                               ),
                             ),
                           ),
@@ -503,9 +546,8 @@ class _ReverseChargeIndicator extends StatelessWidget {
               Flexible(
                 child: Text(
                   l10n.customerVatId,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: colors.onSecondaryContainer,
-                  ),
+                  style: Theme.of(context).textTheme.bodySmall
+                      ?.copyWith(color: colors.onSecondaryContainer),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
@@ -564,12 +606,10 @@ class _TemplatePrefillIndicator extends StatelessWidget {
                   const SizedBox(width: GewerberTokens.space8),
                   Flexible(
                     child: Text(
-                      AppLocalizations.of(
-                        context,
-                      ).invoiceTemplateApplied(template.name),
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: colors.onSecondaryContainer,
-                      ),
+                      AppLocalizations.of(context)
+                          .invoiceTemplateApplied(template.name),
+                      style: Theme.of(context).textTheme.bodySmall
+                          ?.copyWith(color: colors.onSecondaryContainer),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),

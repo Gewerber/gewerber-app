@@ -52,59 +52,67 @@ class GewerberColors {
   static const Color infoDark = Color(0xFF1A4AA3);
 
   /// MaterialColor swatches for ThemeData.
-  static const MaterialColor primarySwatch =
-      MaterialColor(0xFF2D6CDF, <int, Color>{
-        50: Color(0xFFE8F0FD),
-        100: Color(0xFFD1E1FA),
-        200: Color(0xFFA3C3F5),
-        300: Color(0xFF75A5F0),
-        400: Color(0xFF4D88EB),
-        500: Color(0xFF2D6CDF),
-        600: Color(0xFF2862CE),
-        700: Color(0xFF2257BD),
-        800: Color(0xFF1D4DAB),
-        900: Color(0xFF153A93),
-      });
+  static const MaterialColor primarySwatch = MaterialColor(
+    0xFF2D6CDF,
+    <int, Color>{
+      50: Color(0xFFE8F0FD),
+      100: Color(0xFFD1E1FA),
+      200: Color(0xFFA3C3F5),
+      300: Color(0xFF75A5F0),
+      400: Color(0xFF4D88EB),
+      500: Color(0xFF2D6CDF),
+      600: Color(0xFF2862CE),
+      700: Color(0xFF2257BD),
+      800: Color(0xFF1D4DAB),
+      900: Color(0xFF153A93),
+    },
+  );
 
-  static const MaterialColor accentSwatch =
-      MaterialColor(0xFF4CD4A9, <int, Color>{
-        50: Color(0xFFE8FAF3),
-        100: Color(0xFFD1F5E7),
-        200: Color(0xFFA3EBD0),
-        300: Color(0xFF75E1B9),
-        400: Color(0xFF4DD7A1),
-        500: Color(0xFF4CD4A9),
-        600: Color(0xFF43BF99),
-        700: Color(0xFF39A986),
-        800: Color(0xFF309474),
-        900: Color(0xFF23745A),
-      });
+  static const MaterialColor accentSwatch = MaterialColor(
+    0xFF4CD4A9,
+    <int, Color>{
+      50: Color(0xFFE8FAF3),
+      100: Color(0xFFD1F5E7),
+      200: Color(0xFFA3EBD0),
+      300: Color(0xFF75E1B9),
+      400: Color(0xFF4DD7A1),
+      500: Color(0xFF4CD4A9),
+      600: Color(0xFF43BF99),
+      700: Color(0xFF39A986),
+      800: Color(0xFF309474),
+      900: Color(0xFF23745A),
+    },
+  );
 
-  static const MaterialColor errorSwatch =
-      MaterialColor(0xFFCC3333, <int, Color>{
-        50: Color(0xFFFDEAEA),
-        100: Color(0xFFFBD5D5),
-        200: Color(0xFFF7ABA8),
-        300: Color(0xFFEF6A64),
-        400: Color(0xFFE04A46),
-        500: Color(0xFFCC3333),
-        600: Color(0xFFC02C2C),
-        700: Color(0xFFB42525),
-        800: Color(0xFFA81E1E),
-        900: Color(0xFF991515),
-      });
+  static const MaterialColor errorSwatch = MaterialColor(
+    0xFFCC3333,
+    <int, Color>{
+      50: Color(0xFFFDEAEA),
+      100: Color(0xFFFBD5D5),
+      200: Color(0xFFF7ABA8),
+      300: Color(0xFFEF6A64),
+      400: Color(0xFFE04A46),
+      500: Color(0xFFCC3333),
+      600: Color(0xFFC02C2C),
+      700: Color(0xFFB42525),
+      800: Color(0xFFA81E1E),
+      900: Color(0xFF991515),
+    },
+  );
 
-  static const MaterialColor successSwatch =
-      MaterialColor(0xFF187F4F, <int, Color>{
-        50: Color(0xFFE8F7EE),
-        100: Color(0xFFD1EFDD),
-        200: Color(0xFFA3DFBC),
-        300: Color(0xFF5CB885),
-        400: Color(0xFF33A366),
-        500: Color(0xFF187F4F),
-        600: Color(0xFF16784A),
-        700: Color(0xFF146F44),
-        800: Color(0xFF12653D),
-        900: Color(0xFF0F5234),
-      });
+  static const MaterialColor successSwatch = MaterialColor(
+    0xFF187F4F,
+    <int, Color>{
+      50: Color(0xFFE8F7EE),
+      100: Color(0xFFD1EFDD),
+      200: Color(0xFFA3DFBC),
+      300: Color(0xFF5CB885),
+      400: Color(0xFF33A366),
+      500: Color(0xFF187F4F),
+      600: Color(0xFF16784A),
+      700: Color(0xFF146F44),
+      800: Color(0xFF12653D),
+      900: Color(0xFF0F5234),
+    },
+  );
 }

@@ -3,27 +3,80 @@
 # ---- Build stage ---------------------------------------------------------
 # All dependencies are public (backend client and the commercial client stubs
 # resolve from GitHub without authentication) — no build secrets required.
+#
+# Base: official dart:3.13.3 + Flutter SDK 3.47.3 installed from the pinned
+# release archive (sha256-verified). Community Flutter images (cirruslabs,
+# openruntimes) lag the release channel and publish no exact 3.47.3 tag, so
+# they cannot satisfy the workspace SDK floor (^3.13.3 = the Dart shipped
+# with Flutter 3.47.3); installing from the official archive keeps image and
+# pubspec provably in lockstep. Bump FLUTTER_VERSION together with CI's
+# flutter-version (workflows/ci.yml).
 
-FROM ghcr.io/cirruslabs/flutter:stable AS build
+FROM dart:3.13.3 AS build
+
+ENV FLUTTER_VERSION=3.47.3 \
+    FLUTTER_HOME=/opt/flutter
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends ca-certificates curl git unzip xz-utils \
+  && rm -rf /var/lib/apt/lists/* \
+  && curl -fsSL "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_${FLUTTER_VERSION}-stable.tar.xz" -o /tmp/flutter.tar.xz \
+  && echo "988665565cad9091db1baa54bf6d3868bb40e29719592f3c3a164deefd4208e1  /tmp/flutter.tar.xz" | sha256sum -c - \
+  && tar -xJf /tmp/flutter.tar.xz -C /opt \
+  && rm /tmp/flutter.tar.xz \
+  && git config --global --add safe.directory "$FLUTTER_HOME" \
+  && "$FLUTTER_HOME/bin/flutter" --version \
+  && "$FLUTTER_HOME/bin/flutter" precache --web
+
+ENV PATH="$FLUTTER_HOME/bin:$FLUTTER_HOME/bin/cache/dart-sdk/bin:$PATH"
 
 WORKDIR /app
+
+# GEWERBER_DEP_REF: branch deploys pass the branch they build (develop →
+# staging). For any non-main value a pubspec_overrides.yaml is generated
+# BEFORE the first resolve, pinning the whole inter-repo chain
+# (gewerber_backend_client + the commercial stub) to that ref via
+# dependency_overrides — which pub applies across the entire resolution
+# graph, including the git-fetched backend client pubspec that still commits
+# `ref: main` for the stubs. (Without it, a `^4.0.3` app cannot resolve
+# against the not-yet-released-to-main backend client, whose floor is lower —
+# and a caret range never selects the `4.0.0-rc.1` that main still carries.)
+# Default main keeps the committed refs — production and plain builds are
+# unchanged. `.dockerignore` drops any developer pubspec_overrides.yaml so the
+# build is deterministic.
+ARG GEWERBER_DEP_REF=main
 
 # Resolve dependencies first for better layer caching. `pubspec.lock` is
 # gitignored (*.lock), so only the manifest is copied; `flutter pub get`
 # generates the lock (and will honor one if it happens to be present).
 COPY pubspec.yaml ./
-RUN flutter pub get
+RUN if [ "$GEWERBER_DEP_REF" != "main" ]; then \
+      printf '%s\n' \
+        'dependency_overrides:' \
+        '  gewerber_backend_client:' \
+        '    git:' \
+        '      url: https://github.com/Gewerber/gewerber-backend.git' \
+        '      path: gewerber_backend_client' \
+        "      ref: $GEWERBER_DEP_REF" \
+        '  gewerber_backend_commercial_client:' \
+        '    git:' \
+        '      url: https://github.com/Gewerber/gewerber-backend-stubs.git' \
+        '      path: gewerber_backend_commercial_client' \
+        "      ref: $GEWERBER_DEP_REF" \
+        > pubspec_overrides.yaml; \
+      echo "pinned inter-repo deps to ref: $GEWERBER_DEP_REF"; \
+    fi \
+  && flutter pub get
 
 # Copy the source and build the web app (releases into build/web/).
 # SERVER_HOST is baked in at build time (the app resolves the API endpoint
 # from `--dart-define=SERVER_HOST`, see lib/core/config/app_config.dart).
 # CI passes the environment-specific backend URL; the default targets
 # production (https://api.gewerber.de).
-#
+COPY . .
+
 # FLAVOR selects the entry point: "prod" uses lib/main.dart (no flavor
 # banner), any other value builds lib/main_<flavor>.dart (banner + per-flavor
 # defaults).
-COPY . .
 RUN flutter pub get
 ARG FLAVOR=prod
 ARG SERVER_HOST=https://api.gewerber.de

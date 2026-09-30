@@ -31,9 +31,8 @@ class SocialSignInRow extends StatelessWidget {
           _ => null,
         };
         if (message != null) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(message)));
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(message)));
         }
       },
       child: BlocBuilder<AuthCubit, AuthState>(

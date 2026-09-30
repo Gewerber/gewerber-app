@@ -116,9 +116,8 @@ class _AccountingEntryCreateScreenState
     if (!mounted || file == null) return;
     // Mirror the server-side size limit; fail before saving.
     if (file.sizeBytes > documentMaxSizeBytes) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.receiptTooLarge)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.receiptTooLarge)));
       return;
     }
     setState(() {
@@ -166,9 +165,8 @@ class _AccountingEntryCreateScreenState
     final l10n = AppLocalizations.of(context);
     final amountCents = parseEuroInput(_amountController.text);
     if (amountCents == null || amountCents <= 0) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.transactionAmountInvalid)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.transactionAmountInvalid)));
       return;
     }
     setState(() => _isSaving = true);
@@ -194,9 +192,8 @@ class _AccountingEntryCreateScreenState
       if (!mounted) return;
       if (document == null) {
         setState(() => _isSaving = false);
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(l10n.receiptUploadError)));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(l10n.receiptUploadError)));
         return;
       }
       receiptDocumentId = document.id;
@@ -237,9 +234,8 @@ class _AccountingEntryCreateScreenState
       context.pop();
     } else {
       setState(() => _isSaving = false);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.transactionSaveError)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.transactionSaveError)));
     }
   }
 

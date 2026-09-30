@@ -16,10 +16,8 @@ migrate_working_dir/
 *.iws
 .idea/
 
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
+# The .vscode folder holds editor-local launch configuration and tasks.
+.vscode/
 
 # Flutter/Dart/Pub related
 **/doc/api/
@@ -51,3 +49,6 @@ android/key.properties
 pubspec_overrides.yaml
 android/.kotlin/sessions/kotlin-compiler-3122669433423210435.salive
 lib/l10n/generated/
+
+# Local task tracker (not versioned)
+/TODO.md

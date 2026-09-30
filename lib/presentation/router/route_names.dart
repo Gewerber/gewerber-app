@@ -56,4 +56,10 @@ abstract final class RouteNames {
   static const String settingsLanguage = '/app/settings/language';
   static const String settingsTheme = '/app/settings/theme';
   static const String settingsAbout = '/app/settings/about';
+
+  /// Subscription plans screen. Provided by the closed-source subscription
+  /// feature (`AppFeature.routes()` in the commercial composition root); it is
+  /// absent from the OSS build, so callers must gate navigation on
+  /// `goRouterHasLocation` before offering this as an action.
+  static const String subscriptionPlans = '/subscription/plans';
 }

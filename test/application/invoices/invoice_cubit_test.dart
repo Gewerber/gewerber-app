@@ -9,11 +9,17 @@ import 'package:gewerber_app/domain/entities/invoice_list_page.dart';
 import 'package:gewerber_app/domain/repositories/invoice_repository.dart';
 
 class _FakeInvoiceRepository implements InvoiceRepository {
-  _FakeInvoiceRepository({List<Invoice>? invoices, this.failLoad = false})
-    : _invoices = List.of(invoices ?? const []);
+  _FakeInvoiceRepository({
+    List<Invoice>? invoices,
+    this.failLoad = false,
+    this.createFailure,
+  }) : _invoices = List.of(invoices ?? const []);
 
   final List<Invoice> _invoices;
   bool failLoad;
+
+  /// When set, [create] throws this instead of appending.
+  final Object? createFailure;
 
   @override
   Future<List<Invoice>> list({
@@ -44,6 +50,7 @@ class _FakeInvoiceRepository implements InvoiceRepository {
     String? notes,
     int? templateId,
   }) async {
+    if (createFailure != null) throw createFailure!;
     final invoice = Invoice(
       id: _invoices.length + 1,
       number: 'RE-001',
@@ -216,6 +223,25 @@ void main() {
 
     expect(created, isTrue);
     expect(cubit.state.invoices, hasLength(1));
+  });
+
+  test('create records the limit failure and returns false', () async {
+    final cubit = InvoiceCubit(
+      _FakeInvoiceRepository(
+        createFailure: const InvoiceLimitReachedException(limit: 3),
+      ),
+    );
+
+    final created = await cubit.create(
+      items: const [InvoiceItem(description: 'Beratung', unitPriceCents: 5000)],
+    );
+
+    expect(created, isFalse);
+    // Status stays `loaded` (the list is not replaced by an error screen) but
+    // the specific failure is recorded for the create screen to branch on.
+    expect(cubit.state.failure, isA<InvoiceLimitReachedFailure>());
+    expect((cubit.state.failure as InvoiceLimitReachedFailure).limit, 3);
+    expect(cubit.state.invoices, isEmpty);
   });
 
   test('update replaces the matching invoice', () async {
