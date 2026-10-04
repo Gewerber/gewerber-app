@@ -31,40 +31,36 @@ ENV PATH="$FLUTTER_HOME/bin:$FLUTTER_HOME/bin/cache/dart-sdk/bin:$PATH"
 
 WORKDIR /app
 
-# GEWERBER_DEP_REF: branch deploys pass the branch they build (develop →
-# staging). For any non-main value a pubspec_overrides.yaml is generated
-# BEFORE the first resolve, pinning the whole inter-repo chain
-# (gewerber_backend_client + the commercial stub) to that ref via
-# dependency_overrides — which pub applies across the entire resolution
-# graph, including the git-fetched backend client pubspec that still commits
-# `ref: main` for the stubs. (Without it, a `^4.0.3` app cannot resolve
-# against the not-yet-released-to-main backend client, whose floor is lower —
-# and a caret range never selects the `4.0.0-rc.1` that main still carries.)
-# Default main keeps the committed refs — production and plain builds are
-# unchanged. `.dockerignore` drops any developer pubspec_overrides.yaml so the
-# build is deterministic.
+# GEWERBER_DEP_REF: the branch this image builds (branch deploys pass the
+# branch they build: develop -> staging, main -> production). A
+# pubspec_overrides.yaml is generated BEFORE the first resolve, pinning the
+# whole inter-repo chain (gewerber_backend_client + the commercial stub) to
+# that ref via dependency_overrides — which pub applies across the entire
+# resolution graph, including the git-fetched backend client pubspec. That
+# pubspec commits `ref: develop` for the stubs (gewerber-backend only
+# retargets it inside its own CI), so pinning is required on `main` too: the
+# committed refs alone cannot resolve there. `.dockerignore` drops any
+# developer pubspec_overrides.yaml so the build is deterministic.
 ARG GEWERBER_DEP_REF=main
 
 # Resolve dependencies first for better layer caching. `pubspec.lock` is
 # gitignored (*.lock), so only the manifest is copied; `flutter pub get`
 # generates the lock (and will honor one if it happens to be present).
 COPY pubspec.yaml ./
-RUN if [ "$GEWERBER_DEP_REF" != "main" ]; then \
-      printf '%s\n' \
-        'dependency_overrides:' \
-        '  gewerber_backend_client:' \
-        '    git:' \
-        '      url: https://github.com/Gewerber/gewerber-backend.git' \
-        '      path: gewerber_backend_client' \
-        "      ref: $GEWERBER_DEP_REF" \
-        '  gewerber_backend_commercial_client:' \
-        '    git:' \
-        '      url: https://github.com/Gewerber/gewerber-backend-stubs.git' \
-        '      path: gewerber_backend_commercial_client' \
-        "      ref: $GEWERBER_DEP_REF" \
-        > pubspec_overrides.yaml; \
-      echo "pinned inter-repo deps to ref: $GEWERBER_DEP_REF"; \
-    fi \
+RUN printf '%s\n' \
+      'dependency_overrides:' \
+      '  gewerber_backend_client:' \
+      '    git:' \
+      '      url: https://github.com/Gewerber/gewerber-backend.git' \
+      '      path: gewerber_backend_client' \
+      "      ref: $GEWERBER_DEP_REF" \
+      '  gewerber_backend_commercial_client:' \
+      '    git:' \
+      '      url: https://github.com/Gewerber/gewerber-backend-stubs.git' \
+      '      path: gewerber_backend_commercial_client' \
+      "      ref: $GEWERBER_DEP_REF" \
+      > pubspec_overrides.yaml \
+  && echo "pinned inter-repo deps to ref: $GEWERBER_DEP_REF" \
   && flutter pub get
 
 # Copy the source and build the web app (releases into build/web/).

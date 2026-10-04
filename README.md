@@ -35,13 +35,13 @@ straight from Git:
 | `gewerber_backend_client` | [`Gewerber/gewerber-backend`](https://github.com/Gewerber/gewerber-backend), path `gewerber_backend_client` |
 | `gewerber_backend_commercial_client` | [`Gewerber/gewerber-backend-stubs`](https://github.com/Gewerber/gewerber-backend-stubs), path `gewerber_backend_commercial_client` |
 
-Both are committed with `ref: main`, the production contract. A caret range
-never selects a pre-release, so the `4.0.0-rc.1` that `main` still carries
-cannot be resolved against `^4.0.3` — meaning **a checkout of `develop` only
-resolves once both git deps follow `develop`**, and a `main` build only once
-the backend has been released. CI pairs the refs automatically for `develop`
-and gates `main` with an explicit skew message (see
-`.github/workflows/ci.yml`).
+Both are committed with `ref: main`, the production contract — never rewrite
+them per branch. gewerber-backend, however, commits `ref: develop` for the
+stubs and only retargets that ref inside its own CI, so the committed refs
+alone cannot resolve on either branch. CI therefore pins the whole inter-repo
+chain to the target branch (`main` for release and production builds,
+`develop` otherwise) and gates `main` builds on Serverpod parity with the
+backend's `main` (see `.github/workflows/ci.yml` and `Dockerfile`).
 
 Create a gitignored `pubspec_overrides.yaml` (dependency overrides apply
 across the whole resolution graph, including the git-fetched SDK pubspecs):

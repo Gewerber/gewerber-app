@@ -90,9 +90,8 @@ jobs:
           build-args: |
             SERVER_HOST=${{ env.SERVER_HOST }}
             FLAVOR=${{ github.ref_name == 'main' && 'prod' || 'staging' }}
-            # develop → staging: inter-repo git deps follow the deployed
-            # branch (see GEWERBER_DEP_REF in the Dockerfile); main keeps
-            # ref: main.
+            # develop → staging, main → production: the Dockerfile pins the
+            # whole inter-repo chain to this branch (see GEWERBER_DEP_REF).
             GEWERBER_DEP_REF=${{ github.ref_name }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
