@@ -25,6 +25,53 @@ Part of the [Gewerber GitHub organization](https://github.com/Gewerber).
 - Flutter SDK
 - Dart SDK
 
+### Resolve dependencies
+
+The app requires `serverpod*` `^4.0.3` and consumes the generated client SDKs
+straight from Git:
+
+| Dependency | Source |
+|---|---|
+| `gewerber_backend_client` | [`Gewerber/gewerber-backend`](https://github.com/Gewerber/gewerber-backend), path `gewerber_backend_client` |
+| `gewerber_backend_commercial_client` | [`Gewerber/gewerber-backend-stubs`](https://github.com/Gewerber/gewerber-backend-stubs), path `gewerber_backend_commercial_client` |
+
+Both are committed with `ref: main`, the production contract — never rewrite
+them per branch. gewerber-backend, however, commits `ref: develop` for the
+stubs and only retargets that ref inside its own CI, so the committed refs
+alone cannot resolve on either branch. CI therefore pins the whole inter-repo
+chain to the target branch (`main` for release and production builds,
+`develop` otherwise) and gates `main` builds on Serverpod parity with the
+backend's `main` (see `.github/workflows/ci.yml` and `Dockerfile`).
+
+Create a gitignored `pubspec_overrides.yaml` (dependency overrides apply
+across the whole resolution graph, including the git-fetched SDK pubspecs):
+
+```yaml
+dependency_overrides:
+  gewerber_backend_client:
+    git:
+      url: https://github.com/Gewerber/gewerber-backend.git
+      path: gewerber_backend_client
+      ref: develop
+  gewerber_backend_commercial_client:
+    git:
+      url: https://github.com/Gewerber/gewerber-backend-stubs.git
+      path: gewerber_backend_commercial_client
+      ref: develop
+```
+
+```bash
+flutter pub get
+```
+
+To build against a local backend checkout instead, replace the
+`gewerber_backend_client` override with `path: ../gewerber-backend/gewerber_backend_client`.
+
+Bumping Serverpod means bumping `pubspec.yaml` here together with
+`gewerber_backend_server`/`gewerber_backend_client` and the stub client — all
+three move on one release train, and the floor must match across all three.
+CI fails `main` builds with an explicit skew message when it does not.
+
 ### Run the web app
 
 ```bash

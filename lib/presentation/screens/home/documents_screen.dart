@@ -58,9 +58,8 @@ class _DocumentsViewState extends State<DocumentsView> {
     if (!mounted || file == null) return;
     // The server rejects anything larger; fail fast with a clear message.
     if (file.sizeBytes > documentMaxSizeBytes) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.documentsFileTooLarge)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.documentsFileTooLarge)));
       return;
     }
 
@@ -85,9 +84,8 @@ class _DocumentsViewState extends State<DocumentsView> {
     final downloaded = await cubit.download(document);
     if (!mounted) return;
     if (downloaded == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.documentsDownloadError)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.documentsDownloadError)));
       return;
     }
     final name = downloaded.fileName;
@@ -99,9 +97,8 @@ class _DocumentsViewState extends State<DocumentsView> {
       mimeType: MimeType.other,
     );
     if (!mounted) return;
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(l10n.documentsDownloaded)));
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(l10n.documentsDownloaded)));
   }
 
   @override

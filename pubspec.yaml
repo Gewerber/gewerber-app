@@ -12,7 +12,7 @@ topics:
   - time-tracking
 
 environment:
-  sdk: ^3.12.0
+  sdk: ^3.13.3
 
 dependencies:
   flutter:
@@ -21,19 +21,36 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.9
   google_fonts: ^8.2.1
-  go_router: ^18.0.0
+  go_router: ^18.0.1
   flutter_bloc: ^9.1.1
-  equatable: ^2.1.0
-  get_it: ^9.2.1
+  equatable: ^3.0.0
+  get_it: ^9.3.0
   injectable: ^3.0.0
   intl: ^0.20.3
   flutter_svg: ^2.3.0
   shared_preferences: ^2.5.5
-  serverpod_flutter: 4.0.0-rc.1
-  serverpod_auth_core_flutter: 4.0.0-rc.1
-  serverpod_auth_idp_flutter: 4.0.0-rc.1
-  serverpod_auth_core_client: 4.0.0-rc.1
-  serverpod_auth_idp_client: 4.0.0-rc.1
+  # Caret floor, not an exact pin. `^4.0.3` takes patch releases
+  # automatically while making a resolution below 4.0.3 impossible — in
+  # particular the `4.0.0-rc.1` pre-release that gewerber-backend-stubs
+  # pinned on main, which broke `flutter pub get` for every consumer
+  # resolving `ref: main`. A caret range never selects a pre-release, so
+  # that class of drift is structurally excluded rather than merely
+  # documented. Bump these together with gewerber-backend and the stub
+  # client; all three move on one release train.
+  #
+  # `serverpod generate` warns that a version range "can cause a mismatch
+  # with Serverpod's CLI version" and prefers an exact pin. Accepted
+  # deliberately: the app only consumes the generated SDK, so there is no
+  # codegen step here to mismatch.
+  serverpod_flutter: ^4.0.3
+  serverpod_auth_core_flutter: ^4.0.3
+  serverpod_auth_idp_flutter: ^4.0.3
+  serverpod_auth_core_client: ^4.0.3
+  serverpod_auth_idp_client: ^4.0.3
+  # `ref: main` is the production contract. Builds that target develop pair
+  # both git deps to `develop` through a generated (gitignored)
+  # pubspec_overrides.yaml — see the README, `Dockerfile` (GEWERBER_DEP_REF)
+  # and `.github/workflows/ci.yml`. Never rewrite the refs per branch here.
   gewerber_backend_client:
     git:
       url: https://github.com/Gewerber/gewerber-backend.git
@@ -50,7 +67,7 @@ dependencies:
   flutter_animate: ^4.5.2
   flutter_flavor: ^3.1.4
   file_saver: ^0.4.0
-  file_picker: ^12.1.3
+  file_picker: ^13.1.0
   mime: ^2.1.0
   url_launcher: ^6.3.2
   shimmer: ^4.0.0

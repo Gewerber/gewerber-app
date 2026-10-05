@@ -52,9 +52,8 @@ class _TimerScreenState extends State<TimerScreen> {
     if (success) {
       _descriptionController.clear();
     } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.timerStartError)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.timerStartError)));
     }
   }
 
@@ -63,9 +62,8 @@ class _TimerScreenState extends State<TimerScreen> {
     final success = await context.read<TimeEntriesCubit>().stopTimer();
     if (!mounted) return;
     if (!success) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.timerStopError)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.timerStopError)));
     }
   }
 
@@ -265,9 +263,8 @@ class _RunningTimerCard extends StatelessWidget {
               header: true,
               child: Text(
                 l10n.timerRunningTitle,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: colors.onPrimaryContainer,
-                ),
+                style: Theme.of(context).textTheme.titleMedium
+                    ?.copyWith(color: colors.onPrimaryContainer),
               ),
             ),
             const SizedBox(height: GewerberTokens.space8),

@@ -94,9 +94,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     if (created) {
       context.go(RouteNames.app);
     } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.onboardingError)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.onboardingError)));
     }
   }
 

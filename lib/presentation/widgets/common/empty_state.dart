@@ -47,9 +47,8 @@ class EmptyState extends StatelessWidget {
             Text(
               message,
               textAlign: TextAlign.center,
-              style: Theme.of(
-                context,
-              ).textTheme.bodyMedium?.copyWith(color: colors.onSurfaceVariant),
+              style: Theme.of(context).textTheme.bodyMedium
+                  ?.copyWith(color: colors.onSurfaceVariant),
             ),
             if (action != null) ...[
               const SizedBox(height: GewerberTokens.space16),
