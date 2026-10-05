@@ -12,7 +12,7 @@
 # pubspec provably in lockstep. Bump FLUTTER_VERSION together with CI's
 # flutter-version (workflows/ci.yml).
 
-FROM dart:3.13.3 AS build
+FROM dart:3.13.5 AS build
 
 ENV FLUTTER_VERSION=3.47.3 \
     FLUTTER_HOME=/opt/flutter
