@@ -27,7 +27,7 @@ Part of the [Gewerber GitHub organization](https://github.com/Gewerber).
 
 ### Resolve dependencies
 
-The app requires `serverpod*` `^4.0.3` and consumes the generated client SDKs
+The app requires `serverpod*` `^4.1.0` and consumes the generated client SDKs
 straight from Git:
 
 | Dependency | Source |
