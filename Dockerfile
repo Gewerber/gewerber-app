@@ -73,7 +73,9 @@ COPY . .
 # FLAVOR selects the entry point: "prod" uses lib/main.dart (no flavor
 # banner), any other value builds lib/main_<flavor>.dart (banner + per-flavor
 # defaults).
-RUN flutter pub get
+RUN flutter pub get \
+  && dart run build_runner build --delete-conflicting-outputs \
+  && flutter gen-l10n
 ARG FLAVOR=prod
 ARG SERVER_HOST=https://api.gewerber.de
 RUN if [ "$FLAVOR" = "prod" ]; then \
