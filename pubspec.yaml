@@ -42,11 +42,11 @@ dependencies:
   # with Serverpod's CLI version" and prefers an exact pin. Accepted
   # deliberately: the app only consumes the generated SDK, so there is no
   # codegen step here to mismatch.
-  serverpod_flutter: ^4.0.3
-  serverpod_auth_core_flutter: ^4.0.3
-  serverpod_auth_idp_flutter: ^4.0.3
-  serverpod_auth_core_client: ^4.0.3
-  serverpod_auth_idp_client: ^4.0.3
+  serverpod_flutter: ^4.1.0
+  serverpod_auth_core_flutter: ^4.1.0
+  serverpod_auth_idp_flutter: ^4.1.0
+  serverpod_auth_core_client: ^4.1.0
+  serverpod_auth_idp_client: ^4.1.0
   # `ref: main` is the production contract. Builds that target develop pair
   # both git deps to `develop` through a generated (gitignored)
   # pubspec_overrides.yaml — see the README, `Dockerfile` (GEWERBER_DEP_REF)
