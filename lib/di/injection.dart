@@ -42,8 +42,8 @@ void configureDependencies({
     getIt.registerLazySingleton<AppearancePreferencesRepository>(
       () => SharedPreferencesAppearanceRepository(sharedPreferences),
     );
-    getIt.registerLazySingleton<BetaBannerPreferencesImpl>(
-      () => SharedPreferencesBetaBannerRepository(sharedPreferences),
+    getIt.registerLazySingleton<BetaBannerPreferencesRepository>(
+      () => SharedPreferencesBetaBannerPreferencesRepository(sharedPreferences),
     );
   }
   getIt.registerLazySingleton<AppSettingsCubit>(() {
@@ -57,12 +57,11 @@ void configureDependencies({
           : null,
     );
   });
-  getIt.registerLazySingleton<BetaBannerCubit>(() {
-    final betaBannerPreferencesRepository = getIt.isRegistered<BetaBannerPreferencesImpl>()
-        ? getIt<BetaBannerPreferencesImpl>()
-        : null;
-    return BetaBannerCubit(
-      betaBannerPreferencesRepository: betaBannerPreferencesRepository,
-    );
-  });
+  getIt.registerLazySingleton<BetaBannerCubit>(
+    () => BetaBannerCubit(
+      preferences: getIt.isRegistered<BetaBannerPreferencesRepository>()
+          ? getIt<BetaBannerPreferencesRepository>()
+          : null,
+    ),
+  );
 }

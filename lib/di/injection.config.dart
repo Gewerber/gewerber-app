@@ -12,7 +12,6 @@
 
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
-import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 import '../application/accounting/accounting_cubit.dart' as _i946;
 import '../application/auth/auth_cubit.dart' as _i487;
@@ -36,8 +35,6 @@ import '../application/user_profile/user_profile_cubit.dart' as _i268;
 import '../core/config/app_config.dart' as _i221;
 import '../domain/repositories/accounting_repository.dart' as _i188;
 import '../domain/repositories/auth_repository.dart' as _i800;
-import '../domain/repositories/beta_banner_preferences_repository.dart'
-    as _i383;
 import '../domain/repositories/business_repository.dart' as _i93;
 import '../domain/repositories/business_settings_repository.dart' as _i743;
 import '../domain/repositories/customer_repository.dart' as _i907;
@@ -52,8 +49,6 @@ import '../domain/repositories/time_tracking_repository.dart' as _i323;
 import '../domain/repositories/user_preferences_repository.dart' as _i101;
 import '../domain/repositories/user_profile_repository.dart' as _i439;
 import '../infrastructure/core/serverpod_client_factory.dart' as _i661;
-import '../infrastructure/datasources/local/beta_banner_preferences_store.dart'
-    as _i788;
 import '../infrastructure/datasources/local/session_store.dart' as _i900;
 import '../infrastructure/datasources/remote/accounting_remote_data_source.dart'
     as _i253;
@@ -100,8 +95,6 @@ import '../infrastructure/mappers/user_preferences_mapper.dart' as _i53;
 import '../infrastructure/repositories/mock_accounting_repository.dart'
     as _i254;
 import '../infrastructure/repositories/mock_auth_repository.dart' as _i338;
-import '../infrastructure/repositories/mock_beta_banner_preferences_repository.dart'
-    as _i1034;
 import '../infrastructure/repositories/mock_business_repository.dart' as _i869;
 import '../infrastructure/repositories/mock_business_settings_repository.dart'
     as _i587;
@@ -155,8 +148,8 @@ import '../infrastructure/services/file_picker_service.dart' as _i401;
 import '../presentation/router/auth_redirect_controller.dart' as _i1070;
 import '../presentation/router/business_redirect_controller.dart' as _i981;
 
-const String _auth_live = 'auth_live';
 const String _auth_mock = 'auth_mock';
+const String _auth_live = 'auth_live';
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -185,16 +178,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i723.DashboardMapper(
         gh<_i295.InvoiceMapper>(),
         gh<_i756.TransactionMapper>(),
-      ),
-    );
-    gh.lazySingleton<_i788.BetaBannerPreferencesRepository>(
-      () =>
-          _i788.BetaBannerPreferencesRepository(gh<_i460.SharedPreferences>()),
-      registerFor: {_auth_live},
-    );
-    gh.factory<_i1034.ServerpodBetaBannerPreferencesRepository>(
-      () => _i1034.ServerpodBetaBannerPreferencesRepository(
-        gh<_i383.BetaBannerPreferencesImpl>(),
       ),
     );
     gh.lazySingleton<_i591.DocumentRepository>(
@@ -240,10 +223,6 @@ extension GetItInjectableX on _i174.GetIt {
       () =>
           _i212.UserProfileRemoteDataSource(gh<_i661.ServerpodClientFactory>()),
       registerFor: {_auth_live},
-    );
-    gh.lazySingleton<_i383.BetaBannerPreferences>(
-      () => _i1034.MockBetaBannerPreferencesRepository(),
-      registerFor: {_auth_mock},
     );
     gh.lazySingleton<_i778.InvoiceRepository>(
       () => _i555.MockInvoiceRepository(),
