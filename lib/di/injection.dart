@@ -3,10 +3,13 @@ import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:gewerber_app/application/settings/app_settings_cubit.dart';
+import 'package:gewerber_app/application/settings/beta_banner/beta_banner_cubit.dart';
 import 'package:gewerber_app/core/config/app_environment.dart';
 import 'package:gewerber_app/domain/repositories/appearance_preferences_repository.dart';
+import 'package:gewerber_app/domain/repositories/beta_banner_preferences_repository.dart';
 import 'package:gewerber_app/domain/repositories/user_preferences_repository.dart';
 import 'package:gewerber_app/infrastructure/datasources/local/appearance_preferences_store.dart';
+import 'package:gewerber_app/infrastructure/datasources/local/beta_banner_preferences_store.dart';
 
 import 'injection.config.dart';
 
@@ -39,6 +42,9 @@ void configureDependencies({
     getIt.registerLazySingleton<AppearancePreferencesRepository>(
       () => SharedPreferencesAppearanceRepository(sharedPreferences),
     );
+    getIt.registerLazySingleton<BetaBannerPreferencesRepository>(
+      () => SharedPreferencesBetaBannerPreferencesRepository(sharedPreferences),
+    );
   }
   getIt.registerLazySingleton<AppSettingsCubit>(() {
     final repository = getIt.isRegistered<UserPreferencesRepository>()
@@ -51,4 +57,11 @@ void configureDependencies({
           : null,
     );
   });
+  getIt.registerLazySingleton<BetaBannerCubit>(
+    () => BetaBannerCubit(
+      preferences: getIt.isRegistered<BetaBannerPreferencesRepository>()
+          ? getIt<BetaBannerPreferencesRepository>()
+          : null,
+    ),
+  );
 }

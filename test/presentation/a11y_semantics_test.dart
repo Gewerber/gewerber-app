@@ -12,8 +12,10 @@ import 'package:gewerber_app/application/customers/customer_cubit.dart';
 import 'package:gewerber_app/application/documents/documents_cubit.dart';
 import 'package:gewerber_app/application/invoice_templates/invoice_template_cubit.dart';
 import 'package:gewerber_app/application/invoices/invoice_cubit.dart';
+import 'package:gewerber_app/application/settings/beta_banner/beta_banner_cubit.dart';
 import 'package:gewerber_app/application/time_tracking/projects_cubit.dart';
 import 'package:gewerber_app/application/time_tracking/time_entries_cubit.dart';
+import 'package:gewerber_app/di/injection.dart';
 import 'package:gewerber_app/domain/entities/dashboard.dart';
 import 'package:gewerber_app/domain/entities/document.dart';
 import 'package:gewerber_app/domain/entities/invoice.dart';
@@ -102,6 +104,11 @@ void main() {
   setUpAll(() async {
     // Date formatting uses the German default locale (see core/utils/format).
     await initializeDateFormatting('de_DE');
+    // HomeShell resolves the banner cubit from the locator; this test builds
+    // the shell without the full app bootstrap.
+    if (!getIt.isRegistered<BetaBannerCubit>()) {
+      getIt.registerLazySingleton<BetaBannerCubit>(BetaBannerCubit.new);
+    }
   });
 
   testWidgets('SectionCard exposes its title as a semantics header', (

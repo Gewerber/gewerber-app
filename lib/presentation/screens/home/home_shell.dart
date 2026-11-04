@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:gewerber_app/application/settings/beta_banner/beta_banner_cubit.dart';
 import 'package:gewerber_app/core/theme/gewerber_tokens.dart';
+import 'package:gewerber_app/di/injection.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
-import 'package:gewerber_app/presentation/widgets/common/beta_banner.dart';
+import 'package:gewerber_app/presentation/widgets/common/beta_banner_gate.dart';
 
 /// One navigation destination of the app shell, shared by the bottom
 /// navigation bar (narrow screens) and the navigation rail (wide screens).
@@ -17,7 +20,7 @@ typedef _ShellDestination = ({
 ///
 /// The active branch is rendered through [StatefulShellRoute.indexedStack],
 /// keeping each module's state alive while switching tabs — regardless of
-/// which navigation surface is shown. A persistent [BetaBanner] sits above
+/// which navigation surface is shown. A persistent [BetaBannerGate] sits above
 /// the branches while the product is in beta.
 class HomeShell extends StatelessWidget {
   const HomeShell({super.key, required this.navigationShell});
@@ -29,60 +32,63 @@ class HomeShell extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final destinations = _buildDestinations(l10n);
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        if (constraints.maxWidth >= GewerberTokens.breakpointMedium) {
+    return BlocProvider<BetaBannerCubit>.value(
+      value: getIt<BetaBannerCubit>(),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          if (constraints.maxWidth >= GewerberTokens.breakpointMedium) {
+            return Scaffold(
+              body: Column(
+                children: [
+                  const BetaBannerGate(),
+                  Expanded(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _Rail(
+                          destinations: destinations,
+                          selectedIndex: navigationShell.currentIndex,
+                          onDestinationSelected: (index) =>
+                              _selectBranch(context, index),
+                          extended:
+                              constraints.maxWidth >=
+                              GewerberTokens.breakpointExpanded,
+                        ),
+                        const VerticalDivider(thickness: 1, width: 1),
+                        Expanded(child: navigationShell),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+
           return Scaffold(
             body: Column(
               children: [
-                const BetaBanner(),
-                Expanded(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      _Rail(
-                        destinations: destinations,
-                        selectedIndex: navigationShell.currentIndex,
-                        onDestinationSelected: (index) =>
-                            _selectBranch(context, index),
-                        extended:
-                            constraints.maxWidth >=
-                            GewerberTokens.breakpointExpanded,
-                      ),
-                      const VerticalDivider(thickness: 1, width: 1),
-                      Expanded(child: navigationShell),
-                    ],
+                const BetaBannerGate(),
+                Expanded(child: navigationShell),
+              ],
+            ),
+            bottomNavigationBar: NavigationBar(
+              selectedIndex: navigationShell.currentIndex,
+              onDestinationSelected: (index) => _selectBranch(context, index),
+              destinations: [
+                // Explicit tooltip: doubles as the semantic label of the
+                // icon-only destination on narrow screens.
+                for (final (:icon, :selectedIcon, :label) in destinations)
+                  NavigationDestination(
+                    icon: Icon(icon),
+                    selectedIcon: Icon(selectedIcon),
+                    label: label,
+                    tooltip: label,
                   ),
-                ),
               ],
             ),
           );
-        }
-
-        return Scaffold(
-          body: Column(
-            children: [
-              const BetaBanner(),
-              Expanded(child: navigationShell),
-            ],
-          ),
-          bottomNavigationBar: NavigationBar(
-            selectedIndex: navigationShell.currentIndex,
-            onDestinationSelected: (index) => _selectBranch(context, index),
-            destinations: [
-              // Explicit tooltip: doubles as the semantic label of the
-              // icon-only destination on narrow screens.
-              for (final (:icon, :selectedIcon, :label) in destinations)
-                NavigationDestination(
-                  icon: Icon(icon),
-                  selectedIcon: Icon(selectedIcon),
-                  label: label,
-                  tooltip: label,
-                ),
-            ],
-          ),
-        );
-      },
+        },
+      ),
     );
   }
 
