@@ -5,6 +5,7 @@ import 'package:gewerber_app/core/config/app_environment.dart';
 import 'package:gewerber_app/core/errors/exceptions.dart';
 import 'package:gewerber_app/domain/entities/my_identity.dart' as domain;
 import 'package:gewerber_app/domain/entities/user_profile.dart';
+import 'package:gewerber_app/domain/value_objects/social_auth_provider.dart';
 import 'package:gewerber_app/infrastructure/core/serverpod_client_factory.dart';
 
 /// Transport-level user-profile calls against the Serverpod backend.
@@ -116,6 +117,11 @@ class UserProfileRemoteDataSource {
               role: domain.MembershipRole.fromName(m.role.toJson()),
             ),
           )
+          .toList(),
+      primaryEmail: model.primaryEmail,
+      connectedProviders: model.connectedProviders
+          .map(SocialAuthProvider.tryFromWire)
+          .whereType<SocialAuthProvider>()
           .toList(),
     );
   }

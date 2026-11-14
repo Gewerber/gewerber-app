@@ -3,16 +3,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:gewerber_app/application/auth/auth_cubit.dart';
 import 'package:gewerber_app/application/auth/auth_state.dart';
+import 'package:gewerber_app/core/config/social_provider_availability.dart';
+import 'package:gewerber_app/core/config/social_provider_config.dart';
 import 'package:gewerber_app/core/errors/failures.dart';
 import 'package:gewerber_app/domain/value_objects/social_auth_provider.dart';
 import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 
 /// Row of social identity-provider buttons shown on auth screens.
 ///
-/// Taps delegate to [AuthCubit.socialLogin]; failures (e.g. a provider that
-/// is not configured for the current build) surface as a snackbar. The button
-/// for the provider being signed in with shows a loading spinner and all
-/// social buttons are disabled while any auth operation is in flight.
+/// Taps delegate to [AuthCubit.socialLogin]; failures (e.g. a provider the
+/// backend has disabled) surface as a snackbar. Cancelling a provider sheet is
+/// silent. The button of the provider being signed in with shows a loading
+/// spinner and all social buttons are disabled while any auth operation is in
+/// flight.
 class SocialSignInRow extends StatelessWidget {
   const SocialSignInRow({super.key});
 
@@ -28,6 +31,8 @@ class SocialSignInRow extends StatelessWidget {
           SocialAuthNotConfiguredFailure() => l10n.commonSocialUnavailable,
           SocialAuthFailure(:final message) =>
             message ?? l10n.commonSocialUnavailable,
+          // Cancelling the provider sheet is not an error.
+          SocialAuthCancelledFailure() => null,
           _ => null,
         };
         if (message != null) {
@@ -37,6 +42,13 @@ class SocialSignInRow extends StatelessWidget {
       },
       child: BlocBuilder<AuthCubit, AuthState>(
         builder: (context, state) {
+          final providers = SocialAuthProvider.values
+              .where(_isOffered)
+              .toList(growable: false);
+          if (providers.isEmpty) {
+            return const SizedBox.shrink();
+          }
+
           final busy = state.isSubmitting;
           final activeProvider = state.submittingProvider;
           return Column(
@@ -65,32 +77,13 @@ class SocialSignInRow extends StatelessWidget {
                 spacing: 8,
                 runSpacing: 8,
                 children: [
-                  _ProviderButton(
-                    label: l10n.commonGoogle,
-                    icon: Icons.g_mobiledata,
-                    isLoading: activeProvider == SocialAuthProvider.google,
-                    onPressed: busy
-                        ? null
-                        : () => _signIn(context, SocialAuthProvider.google),
-                  ),
-                  _ProviderButton(
-                    label: l10n.commonApple,
-                    icon: Icons.apple,
-                    isLoading: activeProvider == SocialAuthProvider.apple,
-                    onPressed: busy
-                        ? null
-                        : () => _signIn(context, SocialAuthProvider.apple),
-                  ),
-                  // Facebook is feature-gated: rendered once the backend provider
-                  // and its configuration exist (see core/config/app_config.dart).
-                  _ProviderButton(
-                    label: l10n.commonFacebook,
-                    icon: Icons.facebook,
-                    isLoading: activeProvider == SocialAuthProvider.facebook,
-                    onPressed: busy
-                        ? null
-                        : () => _signIn(context, SocialAuthProvider.facebook),
-                  ),
+                  for (final provider in providers)
+                    _ProviderButton(
+                      label: _labelFor(l10n, provider),
+                      icon: _iconFor(provider),
+                      isLoading: activeProvider == provider,
+                      onPressed: busy ? null : () => _signIn(context, provider),
+                    ),
                 ],
               ),
             ],
@@ -98,6 +91,32 @@ class SocialSignInRow extends StatelessWidget {
         },
       ),
     );
+  }
+
+  /// A provider is offered when this build can run its flow and the OAuth
+  /// credentials are present.
+  static bool _isOffered(SocialAuthProvider provider) {
+    return SocialProviderAvailability.isAvailableNow(provider) &&
+        SocialProviderConfig.isConfigured(provider);
+  }
+
+  static String _labelFor(AppLocalizations l10n, SocialAuthProvider provider) {
+    return switch (provider) {
+      SocialAuthProvider.google => l10n.commonGoogle,
+      SocialAuthProvider.apple => l10n.commonApple,
+      SocialAuthProvider.facebook => l10n.commonFacebook,
+      SocialAuthProvider.microsoft => l10n.commonMicrosoft,
+    };
+  }
+
+  static IconData _iconFor(SocialAuthProvider provider) {
+    return switch (provider) {
+      SocialAuthProvider.google => Icons.g_mobiledata,
+      SocialAuthProvider.apple => Icons.apple,
+      SocialAuthProvider.facebook => Icons.facebook,
+      // No Microsoft glyph ships with Material Icons.
+      SocialAuthProvider.microsoft => Icons.window,
+    };
   }
 
   void _signIn(BuildContext context, SocialAuthProvider provider) {

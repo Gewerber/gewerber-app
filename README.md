@@ -96,10 +96,10 @@ flutter run
 ### Social sign-in configuration
 
 Social sign-in is configured per build through `--dart-define` values. A provider
-whose required keys are empty is hidden (and its flow refuses to run with
-`SocialAuthNotConfiguredException`); wiring the buttons to that availability
-matrix lands in a follow-up change, so an unconfigured provider currently just
-fails with the "unavailable" snackbar.
+whose required keys are empty, or that the current platform cannot run, is hidden
+from the sign-in row (and its flow refuses to run with
+`SocialAuthNotConfiguredException`); a provider the backend has disabled answers
+404 and surfaces the "unavailable" snackbar.
 
 | Key | Required for | Platforms | Notes |
 |---|---|---|---|

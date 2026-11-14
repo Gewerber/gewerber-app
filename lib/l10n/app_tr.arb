@@ -92,7 +92,8 @@
   "commonGoogle": "Google",
   "commonApple": "Apple",
   "commonFacebook": "Facebook",
-  "commonSocialUnavailable": "Tek dokunuşla giriş yakında geliyor.",
+  "commonMicrosoft": "Microsoft",
+  "commonSocialUnavailable": "Bu giriş seçeneği kullanılamıyor.",
   "commonResendIn": "{seconds} sn içinde tekrar gönder",
 
   "betaBannerTitle": "Açık beta",

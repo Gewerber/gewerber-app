@@ -81,10 +81,20 @@ class AuthCubit extends Cubit<AuthState> {
       final user = await _repository.socialLogin(provider);
       emit(AuthState(status: AuthStatus.authenticated, user: user));
     } on AppException catch (e) {
+      final failure = mapAppException(e);
+      // Cancelling the provider sheet is not an error the user needs to be
+      // told about: reset the button and keep the current (unauthenticated)
+      // status without surfacing a failure.
+      if (failure is SocialAuthCancelledFailure) {
+        emit(
+          state.copyWith(isSubmitting: false, clearSubmittingProvider: true),
+        );
+        return;
+      }
       emit(
         state.copyWith(
           isSubmitting: false,
-          failure: mapAppException(e),
+          failure: failure,
           clearSubmittingProvider: true,
         ),
       );

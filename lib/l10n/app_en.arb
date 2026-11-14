@@ -111,7 +111,8 @@
   "commonGoogle": "Google",
   "commonApple": "Apple",
   "commonFacebook": "Facebook",
-  "commonSocialUnavailable": "One-tap sign-in is coming soon.",
+  "commonMicrosoft": "Microsoft",
+  "commonSocialUnavailable": "This sign-in option is unavailable.",
   "commonResendIn": "Resend in {seconds}s",
   "@commonResendIn": {
     "description": "Shows how long until the code can be resent.",

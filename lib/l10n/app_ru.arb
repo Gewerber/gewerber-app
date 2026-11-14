@@ -92,7 +92,8 @@
   "commonGoogle": "Google",
   "commonApple": "Apple",
   "commonFacebook": "Facebook",
-  "commonSocialUnavailable": "Вход в один клик скоро появится.",
+  "commonMicrosoft": "Microsoft",
+  "commonSocialUnavailable": "Эта функция входа недоступна.",
   "commonResendIn": "Отправить снова через {seconds} с",
 
   "betaBannerTitle": "Открытая бета",

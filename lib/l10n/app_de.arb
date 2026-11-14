@@ -92,7 +92,8 @@
   "commonGoogle": "Google",
   "commonApple": "Apple",
   "commonFacebook": "Facebook",
-  "commonSocialUnavailable": "Anmeldung mit einem Klick ist bald verfügbar.",
+  "commonMicrosoft": "Microsoft",
+  "commonSocialUnavailable": "Diese Anmeldeoption ist nicht verfügbar.",
   "commonResendIn": "Erneut senden in {seconds}s",
 
   "betaBannerTitle": "Öffentliche Beta",
