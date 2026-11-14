@@ -36,6 +36,42 @@ class AppConfig {
     defaultValue: '',
   );
 
+  /// Google OAuth client id for iOS/macOS, overridable with
+  /// `--dart-define=GOOGLE_IOS_CLIENT_ID=...`.
+  static const String defaultGoogleIosClientId = String.fromEnvironment(
+    'GOOGLE_IOS_CLIENT_ID',
+    defaultValue: '',
+  );
+
+  /// Apple redirect URI used by the web-based Apple flow, overridable with
+  /// `--dart-define=APPLE_REDIRECT_URI=...`.
+  static const String defaultAppleRedirectUri = String.fromEnvironment(
+    'APPLE_REDIRECT_URI',
+    defaultValue: '',
+  );
+
+  /// Microsoft (Entra ID) application (client) id, overridable with
+  /// `--dart-define=MICROSOFT_CLIENT_ID=...`.
+  static const String defaultMicrosoftClientId = String.fromEnvironment(
+    'MICROSOFT_CLIENT_ID',
+    defaultValue: '',
+  );
+
+  /// Microsoft (Entra ID) tenant, overridable with
+  /// `--dart-define=MICROSOFT_TENANT=...`.
+  static const String defaultMicrosoftTenant = String.fromEnvironment(
+    'MICROSOFT_TENANT',
+    defaultValue: 'common',
+  );
+
+  /// Explicit OAuth redirect URI for the browser-based flows, overridable
+  /// with `--dart-define=AUTH_REDIRECT_URI=...`. When empty, the redirect is
+  /// derived from the active server host.
+  static const String defaultAuthRedirectUri = String.fromEnvironment(
+    'AUTH_REDIRECT_URI',
+    defaultValue: '',
+  );
+
   /// Resolves a flavor variable, falling back to the `--dart-define`
   /// compile-time constant when the flavor omits it.
   static String _fromFlavor(String key, String dartDefineDefault) {
@@ -55,11 +91,43 @@ class AppConfig {
   static String get facebookAppId =>
       _fromFlavor('facebookAppId', defaultFacebookAppId);
 
+  /// Google OAuth client id for iOS/macOS of the active flavor.
+  static String get googleIosClientId =>
+      _fromFlavor('googleIosClientId', defaultGoogleIosClientId);
+
+  /// Apple redirect URI of the active flavor.
+  static String get appleRedirectUri =>
+      _fromFlavor('appleRedirectUri', defaultAppleRedirectUri);
+
+  /// Microsoft (Entra ID) application (client) id of the active flavor.
+  static String get microsoftClientId =>
+      _fromFlavor('microsoftClientId', defaultMicrosoftClientId);
+
+  /// Microsoft (Entra ID) tenant of the active flavor.
+  static String get microsoftTenant =>
+      _fromFlavor('microsoftTenant', defaultMicrosoftTenant);
+
+  /// Base URL of the active flavor (see [fromFlavor]).
+  static String get resolvedServerHost =>
+      _fromFlavor('serverHost', defaultServerHost);
+
+  /// OAuth redirect URI for the browser-based flows (Apple web, Microsoft).
+  ///
+  /// Defaults to `'$resolvedServerHost/auth/callback'` of the active flavor and
+  /// can be overridden explicitly through [defaultAuthRedirectUri].
+  static String get authRedirectUri {
+    final explicit = _fromFlavor('authRedirectUri', defaultAuthRedirectUri);
+    if (explicit.isNotEmpty) {
+      return explicit;
+    }
+    return '$resolvedServerHost/auth/callback';
+  }
+
   /// Builds the configuration from the active flavor, keeping the
   /// `--dart-define` defaults as fallbacks.
   factory AppConfig.fromFlavor() {
     return AppConfig(
-      serverHost: _fromFlavor('serverHost', defaultServerHost),
+      serverHost: resolvedServerHost,
       connectTimeoutMs: FlavorValues.connectTimeoutMs,
     );
   }

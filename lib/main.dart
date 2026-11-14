@@ -23,8 +23,16 @@ Future<void> main() async {
         defaultValue: 'https://api.gewerber.de',
       ),
       'googleClientId': String.fromEnvironment('GOOGLE_CLIENT_ID'),
+      'googleIosClientId': String.fromEnvironment('GOOGLE_IOS_CLIENT_ID'),
       'appleClientId': String.fromEnvironment('APPLE_CLIENT_ID'),
+      'appleRedirectUri': String.fromEnvironment('APPLE_REDIRECT_URI'),
       'facebookAppId': String.fromEnvironment('FACEBOOK_APP_ID'),
+      'microsoftClientId': String.fromEnvironment('MICROSOFT_CLIENT_ID'),
+      'microsoftTenant': String.fromEnvironment(
+        'MICROSOFT_TENANT',
+        defaultValue: 'common',
+      ),
+      'authRedirectUri': String.fromEnvironment('AUTH_REDIRECT_URI'),
     },
   );
   await bootstrap();
