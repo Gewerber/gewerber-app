@@ -93,6 +93,53 @@ flutter devices
 flutter run
 ```
 
+### Social sign-in configuration
+
+Social sign-in is configured per build through `--dart-define` values. A provider
+whose required keys are empty is hidden (and its flow refuses to run with
+`SocialAuthNotConfiguredException`); wiring the buttons to that availability
+matrix lands in a follow-up change, so an unconfigured provider currently just
+fails with the "unavailable" snackbar.
+
+| Key | Required for | Platforms | Notes |
+|---|---|---|---|
+| `GOOGLE_CLIENT_ID` | Google | all | Web/server OAuth client id; also the ID-token audience the backend validates. |
+| `GOOGLE_IOS_CLIENT_ID` | Google | iOS, macOS | iOS/macOS OAuth client id used by the SDK. |
+| `APPLE_CLIENT_ID` | Apple | all | Apple service id (the "Client ID" shown in the Apple developer portal). |
+| `APPLE_REDIRECT_URI` | Apple | web | Must be registered for the service id; `https://...` (no localhost). |
+| `FACEBOOK_APP_ID` | Facebook | Android, iOS, web | Also declared in `ios/Runner/Info.plist` and `AndroidManifest.xml` (see the comment blocks there). |
+| `MICROSOFT_CLIENT_ID` | Microsoft | all | Entra ID application (client) id. |
+| `MICROSOFT_TENANT` | Microsoft | all | Defaults to `common`. |
+| `AUTH_REDIRECT_URI` | Apple (web), Microsoft | all | OAuth redirect URI; defaults to `'$SERVER_HOST/auth/callback'`. Must be registered with the provider. |
+
+Example:
+
+```bash
+flutter run -d chrome \
+  --dart-define=GOOGLE_CLIENT_ID=...apps.googleusercontent.com \
+  --dart-define=APPLE_CLIENT_ID=de.gewerber.app.service \
+  --dart-define=APPLE_REDIRECT_URI=https://app.gewerber.de/auth/callback \
+  --dart-define=FACEBOOK_APP_ID=000000000000000 \
+  --dart-define=MICROSOFT_CLIENT_ID=00000000-0000-0000-0000-000000000000 \
+  --dart-define=MICROSOFT_TENANT=common \
+  --dart-define=AUTH_REDIRECT_URI=https://app.gewerber.de/auth/callback
+```
+
+Per-platform requirements:
+
+- **Web** — Google (GIS client id in `web/index.html` or `GOOGLE_CLIENT_ID`),
+  Apple (service id + redirect URI), Facebook (app id), Microsoft (app id +
+  redirect URI). Google's `google_sign_in` 7 has no programmatic
+  `authenticate()` on the web, so the web Google button needs the GIS rendered
+  button — tracked as a phase-1 limitation.
+- **Android** — Google (server client id), Facebook (app id + package name +
+  key hashes in the Facebook dashboard), Microsoft (app id + redirect URI).
+- **iOS / macOS** — Google (iOS client id + server client id), Apple (native
+  AuthenticationServices; entitlement required), Facebook (app id), Microsoft
+  (app id + redirect URI).
+- **Windows / Linux** — Microsoft only (browser-based PKCE via
+  `flutter_web_auth_2`).
+
 ### Tests
 
 ```bash

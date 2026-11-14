@@ -66,5 +66,58 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<!-- Social sign-in URL schemes (fill in the values for this app; no secrets
+	     belong here, only public client ids). The app id / client id values are
+	     provided at build time via `dart-define` (see README), but the URL
+	     schemes and the Facebook app id below must be declared here.
+
+	     Google (CFBundleURLTypes): the reversed iOS client id
+	     (`GOOGLE_IOS_CLIENT_ID`) is configured as a URL scheme, e.g. a client id
+	     ending in `.apps.googleusercontent.com` becomes the scheme
+	     `com.googleusercontent.apps.<reversed-client-id>`. Add the resulting
+	     entry to the CFBundleURLTypes array, for example:
+
+	     <key>CFBundleURLTypes</key>
+	     <array>
+	       <dict>
+	         <key>CFBundleTypeRole</key>
+	         <string>Editor</string>
+	         <key>CFBundleURLSchemes</key>
+	         <array>
+	           <string>com.googleusercontent.apps.REVERSED_GOOGLE_IOS_CLIENT_ID</string>
+	         </array>
+	       </dict>
+	     </array>
+
+	     Facebook: requires the app id, a display name and the `fb<APP_ID>`
+	     scheme. Fill in the real values:
+
+	     <key>FacebookAppID</key>
+	     <string>FACEBOOK_APP_ID</string>
+	     <key>FacebookDisplayName</key>
+	     <string>Gewerber</string>
+	     <key>CFBundleURLTypes</key>
+	     <array>
+	       <dict>
+	         <key>CFBundleURLSchemes</key>
+	         <array>
+	           <string>fbFACEBOOK_APP_ID</string>
+	         </array>
+	       </dict>
+	     </array>
+	     <key>LSApplicationQueriesSchemes</key>
+	     <array>
+	       <string>fbapi</string>
+	       <string>fbapi20130214</string>
+	       <string>fbapi20130410</string>
+	       <string>fbapi20140410</string>
+	       <string>fbapi20160328</string>
+	       <string>fbauth</string>
+	       <string>fbauth2</string>
+	     </array>
+
+	     Sign in with Apple needs no URL scheme in Info.plist; it only requires
+	     the "Sign in with Apple" capability (Runner.entitlements, added by the
+	     operator in Xcode: Signing & Capabilities). -->
 </dict>
 </plist>
