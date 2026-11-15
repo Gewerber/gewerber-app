@@ -35,11 +35,11 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          # Flutter 3.47.3 = Dart 3.13.3 (workspace SDK constraint).
+          # Flutter 3.50.0 = Dart 3.14.0 (workspace SDK constraint).
           # 3.44.x pinned intl 0.20.2 via flutter_localizations, which
           # conflicted with intl ^0.20.3 required since #24 (visual
           # hierarchy) — kept above that line.
-          flutter-version: 3.47.3
+          flutter-version: 3.50.0
           cache: true
 
       # Pairing: every build pins the whole inter-repo chain to its target
