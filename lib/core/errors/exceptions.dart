@@ -99,3 +99,8 @@ final class SocialAuthNotConfiguredException extends AppException {
 final class SocialAuthFailureException extends AppException {
   const SocialAuthFailureException([super.message = 'Social sign-in failed']);
 }
+
+/// Thrown when the user cancels the social identity provider's sign-in UI.
+final class SocialAuthCancelledException extends AppException {
+  const SocialAuthCancelledException() : super('Social sign-in was cancelled');
+}

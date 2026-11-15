@@ -5,6 +5,8 @@ import 'package:gewerber_app/core/errors/exceptions.dart';
 import 'package:gewerber_app/domain/entities/my_identity.dart';
 import 'package:gewerber_app/domain/entities/user_profile.dart';
 import 'package:gewerber_app/domain/repositories/user_profile_repository.dart';
+import 'package:gewerber_app/domain/value_objects/social_auth_provider.dart';
+import 'package:gewerber_app/infrastructure/repositories/mock_auth_repository.dart';
 
 /// In-memory [UserProfileRepository] backing the demo experience and the
 /// widget tests. Data lives for the app session only.
@@ -31,7 +33,12 @@ class MockUserProfileRepository implements UserProfileRepository {
   @override
   Future<MyIdentity> me() async {
     if (_deleted) throw const AccountDeletedException();
-    return const MyIdentity(userId: 'mock-user', memberships: []);
+    return MyIdentity(
+      userId: 'mock-user',
+      memberships: const [],
+      primaryEmail: MockAuthRepository.demoEmail,
+      connectedProviders: const [SocialAuthProvider.google],
+    );
   }
 
   @override

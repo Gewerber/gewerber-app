@@ -22,6 +22,21 @@ abstract final class FlavorValues {
   /// Facebook OAuth app id of the active flavor.
   static String get facebookAppId => string('facebookAppId', '');
 
+  /// Google OAuth client id of the active flavor (iOS/macOS).
+  static String get googleIosClientId => string('googleIosClientId', '');
+
+  /// Apple redirect URI of the active flavor.
+  static String get appleRedirectUri => string('appleRedirectUri', '');
+
+  /// Microsoft (Entra ID) application (client) id of the active flavor.
+  static String get microsoftClientId => string('microsoftClientId', '');
+
+  /// Microsoft (Entra ID) tenant of the active flavor.
+  static String get microsoftTenant => string('microsoftTenant', '');
+
+  /// Explicit OAuth redirect URI of the active flavor (empty = derive).
+  static String get authRedirectUri => string('authRedirectUri', '');
+
   /// Connection timeout for backend calls, in milliseconds.
   static int get connectTimeoutMs => integer('connectTimeoutMs', 10 * 1000);
 

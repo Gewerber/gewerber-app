@@ -77,7 +77,11 @@ class ServerpodAuthRepository implements AuthRepository {
         registrationToken: registrationToken,
         password: password.value,
       );
-      final user = _userMapper.fromAuthSuccess(success, '');
+      // The user just registered with an email address; the backend is the
+      // authority on the stored address, so ask for it instead of echoing the
+      // local input (which may differ in case or trimming).
+      final email = await _dataSource.resolvePrimaryEmail();
+      final user = _userMapper.fromAuthSuccess(success, email ?? '');
       await _sessionStore.writeUser(user);
       return user;
     });
@@ -120,23 +124,48 @@ class ServerpodAuthRepository implements AuthRepository {
   @override
   Future<User> socialLogin(SocialAuthProvider provider) {
     return _guard(() async {
-      final _ = await _socialDataSource.signIn(provider);
-      // The server exchange is added once the provider SDK returns a
-      // credential; until then signIn throws SocialAuthNotConfiguredException.
-      throw const SocialAuthNotConfiguredException();
+      final credential = await _socialDataSource.signIn(provider);
+      final result = await _dataSource.socialLogin(credential);
+      final user = _userMapper.fromSocialAuth(
+        authSuccess: result.success,
+        primaryEmail: result.primaryEmail,
+      );
+      await _sessionStore.writeUser(user);
+      return user;
     });
   }
 
   @override
   Future<User?> restoreSession() async {
     try {
+      // A session restore must not fail because the profile read does: the
+      // session manager already holds a valid session at this point.
+      final email = await _dataSource.resolvePrimaryEmail();
       final success = await _dataSource.restoreSession();
       if (success == null) {
         await _sessionStore.clear();
         return null;
       }
       final stored = await _sessionStore.readUser();
-      final user = stored ?? _userMapper.fromAuthSuccess(success, '');
+      if (stored != null) {
+        if (stored.email.isNotEmpty || email == null || email.isEmpty) {
+          // A stored address wins; an unknown address never replaces one.
+          return stored;
+        }
+        // The stored snapshot has no address: a previous sign-in resolved the
+        // session while `userProfile.me()` was failing, so the empty address
+        // was persisted. Repair it with the address we just read.
+        final repaired = User(
+          id: stored.id,
+          email: email,
+          displayName: stored.displayName,
+        );
+        await _sessionStore.writeUser(repaired);
+        return repaired;
+      }
+      // No local snapshot (fresh install or cleared storage): the address has
+      // to come from the backend, it is not part of the session token.
+      final user = _userMapper.fromAuthSuccess(success, email ?? '');
       await _sessionStore.writeUser(user);
       return user;
     } on AppException {

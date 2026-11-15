@@ -16,12 +16,17 @@ class _FakeAuthRepository implements AuthRepository {
     this.restoredUser,
     this.failLogin = false,
     this.failSocial = false,
+    this.socialException,
     this.failLogOut = false,
   });
 
   final User? restoredUser;
   final bool failLogin;
   final bool failSocial;
+
+  /// When set, [socialLogin] throws it instead of the default not-configured
+  /// exception.
+  final AppException? socialException;
   final bool failLogOut;
 
   @override
@@ -67,6 +72,8 @@ class _FakeAuthRepository implements AuthRepository {
 
   @override
   Future<User> socialLogin(SocialAuthProvider provider) async {
+    final exception = socialException;
+    if (exception != null) throw exception;
     if (failSocial) throw const SocialAuthNotConfiguredException();
     return User(id: '1', email: 'test@gewerber.de');
   }
@@ -163,6 +170,44 @@ void main() {
 
     expect(cubit.state.status, AuthStatus.authenticated);
     expect(cubit.state.isSubmitting, isFalse);
+  });
+
+  test('socialLogin succeeds for every provider', () async {
+    for (final provider in SocialAuthProvider.values) {
+      final cubit = AuthCubit(_FakeAuthRepository());
+
+      await cubit.socialLogin(provider);
+
+      expect(cubit.state.status, AuthStatus.authenticated);
+      expect(cubit.state.submittingProvider, isNull);
+      expect(cubit.state.failure, isNull);
+    }
+  });
+
+  test('socialLogin maps the Microsoft provider like the others', () async {
+    final cubit = AuthCubit(_FakeAuthRepository());
+
+    await cubit.socialLogin(SocialAuthProvider.microsoft);
+
+    expect(cubit.state.isAuthenticated, isTrue);
+    expect(cubit.state.isSubmitting, isFalse);
+  });
+
+  test('a cancelled social sign-in is silent and stays anonymous', () async {
+    final cubit = AuthCubit(
+      _FakeAuthRepository(
+        socialException: const SocialAuthCancelledException(),
+      ),
+    );
+    // The auth screens are only reachable after a session lookup.
+    await cubit.restoreSession();
+
+    await cubit.socialLogin(SocialAuthProvider.google);
+
+    expect(cubit.state.status, AuthStatus.unauthenticated);
+    expect(cubit.state.failure, isNull);
+    expect(cubit.state.isSubmitting, isFalse);
+    expect(cubit.state.submittingProvider, isNull);
   });
 
   test('socialLogin failure is mapped to a failure', () async {
