@@ -95,6 +95,15 @@ class AppleSocialAuthFlow implements SocialAuthFlow {
         throw const SocialAuthCancelledException();
       }
       throw SocialAuthFailureException(error.message);
+    } on SignInWithAppleCredentialsException catch (error) {
+      // The web implementation of `sign_in_with_apple` wraps *every* JavaScript
+      // SDK failure in this exception type — including the two ways a user
+      // backs out — so the original Apple error code has to be recovered from
+      // the message ("Authentication failed with <code>").
+      if (_isCancellationMessage(error.message)) {
+        throw const SocialAuthCancelledException();
+      }
+      throw SocialAuthFailureException(error.message);
     } on SignInWithAppleNotSupportedException catch (error) {
       throw SocialAuthFailureException(error.message);
     } on AppException {
@@ -115,6 +124,26 @@ class AppleSocialAuthFlow implements SocialAuthFlow {
       lastName: result.familyName,
     );
   }
+}
+
+/// Apple error codes that mean "the user walked away", not a failure.
+///
+/// `popup_closed_by_user` and `user_canceled` are the codes the Apple
+/// JavaScript SDK reports when the popup is dismissed or the user declines.
+const Set<String> _appleCancellationCodes = {
+  'popup_closed_by_user',
+  'user_canceled',
+};
+
+/// Whether an `Authentication failed with <code>` message from
+/// `sign_in_with_apple_web` carries one of [_appleCancellationCodes].
+bool _isCancellationMessage(String message) {
+  for (final code in _appleCancellationCodes) {
+    if (message.contains(code)) {
+      return true;
+    }
+  }
+  return false;
 }
 
 class _SignInWithAppleOperationsImpl implements AppleSignInOperations {

@@ -1,10 +1,13 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:gewerber_app/core/config/social_provider_availability.dart';
 import 'package:gewerber_app/core/errors/exceptions.dart';
 import 'package:gewerber_app/domain/value_objects/social_auth_provider.dart';
+import 'package:gewerber_app/infrastructure/datasources/remote/social/pkce.dart';
 import 'package:gewerber_app/infrastructure/datasources/remote/social/social_auth_flow.dart';
+import 'package:gewerber_app/infrastructure/datasources/remote/social/web_authentication_operations.dart';
 
 /// Result of a Google sign-in, reduced to the fields the app needs.
 class GoogleSignInResult {
@@ -14,35 +17,47 @@ class GoogleSignInResult {
   final String? accessToken;
 }
 
-/// The subset of `google_sign_in` used by [GoogleSocialAuthFlow].
+/// The subset of `google_sign_in` used by the native branch of
+/// [GoogleSocialAuthFlow].
 ///
-/// Injected so tests can drive the flow without a platform channel.
+/// Injected so tests can drive the flow without a platform channel. Only ever
+/// used off the web: `google_sign_in_web` does not implement `authenticate()`.
 abstract interface class GoogleSignInOperations {
   Future<void> initialize({String? clientId, String? serverClientId});
 
   Future<GoogleSignInResult> authenticate();
 }
 
-/// Google sign-in through `google_sign_in` 7.
+/// Google sign-in.
 ///
-/// The ID token is exchanged server-side by `client.googleIdp.login`, so the
-/// backend needs the *server* client id (`googleClientId`) as the token
-/// audience. On iOS/macOS the SDK additionally needs the platform client id
-/// (`googleIosClientId`); on Android the server client id is enough; on web
-/// the SDK only accepts the web client id.
+/// Two transports, picked by platform:
 ///
-/// Phase-1 limitation: `google_sign_in` 7 does not implement `authenticate()` on
-/// the web (it requires the rendered GIS button), and no hand-rolled desktop
-/// PKCE flow is provided for Windows/Linux. Those platforms therefore fail with
-/// [SocialAuthFailureException] instead of silently pretending to work.
+/// * **Web** — the OAuth 2.0 authorization-code flow with PKCE against
+///   `accounts.google.com`, opened by `flutter_web_auth_2`. `google_sign_in`'s
+///   `authenticate()` is not implemented on the web (it needs the rendered GIS
+///   button), so the web build runs the redirect flow itself and hands the
+///   authorization code to the backend, which exchanges it for tokens
+///   (`client.googleIdp.loginWithCode`).
+/// * **Native (Android, iOS, macOS)** — `google_sign_in`, whose ID token is
+///   validated by the backend (`client.googleIdp.login`).
+///
+/// Both branches need the *web/server* client id (`GOOGLE_CLIENT_ID`): it is
+/// the ID-token audience the backend validates and the OAuth client for the web
+/// code exchange. iOS/macOS additionally need the platform client id
+/// (`GOOGLE_IOS_CLIENT_ID`) because the native SDK signs in with it. Windows and
+/// Linux have no Google flow at all (see [SocialProviderAvailability]) and
+/// therefore need neither.
 class GoogleSocialAuthFlow implements SocialAuthFlow {
   GoogleSocialAuthFlow({
     required this.clientId,
     required this.iosClientId,
+    this.redirectUri = '',
     GoogleSignInOperations? operations,
+    WebAuthenticationOperations? webOperations,
     bool? isWeb,
     TargetPlatform? platform,
   }) : _operations = operations ?? _GoogleSignInOperationsImpl(),
+       _webOperations = webOperations ?? const FlutterWebAuth2Operations(),
        _isWeb = isWeb ?? kIsWeb,
        _platform = platform ?? defaultTargetPlatform;
 
@@ -52,9 +67,22 @@ class GoogleSocialAuthFlow implements SocialAuthFlow {
   /// The iOS/macOS OAuth client id (`--dart-define=GOOGLE_IOS_CLIENT_ID`).
   final String iosClientId;
 
+  /// Same-origin callback page of the web build
+  /// (`--dart-define=AUTH_REDIRECT_URI`, defaults to
+  /// `Uri.base.origin + '/auth.html'` on the web). Unused on native.
+  final String redirectUri;
+
   final GoogleSignInOperations _operations;
+  final WebAuthenticationOperations _webOperations;
   final bool _isWeb;
   final TargetPlatform _platform;
+
+  static const String _authorizeOrigin = 'accounts.google.com';
+  static const String _authorizePath = '/o/oauth2/v2/auth';
+  static const String _scope = 'openid email profile';
+
+  bool get _isApplePlatform =>
+      _platform == TargetPlatform.iOS || _platform == TargetPlatform.macOS;
 
   @override
   bool get isConfigured {
@@ -65,29 +93,105 @@ class GoogleSocialAuthFlow implements SocialAuthFlow {
     )) {
       return false;
     }
-    if (_isWeb || _isApplePlatform) {
-      // Web needs the web client id; iOS/macOS additionally need the platform
-      // client id because the SDK signs in with it.
-      return clientId.isNotEmpty &&
-          (!_isApplePlatform || iosClientId.isNotEmpty);
+    if (clientId.isEmpty) {
+      return false;
     }
-    return clientId.isNotEmpty;
+    if (_isWeb) {
+      // The web flow needs the same-origin callback page.
+      return redirectUri.isNotEmpty;
+    }
+    // iOS/macOS additionally need the platform client id because the SDK
+    // signs in with it; Android only needs the server client id.
+    return !_isApplePlatform || iosClientId.isNotEmpty;
   }
-
-  bool get _isApplePlatform =>
-      _platform == TargetPlatform.iOS || _platform == TargetPlatform.macOS;
 
   @override
   Future<SocialCredential> authenticate() async {
     if (!isConfigured) {
       throw const SocialAuthNotConfiguredException();
     }
+    return _isWeb ? _authenticateOnWeb() : _authenticateOnNative();
+  }
+
+  /// OAuth 2.0 authorization-code flow with PKCE, driven by
+  /// `flutter_web_auth_2`.
+  ///
+  /// The backend performs the code-for-token exchange (it holds the client
+  /// secret), so only the code, its verifier and the redirect URI travel back.
+  Future<SocialCredential> _authenticateOnWeb() async {
+    final codeVerifier = Pkce.generateCodeVerifier();
+    final state = Pkce.generateState();
+    final redirect = Uri.parse(redirectUri);
+
+    final authorizeUrl = Uri.https(_authorizeOrigin, _authorizePath, {
+      'client_id': clientId,
+      'response_type': 'code',
+      'redirect_uri': redirectUri,
+      'response_mode': 'query',
+      'scope': _scope,
+      'code_challenge': Pkce.codeChallengeS256(codeVerifier),
+      'code_challenge_method': 'S256',
+      'state': state,
+      'access_type': 'offline',
+    }).toString();
+
+    final String callbackUrl;
     try {
-      if (_isWeb) {
-        // google_sign_in_web rejects `serverClientId` and requires the web
-        // client id as `clientId`.
-        await _operations.initialize(clientId: clientId);
-      } else if (_isApplePlatform) {
+      callbackUrl = await _webOperations.authenticate(
+        url: authorizeUrl,
+        // `flutter_web_auth_2` matches the callback by origin on the web; the
+        // scheme/host pair is what the native https redirect would need.
+        callbackUrlScheme: 'https',
+        httpsHost: redirect.host,
+        httpsPath: redirect.path,
+      );
+    } on PlatformException catch (error) {
+      if (error.code == 'CANCELED') {
+        throw const SocialAuthCancelledException();
+      }
+      throw SocialAuthFailureException(
+        error.message ?? 'Google sign-in failed',
+      );
+    } on AppException {
+      rethrow;
+    }
+
+    final callback = Uri.parse(callbackUrl);
+    final error = callback.queryParameters['error'];
+    if (error != null) {
+      // Google answers `access_denied` when the user declines consent.
+      if (error == 'access_denied') {
+        throw const SocialAuthCancelledException();
+      }
+      throw SocialAuthFailureException(
+        callback.queryParameters['error_description'] ?? error,
+      );
+    }
+
+    // CSRF protection: the state we sent must come back unchanged.
+    if (callback.queryParameters['state'] != state) {
+      throw const SocialAuthFailureException(
+        'Google sign-in returned an unexpected state',
+      );
+    }
+
+    final code = callback.queryParameters['code'];
+    if (code == null || code.isEmpty) {
+      throw const SocialAuthFailureException(
+        'Google sign-in did not return an authorization code',
+      );
+    }
+
+    return GoogleCodeCredential(
+      code: code,
+      codeVerifier: codeVerifier,
+      redirectUri: redirectUri,
+    );
+  }
+
+  Future<SocialCredential> _authenticateOnNative() async {
+    try {
+      if (_isApplePlatform) {
         await _operations.initialize(
           clientId: iosClientId,
           serverClientId: clientId,
@@ -114,12 +218,6 @@ class GoogleSocialAuthFlow implements SocialAuthFlow {
       }
       throw SocialAuthFailureException(
         error.description ?? 'Google sign-in failed',
-      );
-    } on UnimplementedError catch (error) {
-      // `authenticate()` is not implemented on web (GIS button required).
-      throw SocialAuthFailureException(
-        'Google sign-in is not supported on this platform: '
-        '${error.message ?? 'unimplemented'}',
       );
     }
   }

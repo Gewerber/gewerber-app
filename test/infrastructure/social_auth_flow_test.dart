@@ -9,7 +9,9 @@ import 'package:gewerber_app/infrastructure/datasources/remote/social/apple_soci
 import 'package:gewerber_app/infrastructure/datasources/remote/social/facebook_social_auth_flow.dart';
 import 'package:gewerber_app/infrastructure/datasources/remote/social/google_social_auth_flow.dart';
 import 'package:gewerber_app/infrastructure/datasources/remote/social/microsoft_social_auth_flow.dart';
+import 'package:gewerber_app/infrastructure/datasources/remote/social/pkce.dart';
 import 'package:gewerber_app/infrastructure/datasources/remote/social/social_auth_flow.dart';
+import 'package:gewerber_app/infrastructure/datasources/remote/social/web_authentication_operations.dart';
 
 void main() {
   group('GoogleSocialAuthFlow', () {
@@ -59,6 +61,7 @@ void main() {
       await GoogleSocialAuthFlow(
         clientId: 'web-client',
         iosClientId: 'ios-client',
+        redirectUri: 'https://app.gewerber.de/auth.html',
         operations: ios,
         isWeb: false,
         platform: TargetPlatform.iOS,
@@ -72,12 +75,13 @@ void main() {
       await GoogleSocialAuthFlow(
         clientId: 'web-client',
         iosClientId: 'ios-client',
+        redirectUri: 'https://app.gewerber.de/auth.html',
         operations: web,
-        isWeb: true,
+        isWeb: false,
         platform: TargetPlatform.android,
       ).authenticate();
-      expect(web.initializeClientId, 'web-client');
-      expect(web.initializeServerClientId, isNull);
+      expect(web.initializeClientId, isNull);
+      expect(web.initializeServerClientId, 'web-client');
     });
 
     test('is not configured when the client id is missing', () {
@@ -87,7 +91,7 @@ void main() {
         operations: _FakeGoogleOperations(
           result: const GoogleSignInResult(idToken: 'id'),
         ),
-        isWeb: true,
+        isWeb: false,
         platform: TargetPlatform.android,
       );
 
@@ -98,6 +102,7 @@ void main() {
       final flow = GoogleSocialAuthFlow(
         clientId: 'web-client',
         iosClientId: 'ios-client',
+        redirectUri: 'https://app.gewerber.de/auth.html',
         operations: _FakeGoogleOperations(
           result: const GoogleSignInResult(idToken: 'id'),
         ),
@@ -112,12 +117,13 @@ void main() {
       final flow = GoogleSocialAuthFlow(
         clientId: 'web-client',
         iosClientId: 'ios-client',
+        redirectUri: 'https://app.gewerber.de/auth.html',
         operations: _FakeGoogleOperations(
           error: const GoogleSignInException(
             code: GoogleSignInExceptionCode.canceled,
           ),
         ),
-        isWeb: true,
+        isWeb: false,
         platform: TargetPlatform.android,
       );
 
@@ -131,13 +137,14 @@ void main() {
       final flow = GoogleSocialAuthFlow(
         clientId: 'web-client',
         iosClientId: 'ios-client',
+        redirectUri: 'https://app.gewerber.de/auth.html',
         operations: _FakeGoogleOperations(
           error: const GoogleSignInException(
             code: GoogleSignInExceptionCode.unknownError,
             description: 'boom',
           ),
         ),
-        isWeb: true,
+        isWeb: false,
         platform: TargetPlatform.android,
       );
 
@@ -157,10 +164,11 @@ void main() {
       final flow = GoogleSocialAuthFlow(
         clientId: 'web-client',
         iosClientId: 'ios-client',
+        redirectUri: 'https://app.gewerber.de/auth.html',
         operations: _FakeGoogleOperations(
           result: const GoogleSignInResult(idToken: ''),
         ),
-        isWeb: true,
+        isWeb: false,
         platform: TargetPlatform.android,
       );
 
@@ -174,6 +182,7 @@ void main() {
       final flow = GoogleSocialAuthFlow(
         clientId: 'web-client',
         iosClientId: 'ios-client',
+        redirectUri: 'https://app.gewerber.de/auth.html',
         operations: _FakeGoogleOperations(
           result: const GoogleSignInResult(idToken: 'id'),
         ),
@@ -184,6 +193,207 @@ void main() {
       await expectLater(
         flow.authenticate(),
         throwsA(isA<SocialAuthNotConfiguredException>()),
+      );
+    });
+  });
+
+  group('GoogleSocialAuthFlow (web PKCE)', () {
+    test('builds the authorize URL and maps the code', () async {
+      final operations = _FakeWebAuthOperations(
+        callbackUrl: 'https://app.gewerber.de/auth.html',
+      );
+      final flow = GoogleSocialAuthFlow(
+        clientId: 'web-client',
+        iosClientId: 'ios-client',
+        redirectUri: 'https://app.gewerber.de/auth.html',
+        operations: _FakeGoogleOperations(
+          result: const GoogleSignInResult(idToken: 'unused'),
+        ),
+        webOperations: operations,
+        isWeb: true,
+        platform: TargetPlatform.android,
+      );
+
+      final credential = await flow.authenticate();
+
+      expect(credential, isA<GoogleCodeCredential>());
+      final google = credential as GoogleCodeCredential;
+      expect(google.code, 'auth-code');
+      expect(google.redirectUri, 'https://app.gewerber.de/auth.html');
+      expect(google.codeVerifier, isNotEmpty);
+
+      final authorize = Uri.parse(operations.lastUrl!);
+      expect(authorize.host, 'accounts.google.com');
+      expect(authorize.path, '/o/oauth2/v2/auth');
+      final query = authorize.queryParameters;
+      expect(query['client_id'], 'web-client');
+      expect(query['response_type'], 'code');
+      expect(query['response_mode'], 'query');
+      expect(query['scope'], 'openid email profile');
+      expect(query['redirect_uri'], 'https://app.gewerber.de/auth.html');
+      expect(query['access_type'], 'offline');
+      expect(query['code_challenge_method'], 'S256');
+      expect(
+        query['code_challenge'],
+        Pkce.codeChallengeS256(google.codeVerifier),
+      );
+      expect(query['state'], isNotEmpty);
+      expect(operations.lastHttpsHost, 'app.gewerber.de');
+      expect(operations.lastHttpsPath, '/auth.html');
+    });
+
+    test('never touches the native SDK on the web', () async {
+      final sdk = _FakeGoogleOperations(
+        result: const GoogleSignInResult(idToken: 'unused'),
+      );
+
+      await GoogleSocialAuthFlow(
+        clientId: 'web-client',
+        iosClientId: 'ios-client',
+        redirectUri: 'https://app.gewerber.de/auth.html',
+        operations: sdk,
+        webOperations: _FakeWebAuthOperations(
+          callbackUrl: 'https://app.gewerber.de/auth.html',
+        ),
+        isWeb: true,
+        platform: TargetPlatform.android,
+      ).authenticate();
+
+      expect(sdk.initializeClientId, isNull);
+      expect(sdk.initializeServerClientId, isNull);
+    });
+
+    test('rejects a state mismatch', () async {
+      final flow = GoogleSocialAuthFlow(
+        clientId: 'web-client',
+        iosClientId: 'ios-client',
+        redirectUri: 'https://app.gewerber.de/auth.html',
+        operations: _FakeGoogleOperations(
+          result: const GoogleSignInResult(idToken: 'unused'),
+        ),
+        webOperations: _FakeWebAuthOperations(
+          callbackUrl:
+              'https://app.gewerber.de/auth.html'
+              '?code=auth-code&state=not-the-state',
+        ),
+        isWeb: true,
+        platform: TargetPlatform.android,
+      );
+
+      await expectLater(
+        flow.authenticate(),
+        throwsA(
+          isA<SocialAuthFailureException>().having(
+            (e) => e.message,
+            'message',
+            contains('unexpected state'),
+          ),
+        ),
+      );
+    });
+
+    test('maps access_denied to SocialAuthCancelledException', () async {
+      final flow = GoogleSocialAuthFlow(
+        clientId: 'web-client',
+        iosClientId: 'ios-client',
+        redirectUri: 'https://app.gewerber.de/auth.html',
+        operations: _FakeGoogleOperations(
+          result: const GoogleSignInResult(idToken: 'unused'),
+        ),
+        webOperations: _FakeWebAuthOperations(
+          callbackUrl:
+              'https://app.gewerber.de/auth.html'
+              '?error=access_denied',
+        ),
+        isWeb: true,
+        platform: TargetPlatform.android,
+      );
+
+      await expectLater(
+        flow.authenticate(),
+        throwsA(isA<SocialAuthCancelledException>()),
+      );
+    });
+
+    test('maps a closed popup to SocialAuthCancelledException', () async {
+      final flow = GoogleSocialAuthFlow(
+        clientId: 'web-client',
+        iosClientId: 'ios-client',
+        redirectUri: 'https://app.gewerber.de/auth.html',
+        operations: _FakeGoogleOperations(
+          result: const GoogleSignInResult(idToken: 'unused'),
+        ),
+        webOperations: _FakeWebAuthOperations(
+          error: PlatformException(code: 'CANCELED', message: 'canceled'),
+        ),
+        isWeb: true,
+        platform: TargetPlatform.android,
+      );
+
+      await expectLater(
+        flow.authenticate(),
+        throwsA(isA<SocialAuthCancelledException>()),
+      );
+    });
+
+    test('maps other provider errors to SocialAuthFailureException', () async {
+      final flow = GoogleSocialAuthFlow(
+        clientId: 'web-client',
+        iosClientId: 'ios-client',
+        redirectUri: 'https://app.gewerber.de/auth.html',
+        operations: _FakeGoogleOperations(
+          result: const GoogleSignInResult(idToken: 'unused'),
+        ),
+        webOperations: _FakeWebAuthOperations(
+          callbackUrl:
+              'https://app.gewerber.de/auth.html'
+              '?error=invalid_request&error_description=nope',
+        ),
+        isWeb: true,
+        platform: TargetPlatform.android,
+      );
+
+      await expectLater(
+        flow.authenticate(),
+        throwsA(
+          isA<SocialAuthFailureException>().having(
+            (e) => e.message,
+            'message',
+            'nope',
+          ),
+        ),
+      );
+    });
+
+    test('is not configured without a redirect uri', () {
+      expect(
+        GoogleSocialAuthFlow(
+          clientId: 'web-client',
+          iosClientId: 'ios-client',
+          redirectUri: '',
+          operations: _FakeGoogleOperations(
+            result: const GoogleSignInResult(idToken: 'id'),
+          ),
+          isWeb: true,
+          platform: TargetPlatform.android,
+        ).isConfigured,
+        isFalse,
+      );
+    });
+
+    test('is not configured without a web client id', () {
+      expect(
+        GoogleSocialAuthFlow(
+          clientId: '',
+          iosClientId: 'ios-client',
+          redirectUri: 'https://app.gewerber.de/auth.html',
+          operations: _FakeGoogleOperations(
+            result: const GoogleSignInResult(idToken: 'id'),
+          ),
+          isWeb: true,
+          platform: TargetPlatform.android,
+        ).isConfigured,
+        isFalse,
       );
     });
   });
@@ -249,6 +459,53 @@ void main() {
       ).authenticate();
       expect(native.receivedWebOptions, isNull);
     });
+
+    test('rejects a callback without an authorization code', () async {
+      final flow = MicrosoftSocialAuthFlow(
+        clientId: 'ms-client',
+        redirectUri: 'https://app.gewerber.de/auth/callback',
+        operations: _NoCodeWebAuthOperations(),
+        isWeb: true,
+      );
+
+      await expectLater(
+        flow.authenticate(),
+        throwsA(
+          isA<SocialAuthFailureException>().having(
+            (e) => e.message,
+            'message',
+            contains('authorization code'),
+          ),
+        ),
+      );
+    });
+
+    test(
+      'maps a non-access_denied error to SocialAuthFailureException',
+      () async {
+        final flow = MicrosoftSocialAuthFlow(
+          clientId: 'ms-client',
+          redirectUri: 'https://app.gewerber.de/auth/callback',
+          operations: _FakeWebAuthOperations(
+            callbackUrl:
+                'https://app.gewerber.de/auth/callback'
+                '?error=invalid_request&error_description=bad+request',
+          ),
+          isWeb: true,
+        );
+
+        await expectLater(
+          flow.authenticate(),
+          throwsA(
+            isA<SocialAuthFailureException>().having(
+              (e) => e.message,
+              'message',
+              contains('bad request'),
+            ),
+          ),
+        );
+      },
+    );
 
     test('is not configured without a client id or redirect uri', () {
       expect(
@@ -330,6 +587,75 @@ void main() {
       );
     });
 
+    test('maps a closed popup (web) to SocialAuthCancelledException', () async {
+      final flow = AppleSocialAuthFlow(
+        clientId: 'service-id',
+        redirectUri: 'https://app.gewerber.de/auth.html',
+        operations: _FakeAppleOperations(
+          error: const SignInWithAppleCredentialsException(
+            message: 'Authentication failed with popup_closed_by_user',
+          ),
+        ),
+        isWeb: true,
+        platform: TargetPlatform.android,
+      );
+
+      await expectLater(
+        flow.authenticate(),
+        throwsA(isA<SocialAuthCancelledException>()),
+      );
+    });
+
+    test(
+      'maps a web user cancellation to SocialAuthCancelledException',
+      () async {
+        final flow = AppleSocialAuthFlow(
+          clientId: 'service-id',
+          redirectUri: 'https://app.gewerber.de/auth.html',
+          operations: _FakeAppleOperations(
+            error: const SignInWithAppleCredentialsException(
+              message: 'Authentication failed with user_canceled',
+            ),
+          ),
+          isWeb: true,
+          platform: TargetPlatform.android,
+        );
+
+        await expectLater(
+          flow.authenticate(),
+          throwsA(isA<SocialAuthCancelledException>()),
+        );
+      },
+    );
+
+    test(
+      'maps other web credential errors to SocialAuthFailureException',
+      () async {
+        final flow = AppleSocialAuthFlow(
+          clientId: 'service-id',
+          redirectUri: 'https://app.gewerber.de/auth.html',
+          operations: _FakeAppleOperations(
+            error: const SignInWithAppleCredentialsException(
+              message: 'Authentication failed with invalid_client',
+            ),
+          ),
+          isWeb: true,
+          platform: TargetPlatform.android,
+        );
+
+        await expectLater(
+          flow.authenticate(),
+          throwsA(
+            isA<SocialAuthFailureException>().having(
+              (e) => e.message,
+              'message',
+              contains('invalid_client'),
+            ),
+          ),
+        );
+      },
+    );
+
     test('rejects a missing identity token', () async {
       final flow = AppleSocialAuthFlow(
         clientId: 'service-id',
@@ -369,7 +695,23 @@ void main() {
       expect((credential as FacebookCredential).accessToken, 'fb-token');
       expect(operations.initializeCalls, 1);
       expect(operations.lastInitializedAppId, 'fb-app-id');
-      expect(operations.lastInitializedVersion, 'v21.0');
+      expect(operations.lastInitializedVersion, 'v27.0');
+    });
+
+    test('requests an enabled (classic) login token', () async {
+      final operations = _FakeFacebookOperations(
+        result: _loginResult(LoginStatus.success, 'fb-token'),
+      );
+      await FacebookSocialAuthFlow(
+        appId: 'fb-app-id',
+        operations: operations,
+        isWeb: false,
+        platform: TargetPlatform.android,
+      ).authenticate();
+
+      // The backend verifies the token with `/debug_token` using
+      // `app_id|app_secret`, which only accepts `enabled` logins.
+      expect(operations.lastLoginTracking, LoginTracking.enabled);
     });
 
     test('skips the web initialisation on mobile', () async {
@@ -674,6 +1016,7 @@ class _FakeFacebookOperations implements FacebookAuthOperations {
   String? lastInitializedAppId;
   String? lastInitializedVersion;
   bool? lastLoginWasWeb;
+  LoginTracking? lastLoginTracking;
 
   @override
   Future<void> webAndDesktopInitialize({
@@ -688,8 +1031,12 @@ class _FakeFacebookOperations implements FacebookAuthOperations {
   }
 
   @override
-  Future<LoginResult> login({required bool isWeb}) async {
+  Future<LoginResult> login({
+    required bool isWeb,
+    required LoginTracking tracking,
+  }) async {
     lastLoginWasWeb = isWeb;
+    lastLoginTracking = tracking;
     return result;
   }
 }
@@ -739,6 +1086,21 @@ class _FakeWebAuthOperations implements WebAuthenticationOperations {
           },
         )
         .toString();
+  }
+}
+
+/// Web-auth fake whose callback carries a valid state but no authorization
+/// code.
+class _NoCodeWebAuthOperations implements WebAuthenticationOperations {
+  @override
+  Future<String> authenticate({
+    required String url,
+    required String callbackUrlScheme,
+    String? httpsHost,
+    String? httpsPath,
+  }) {
+    final state = Uri.parse(url).queryParameters['state'];
+    return Future.value('https://app.gewerber.de/auth/callback?state=$state');
   }
 }
 

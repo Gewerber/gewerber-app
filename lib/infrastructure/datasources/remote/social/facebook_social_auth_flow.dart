@@ -21,7 +21,10 @@ abstract interface class FacebookAuthOperations {
     required String version,
   });
 
-  Future<LoginResult> login({required bool isWeb});
+  Future<LoginResult> login({
+    required bool isWeb,
+    required LoginTracking tracking,
+  });
 }
 
 /// Facebook login through `flutter_facebook_auth`.
@@ -73,7 +76,10 @@ class FacebookSocialAuthFlow implements SocialAuthFlow {
           version: _webSdkVersion,
         );
       }
-      final result = await _operations.login(isWeb: _isWeb);
+      final result = await _operations.login(
+        isWeb: _isWeb,
+        tracking: LoginTracking.enabled,
+      );
       return _map(result);
     } on AppException {
       rethrow;
@@ -81,7 +87,10 @@ class FacebookSocialAuthFlow implements SocialAuthFlow {
   }
 
   /// Facebook Graph API version used by the web SDK.
-  static const String _webSdkVersion = 'v21.0';
+  ///
+  /// Pinned to a currently served version: Graph API v21.0 is scheduled for
+  /// removal on 2027-01-21.
+  static const String _webSdkVersion = 'v27.0';
 
   FacebookCredential _map(LoginResult result) {
     if (result.status == LoginStatus.cancelled) {
@@ -118,10 +127,17 @@ class _FacebookAuthOperationsImpl implements FacebookAuthOperations {
   }
 
   @override
-  Future<LoginResult> login({required bool isWeb}) async {
+  Future<LoginResult> login({
+    required bool isWeb,
+    required LoginTracking tracking,
+  }) async {
     try {
       return await FacebookAuth.instance.login(
         permissions: const ['email', 'public_profile'],
+        // `limited` (the SDK default) issues a token the backend cannot verify:
+        // it validates with `/debug_token` using `app_id|app_secret`, which
+        // only succeeds for `enabled` (classic) logins.
+        loginTracking: tracking,
       );
     } on PlatformException catch (error) {
       // The platform channel reports a user cancellation as CANCELLED

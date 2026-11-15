@@ -85,7 +85,6 @@
   "commonBack": "Назад",
   "commonLoading": "Загрузка",
   "commonOrContinueWith": "или войти через",
-  "commonComingSoon": "Скоро",
   "commonAdd": "Добавить",
   "commonCancel": "Отмена",
   "commonSave": "Сохранить",
@@ -94,6 +93,7 @@
   "commonFacebook": "Facebook",
   "commonMicrosoft": "Microsoft",
   "commonSocialUnavailable": "Эта функция входа недоступна.",
+"socialSignInFailed": "Не удалось выполнить вход. Попробуйте ещё раз.",
   "commonResendIn": "Отправить снова через {seconds} с",
 
   "betaBannerTitle": "Открытая бета",

@@ -13,8 +13,7 @@ import 'package:gewerber_app/infrastructure/datasources/remote/user_profile_remo
 ///
 /// Carries the session ([success]) together with the profile attribute the
 /// backend derives from the linked identity providers and that the session
-/// itself does not carry, so a single transport call is enough for the
-/// repository to map a complete user.
+/// itself does not carry, so the repository can map a complete user.
 class SocialSignInResult {
   const SocialSignInResult({required this.success, required this.primaryEmail});
 
@@ -22,7 +21,10 @@ class SocialSignInResult {
   final AuthSuccess success;
 
   /// Address the backend resolved for the caller, or `null` when no provider
-  /// supplied one (e.g. a phone-number-only account).
+  /// supplied one (e.g. a phone-number-only account) *or* when the profile read
+  /// failed. Callers must not read `null` as "this account has no address": a
+  /// transient `me()` failure yields `null` as well, and the repository keeps
+  /// the previously stored address in that case.
   final String? primaryEmail;
 }
 
@@ -84,10 +86,35 @@ class AuthRemoteDataSource {
       await _client.auth.updateSignedInUser(success);
     } on AuthUserBlockedException {
       throw const UserBlockedException();
+    } on GoogleIdTokenVerificationException {
+      // The backend could not verify the Google ID token (expired, wrong
+      // audience, replayed nonce, ...). A user-facing error, not a transport
+      // one.
+      throw const SocialAuthFailureException(
+        'Google could not verify the sign-in',
+      );
+    } on FacebookAccessTokenVerificationException {
+      throw const SocialAuthFailureException(
+        'Facebook could not verify the sign-in',
+      );
+    } on MicrosoftAccessTokenVerificationException {
+      throw const SocialAuthFailureException(
+        'Microsoft could not verify the sign-in',
+      );
     } on ServerpodClientException catch (e) {
-      // A disabled provider is not routed on the server: the endpoint is
-      // unknown, which the client reports as 404.
-      if (e is ServerpodClientHttpException && e.statusCode == 404) {
+      // A disabled provider answers 500, not 404: every IdP endpoint is
+      // registered unconditionally and the provider lookup inside it throws a
+      // StateError, which Serverpod turns into an internal server error. A 404
+      // is still mapped for older deployments that did not register the
+      // endpoint at all.
+      //
+      // The backend fix is to not register the endpoints of disabled providers
+      // (or to answer a dedicated serializable exception), which would let this
+      // be narrowed to the real condition. Until then a genuine 500 from a
+      // provider is indistinguishable from "provider disabled" and surfaces the
+      // "unavailable" snackbar.
+      if (e is ServerpodClientInternalServerError ||
+          e is ServerpodClientNotFound) {
         throw const SocialAuthNotConfiguredException();
       }
       throw const NetworkException();
@@ -118,6 +145,18 @@ class AuthRemoteDataSource {
     return switch (credential) {
       GoogleCredential(:final idToken, :final accessToken) =>
         _client.googleIdp.login(idToken: idToken, accessToken: accessToken),
+      // Web build: the backend exchanges the authorization code with the
+      // client secret it holds (`GoogleIdpConfigFromPasswords`).
+      GoogleCodeCredential(
+        :final code,
+        :final codeVerifier,
+        :final redirectUri,
+      ) =>
+        _client.googleIdp.loginWithCode(
+          code: code,
+          codeVerifier: codeVerifier,
+          redirectUri: redirectUri,
+        ),
       AppleCredential(
         :final identityToken,
         :final authorizationCode,

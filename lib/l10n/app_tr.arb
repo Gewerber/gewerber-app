@@ -85,7 +85,6 @@
   "commonBack": "Geri",
   "commonLoading": "Yükleniyor",
   "commonOrContinueWith": "veya şununla devam edin",
-  "commonComingSoon": "Yakında",
   "commonAdd": "Ekle",
   "commonCancel": "İptal",
   "commonSave": "Kaydet",
@@ -94,6 +93,7 @@
   "commonFacebook": "Facebook",
   "commonMicrosoft": "Microsoft",
   "commonSocialUnavailable": "Bu giriş seçeneği kullanılamıyor.",
+"socialSignInFailed": "Giriş tamamlanamadı. Lütfen tekrar deneyin.",
   "commonResendIn": "{seconds} sn içinde tekrar gönder",
 
   "betaBannerTitle": "Açık beta",

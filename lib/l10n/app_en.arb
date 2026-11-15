@@ -104,7 +104,6 @@
   "commonBack": "Back",
   "commonLoading": "Loading",
   "commonOrContinueWith": "or continue with",
-  "commonComingSoon": "Coming soon",
   "commonAdd": "Add",
   "commonCancel": "Cancel",
   "commonSave": "Save",
@@ -113,6 +112,7 @@
   "commonFacebook": "Facebook",
   "commonMicrosoft": "Microsoft",
   "commonSocialUnavailable": "This sign-in option is unavailable.",
+"socialSignInFailed": "We couldn't complete that sign-in. Please try again.",
   "commonResendIn": "Resend in {seconds}s",
   "@commonResendIn": {
     "description": "Shows how long until the code can be resent.",

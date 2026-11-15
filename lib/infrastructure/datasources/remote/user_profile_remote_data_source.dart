@@ -119,10 +119,21 @@ class UserProfileRemoteDataSource {
           )
           .toList(),
       primaryEmail: model.primaryEmail,
-      connectedProviders: model.connectedProviders
-          .map(SocialAuthProvider.tryFromWire)
-          .whereType<SocialAuthProvider>()
-          .toList(),
+      connectedProviders: model.connectedProviders.map(_fromWire).toList(),
     );
+  }
+
+  /// Maps the generated `AuthProvider` enum to the domain enum.
+  ///
+  /// The switch is exhaustive over the generated enum, so a new provider added
+  /// on the backend fails the build here instead of being silently dropped at
+  /// runtime (which is what a string-keyed lookup would do).
+  SocialAuthProvider _fromWire(sdk.AuthProvider provider) {
+    return switch (provider) {
+      sdk.AuthProvider.google => SocialAuthProvider.google,
+      sdk.AuthProvider.apple => SocialAuthProvider.apple,
+      sdk.AuthProvider.facebook => SocialAuthProvider.facebook,
+      sdk.AuthProvider.microsoft => SocialAuthProvider.microsoft,
+    };
   }
 }

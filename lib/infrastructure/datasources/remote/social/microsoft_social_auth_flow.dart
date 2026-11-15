@@ -1,23 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 
 import 'package:gewerber_app/core/errors/exceptions.dart';
 import 'package:gewerber_app/infrastructure/datasources/remote/social/pkce.dart';
 import 'package:gewerber_app/infrastructure/datasources/remote/social/social_auth_flow.dart';
-
-/// The subset of `flutter_web_auth_2` used by [MicrosoftSocialAuthFlow].
-///
-/// Injected so tests can drive the flow without opening a browser.
-abstract interface class WebAuthenticationOperations {
-  /// Opens [url] and resolves with the callback URL the provider redirected to.
-  Future<String> authenticate({
-    required String url,
-    required String callbackUrlScheme,
-    String? httpsHost,
-    String? httpsPath,
-  });
-}
+import 'package:gewerber_app/infrastructure/datasources/remote/social/web_authentication_operations.dart';
 
 /// Microsoft (Entra ID) sign-in through the OAuth 2.0 authorization-code flow
 /// with PKCE.
@@ -36,7 +23,7 @@ class MicrosoftSocialAuthFlow implements SocialAuthFlow {
     this.tenant = 'common',
     WebAuthenticationOperations? operations,
     bool? isWeb,
-  }) : _operations = operations ?? const _FlutterWebAuth2OperationsImpl(),
+  }) : _operations = operations ?? const FlutterWebAuth2Operations(),
        _isWeb = isWeb ?? kIsWeb;
 
   /// Entra ID application (client) id (`--dart-define=MICROSOFT_CLIENT_ID`).
@@ -136,27 +123,6 @@ class MicrosoftSocialAuthFlow implements SocialAuthFlow {
       codeVerifier: codeVerifier,
       redirectUri: redirectUri,
       isWebPlatform: _isWeb,
-    );
-  }
-}
-
-class _FlutterWebAuth2OperationsImpl implements WebAuthenticationOperations {
-  const _FlutterWebAuth2OperationsImpl();
-
-  @override
-  Future<String> authenticate({
-    required String url,
-    required String callbackUrlScheme,
-    String? httpsHost,
-    String? httpsPath,
-  }) {
-    return FlutterWebAuth2.authenticate(
-      url: url,
-      callbackUrlScheme: callbackUrlScheme,
-      options: FlutterWebAuth2Options(
-        httpsHost: httpsHost,
-        httpsPath: httpsPath,
-      ),
     );
   }
 }

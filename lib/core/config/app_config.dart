@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 
 import 'package:gewerber_app/core/config/flavor_values.dart';
@@ -111,14 +112,32 @@ class AppConfig {
   static String get resolvedServerHost =>
       _fromFlavor('serverHost', defaultServerHost);
 
-  /// OAuth redirect URI for the browser-based flows (Apple web, Microsoft).
+  /// OAuth redirect URI for the browser-based flows (Google web, Apple web,
+  /// Microsoft).
   ///
-  /// Defaults to `'$resolvedServerHost/auth/callback'` of the active flavor and
-  /// can be overridden explicitly through [defaultAuthRedirectUri].
+  /// Defaults per platform and can be overridden explicitly through
+  /// [defaultAuthRedirectUri]:
+  ///
+  /// * **web** — the app's own origin plus the `flutter_web_auth_2` callback
+  ///   page (`$origin/auth.html`, shipped as `web/auth.html`). The callback
+  ///   page hands the OAuth result to the app window with
+  ///   `window.postMessage(..., origin)`, which browsers only deliver between
+  ///   matching scheme + host + port, so the redirect *must* be same-origin.
+  ///   The backend's `/auth/callback` route on `api.gewerber.de` cannot serve
+  ///   that purpose for a web build served from `app.gewerber.de`.
+  /// * **native** — `'$resolvedServerHost/auth/callback'`, served by the
+  ///   backend (`FlutterWebAuth2CallbackRoute`). An `https` redirect on iOS /
+  ///   macOS additionally needs the API host to publish
+  ///   `apple-app-site-association` (Universal Links); on Android 12+ it needs
+  ///   `assetlinks.json` (App Links).
   static String get authRedirectUri {
     final explicit = _fromFlavor('authRedirectUri', defaultAuthRedirectUri);
     if (explicit.isNotEmpty) {
       return explicit;
+    }
+    if (kIsWeb) {
+      final origin = Uri.base.origin;
+      return origin.isEmpty ? '/auth.html' : '$origin/auth.html';
     }
     return '$resolvedServerHost/auth/callback';
   }

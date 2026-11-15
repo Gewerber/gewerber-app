@@ -10,10 +10,9 @@ import 'package:gewerber_app/domain/value_objects/social_auth_provider.dart';
 /// AuthenticationServices flow only exists on Apple platforms and the web
 /// redirect flow is only wired up for the browser.
 ///
-/// This is the single source of truth for the UI (which provider buttons to
-/// show) and for the flows (which provider to refuse with
-/// [SocialAuthNotConfiguredException]). Keep it in sync with
-/// `SocialAuthRemoteDataSource`.
+/// This is the *platform* half of the "can this provider run here" answer; the
+/// flows add their credential requirements on top and are the single source of
+/// truth (see `SocialAuthRemoteDataSource.isConfigured`, which the UI asks).
 abstract final class SocialProviderAvailability {
   /// Whether [provider] can be used on [platform] (or on the web when
   /// [isWeb] is true).

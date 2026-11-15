@@ -4,25 +4,8 @@
 /// infrastructure layer (see `core/config/app_config.dart`).
 ///
 /// The names match the backend's `SocialAuthProvider` enum, which serializes
-/// `google`, `apple`, `facebook` and `microsoft`.
-enum SocialAuthProvider {
-  google,
-  apple,
-  facebook,
-  microsoft;
-
-  /// Resolves a provider from the wire name used by the backend
-  /// (`AuthProvider`), or `null` for values this build does not know.
-  ///
-  /// Callers pass `authProvider.name` (the generated enum's wire value).
-  static SocialAuthProvider? tryFromWire(Object? value) {
-    final name = value is String ? value : (value as Enum?)?.name;
-    return switch (name) {
-      'google' => SocialAuthProvider.google,
-      'apple' => SocialAuthProvider.apple,
-      'facebook' => SocialAuthProvider.facebook,
-      'microsoft' => SocialAuthProvider.microsoft,
-      _ => null,
-    };
-  }
-}
+/// `google`, `apple`, `facebook` and `microsoft`. The wire → domain mapping is
+/// an exhaustive switch over the generated `AuthProvider` enum in
+/// `UserProfileRemoteDataSource`, so a new backend provider breaks the build
+/// there rather than being silently dropped.
+enum SocialAuthProvider { google, apple, facebook, microsoft }
