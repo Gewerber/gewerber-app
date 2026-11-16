@@ -5,7 +5,11 @@ import 'package:gewerber_app/l10n/generated/app_localizations.dart';
 /// Persistent strip shown above the home shell while the product is in a
 /// public beta: sets honest expectations and points to the feedback channel.
 class BetaBanner extends StatelessWidget {
-  const BetaBanner({super.key});
+  /// Creates a [BetaBanner].
+  const BetaBanner({super.key, required this.onDismiss});
+
+  /// Called when the user dismisses the banner.
+  final VoidCallback onDismiss;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +21,12 @@ class BetaBanner extends StatelessWidget {
       child: SafeArea(
         bottom: false,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: const EdgeInsetsDirectional.only(
+            start: 16,
+            end: 4,
+            top: 8,
+            bottom: 8,
+          ),
           child: Row(
             children: [
               Icon(Icons.science_outlined, size: 20, color: foreground),
@@ -39,6 +48,12 @@ class BetaBanner extends StatelessWidget {
                     ],
                   ),
                 ),
+              ),
+              IconButton(
+                visualDensity: VisualDensity.compact,
+                icon: Icon(Icons.close_rounded, size: 18, color: foreground),
+                onPressed: onDismiss,
+                tooltip: l10n.commonDismiss,
               ),
             ],
           ),

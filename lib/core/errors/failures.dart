@@ -91,3 +91,11 @@ final class SocialAuthNotConfiguredFailure extends Failure {
 final class SocialAuthFailure extends Failure {
   const SocialAuthFailure([super.message = 'Social sign-in failed']);
 }
+
+/// The user cancelled the social sign-in flow.
+///
+/// Callers typically ignore this failure: cancelling is not an error the user
+/// needs to be told about.
+final class SocialAuthCancelledFailure extends Failure {
+  const SocialAuthCancelledFailure() : super('Social sign-in was cancelled');
+}

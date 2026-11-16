@@ -188,10 +188,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i661.ServerpodClientFactory(gh<_i221.AppConfig>()),
       registerFor: {_auth_live},
     );
-    gh.lazySingleton<_i322.AuthRemoteDataSource>(
-      () => _i322.AuthRemoteDataSource(gh<_i661.ServerpodClientFactory>()),
-      registerFor: {_auth_live},
-    );
     gh.lazySingleton<_i334.BusinessSettingsRemoteDataSource>(
       () => _i334.BusinessSettingsRemoteDataSource(
         gh<_i661.ServerpodClientFactory>(),
@@ -380,6 +376,13 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i78.GuidanceRepository>(
       () => _i34.ServerpodGuidanceRepository(
         gh<_i126.GuidanceRemoteDataSource>(),
+      ),
+      registerFor: {_auth_live},
+    );
+    gh.lazySingleton<_i322.AuthRemoteDataSource>(
+      () => _i322.AuthRemoteDataSource(
+        gh<_i661.ServerpodClientFactory>(),
+        gh<_i212.UserProfileRemoteDataSource>(),
       ),
       registerFor: {_auth_live},
     );

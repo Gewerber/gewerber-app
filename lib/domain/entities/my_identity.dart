@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 
+import 'package:gewerber_app/domain/value_objects/social_auth_provider.dart';
+
 /// Global platform admin role (from the `admin_user` allowlist).
 ///
 /// Mirrors the server-side `AdminRole` enum — values are lowercase names
@@ -62,8 +64,9 @@ class MyMembershipInfo extends Equatable {
   List<Object?> get props => [businessId, businessName, role];
 }
 
-/// Full identity of the authenticated user: optional global admin role and all
-/// business memberships.
+/// Full identity of the authenticated user: optional global admin role, all
+/// business memberships and the profile attributes the backend derives from the
+/// connected identity providers.
 ///
 /// Mirrors the server-side `MyIdentity` model returned by `userProfile.me()`.
 class MyIdentity extends Equatable {
@@ -71,6 +74,8 @@ class MyIdentity extends Equatable {
     required this.userId,
     this.globalRole,
     required this.memberships,
+    this.primaryEmail,
+    this.connectedProviders = const [],
   });
 
   /// Stable server-side identifier.
@@ -82,6 +87,21 @@ class MyIdentity extends Equatable {
   /// All business memberships, ordered by ascending `businessId`.
   final List<MyMembershipInfo> memberships;
 
+  /// Address the user should be shown, taken from a connected identity
+  /// provider. `null` when no provider supplied one (e.g. a phone-only
+  /// account); it is not necessarily unique to one human.
+  final String? primaryEmail;
+
+  /// Social providers that hold an account row for this auth user, in the
+  /// backend's declaration order. Empty for email accounts.
+  final List<SocialAuthProvider> connectedProviders;
+
   @override
-  List<Object?> get props => [userId, globalRole, memberships];
+  List<Object?> get props => [
+    userId,
+    globalRole,
+    memberships,
+    primaryEmail,
+    connectedProviders,
+  ];
 }

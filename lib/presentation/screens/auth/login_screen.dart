@@ -79,6 +79,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return switch (failure) {
       SocialAuthNotConfiguredFailure() => null,
       SocialAuthFailure() => null,
+      SocialAuthCancelledFailure() => null,
       _ => failure,
     };
   }

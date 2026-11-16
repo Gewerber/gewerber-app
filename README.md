@@ -27,7 +27,7 @@ Part of the [Gewerber GitHub organization](https://github.com/Gewerber).
 
 ### Resolve dependencies
 
-The app requires `serverpod*` `^4.0.3` and consumes the generated client SDKs
+The app requires `serverpod*` `4.1.2` and consumes the generated client SDKs
 straight from Git:
 
 | Dependency | Source |
@@ -92,6 +92,65 @@ banner is hidden in production. `--dart-define=SERVER_HOST=...` and
 flutter devices
 flutter run
 ```
+
+### Social sign-in configuration
+
+Social sign-in is configured per build through `--dart-define` values. A provider
+whose required keys are empty, or that the current platform cannot run, is hidden
+from the sign-in row and its flow refuses to run with
+`SocialAuthNotConfiguredException`; a provider the backend has disabled surfaces
+the "unavailable" snackbar.
+
+| Key | Required for | Platforms | Notes |
+|---|---|---|---|
+| `GOOGLE_CLIENT_ID` | Google | all | Web/server OAuth client id; also the ID-token audience the backend validates and the OAuth client for the web code exchange. Not needed on Windows/Linux (Google has no flow there). |
+| `GOOGLE_IOS_CLIENT_ID` | Google | iOS, macOS | iOS/macOS OAuth client id used by the SDK. |
+| `APPLE_CLIENT_ID` | Apple | all | Apple service id (the "Client ID" shown in the Apple developer portal). |
+| `APPLE_REDIRECT_URI` | Apple | web | `https://...` return URL registered for the service id; must be one of the service id's "Domains and Subdomains" + "Return URLs". |
+| `FACEBOOK_APP_ID` | Facebook | Android, iOS, web | Also declared in `ios/Runner/Info.plist` and `AndroidManifest.xml` (see the comment blocks there). |
+| `MICROSOFT_CLIENT_ID` | Microsoft | all | Entra ID application (client) id. |
+| `MICROSOFT_TENANT` | Microsoft | all | Defaults to `common`. |
+| `AUTH_REDIRECT_URI` | Google (web), Apple (web), Microsoft | all | OAuth redirect URI. Defaults to the app's own origin plus `/auth.html` on web (`web/auth.html` is the callback page `flutter_web_auth_2` needs, and it must be same-origin), and to `$SERVER_HOST/auth/callback` on native (served by the backend). `APPLE_REDIRECT_URI` is the Apple-specific one and is *not* derived. |
+
+**Every redirect URI must be registered with its provider**, with the exact value
+the build uses — Google's OAuth client ("Authorized redirect URIs"), the Apple
+service id's Return URLs, and the Entra ID app's "Single-page application"
+platform (`https://app.gewerber.de/auth.html` for the web build).
+
+Example:
+
+```bash
+flutter run -d chrome \
+  --dart-define=GOOGLE_CLIENT_ID=...apps.googleusercontent.com \
+  --dart-define=APPLE_CLIENT_ID=de.gewerber.app.service \
+  --dart-define=APPLE_REDIRECT_URI=https://app.gewerber.de/auth/callback \
+  --dart-define=FACEBOOK_APP_ID=000000000000000 \
+  --dart-define=MICROSOFT_CLIENT_ID=00000000-0000-0000-0000-000000000000 \
+  --dart-define=MICROSOFT_TENANT=common \
+  --dart-define=AUTH_REDIRECT_URI=https://app.gewerber.de/auth.html
+```
+
+Per-platform requirements:
+
+- **Web** — Google (web client id + `AUTH_REDIRECT_URI`; the web build runs the
+  OAuth 2.0 authorization-code flow with PKCE itself, because `google_sign_in`'s
+  `authenticate()` is not implemented on the web), Apple (service id +
+  `APPLE_REDIRECT_URI`; the Apple JS SDK is loaded from `web/index.html`),
+  Facebook (app id), Microsoft (app id + `AUTH_REDIRECT_URI`).
+- **Android** — Google (server client id), Facebook (app id + package name +
+  key hashes in the Facebook dashboard), Microsoft (app id + redirect URI).
+- **iOS / macOS** — Google (iOS client id + server client id), Apple (native
+  AuthenticationServices; entitlement required), Facebook (app id), Microsoft
+  (app id + redirect URI).
+- **Windows / Linux** — Microsoft only (browser-based PKCE via
+  `flutter_web_auth_2`).
+
+**Native `https` redirects.** An `https` redirect URI on iOS/macOS is only
+delivered back to the app when the API host associates itself with the app:
+`/.well-known/apple-app-site-association` (Universal Links) for Apple, and
+`/.well-known/assetlinks.json` (App Links) for Android 12+. Without those files
+the browser opens the callback page instead of returning to the app. Use a custom
+scheme for local development, or host those files on `api.gewerber.de`.
 
 ### Tests
 

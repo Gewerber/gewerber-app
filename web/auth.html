@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Authentication complete</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+  <p>Authentication is complete. If this does not happen automatically, please close the window.</p>
+  <!--
+    OAuth callback page for `flutter_web_auth_2` (Google web PKCE, Microsoft).
+
+    It must be served from the same origin as the Flutter app: the callback
+    hands the provider's redirect URL to the opener with `postMessage(...,
+    window.location.origin)` (or `localStorage` when there is no opener), and
+    browsers only deliver that to the app window. The redirect URI registered
+    with each provider therefore has to be `<app origin>/auth.html` — see
+    `AppConfig.authRedirectUri` and the README's social sign-in section.
+
+    Verbatim copy of the page recommended by the package README
+    (flutter_web_auth_2 5.1.0).
+  -->
+  <script>
+    function postAuthenticationMessage() {
+      const message = {
+        'flutter-web-auth-2': window.location.href
+      };
+
+      if (window.opener) {
+        window.opener.postMessage(message, window.location.origin);
+        window.close();
+      } else if (window.parent && window.parent !== window) {
+        window.parent.postMessage(message, window.location.origin);
+      } else {
+        localStorage.setItem('flutter-web-auth-2', window.location.href);
+        window.close();
+      }
+    }
+
+    postAuthenticationMessage();
+  </script>
+</body>
+</html>

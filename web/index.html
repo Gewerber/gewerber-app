@@ -31,6 +31,12 @@
   <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="favicon.ico"/>
 
+  <!--
+    Sign in with Apple (web): the JavaScript SDK must be loaded before the
+    Flutter app calls AppleID.auth.signIn(); the plugin does not load it.
+  -->
+  <script type="text/javascript" src="https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js"></script>
+
   <title>Gewerber</title>
   <link rel="manifest" href="manifest.json">
 </head>
